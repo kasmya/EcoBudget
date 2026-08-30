@@ -1,12 +1,39 @@
 from sentence_transformers import SentenceTransformer, util
 from transformers import pipeline
 from bs4 import BeautifulSoup
+import requests
 
 embed_model = SentenceTransformer('all-MiniLM-L6-v2')
 qa_model = pipeline("question-answering", model="deepset/roberta-base-squad2")
 
 
-def parse_resources(html, debug=False):
+def get_real_image_bytes(src, base_url=None):
+    if not src:
+        return 50_000, True
+
+    url = src
+    if src.startswith('//'):
+        url = 'https:' + src
+    elif base_url and not src.startswith('http'):
+        if src.startswith('/'):
+            url = base_url.rstrip('/') + src
+        else:
+            url = base_url.rstrip('/') + '/' + src
+
+    headers = {'User-Agent': 'Mozilla/5.0 (EcoBudget Research Bot; contact: student-project)'}
+
+    try:
+        resp = requests.head(url, timeout=5, allow_redirects=True, headers=headers)
+        size = resp.headers.get('Content-Length')
+        if size and int(size) > 500:
+            return int(size), False
+    except Exception:
+        pass
+
+    return 50_000, True
+
+
+def parse_resources(html, base_url=None, debug=False):
     soup = BeautifulSoup(html, 'html.parser')
     content_root = soup.find(id='mw-content-text') or soup.find(id='bodyContent') or soup.find('body')
 
@@ -19,13 +46,7 @@ def parse_resources(html, debug=False):
     infobox_text = ""
     if infobox:
         infobox_text = infobox.get_text(separator=' | ', strip=True)
-        if debug:
-            print("=== INFOBOX FOUND ===")
-            print(infobox_text[:500])
-            print("======================")
         infobox.decompose()
-    elif debug:
-        print("=== NO INFOBOX FOUND ===")
 
     for junk in content_root.find_all(['script', 'style', 'nav', 'footer', 'sup', 'table']):
         junk.decompose()
@@ -54,10 +75,13 @@ def parse_resources(html, debug=False):
 
     for img in content_root.find_all('img'):
         alt = img.get('alt', 'image')
+        src = img.get('src', '')
+        real_bytes, is_estimated = get_real_image_bytes(src, base_url)
         resources.append({
             "type": "image",
             "content": alt,
-            "bytes": 400_000
+            "bytes": real_bytes,
+            "bytes_estimated": is_estimated
         })
 
     return resources
@@ -100,11 +124,6 @@ def rank_by_vpb(task_text, resources):
 
 
 def find_best_answer_full_page(task_text, resources):
-    """
-    Represents 'Normal' browsing: checks ALL text resources on the page,
-    not just the VPB-ranked top-30. Kept separate from rank_by_vpb() so
-    Normal, Fixed, and EcoBudget conditions are genuinely independent.
-    """
     text_resources = [r for r in resources if r['type'] == 'text']
     best_score = 0.0
     best_answer = None
