@@ -1,0 +1,61 @@
+run_id,task_id,category,difficulty,condition,bytes_used,resources_loaded,resources_total,budget_final,iterations,time_seconds,extracted_answer,answer_score,facts_matched,facts_total,success
+2cb2c032,T1,simple_fact,easy,Normal,531294,333,333,,1,9.231,1793,0.963,1,1,True
+2cb2c032,T1,simple_fact,easy,Fixed Eco,14829,30,240,20000,1,3.742,1897,0.944,0,1,False
+2cb2c032,T1,simple_fact,easy,EcoBudget,9911,21,30,10000,1,3.376,1897,0.944,0,1,False
+2cb2c032,T2,simple_fact,easy,Normal,319627,187,187,,1,6.062,,0.0,0,1,False
+2cb2c032,T2,simple_fact,easy,Fixed Eco,7161,30,144,20000,1,2.444,,0.0,0,1,False
+2cb2c032,T2,simple_fact,easy,EcoBudget,7161,30,30,10000,1,2.303,,0.0,0,1,False
+2cb2c032,T3,simple_fact,easy,Normal,166895,99,99,,1,3.34,,0.0,0,1,False
+2cb2c032,T3,simple_fact,easy,Fixed Eco,17170,30,85,20000,1,2.12,,0.0,0,1,False
+2cb2c032,T3,simple_fact,easy,EcoBudget,17170,30,30,20000,2,2.346,,0.0,0,1,False
+2cb2c032,T4,specific_lookup,easy,Normal,579497,127,127,,1,4.344,,0.0,0,1,False
+2cb2c032,T4,specific_lookup,easy,Fixed Eco,9615,30,101,20000,1,1.973,,0.0,0,1,False
+2cb2c032,T4,specific_lookup,easy,EcoBudget,9615,30,30,10000,1,2.067,,0.0,0,1,False
+2cb2c032,T5,specific_lookup,easy,Normal,174653,93,93,,1,3.183,,0.0,0,1,False
+2cb2c032,T5,specific_lookup,easy,Fixed Eco,8334,30,77,20000,1,1.662,,0.0,0,1,False
+2cb2c032,T5,specific_lookup,easy,EcoBudget,8334,30,30,10000,1,1.839,,0.0,0,1,False
+2cb2c032,T6,list_extraction,hard,Normal,352500,160,160,,1,6.157,,0.0,0,7,False
+2cb2c032,T6,list_extraction,hard,Fixed Eco,8457,30,142,20000,1,2.289,,0.0,0,7,False
+2cb2c032,T6,list_extraction,hard,EcoBudget,8457,30,30,10000,1,2.349,,0.0,0,7,False
+2cb2c032,T7,comparison,hard,Normal,1154782,152,152,,1,7.16,276 m (906 ft),0.134,1,2,False
+2cb2c032,T7,comparison,hard,Fixed Eco,12882,30,111,20000,1,2.212,276 m (906 ft),0.134,1,2,False
+2cb2c032,T7,comparison,hard,EcoBudget,12882,30,30,20000,2,2.405,276 m (906 ft),0.04,1,2,False
+2cb2c032,T8,simple_fact,easy,Normal,2086549,127,127,,1,3.396,,0.0,0,1,False
+2cb2c032,T8,simple_fact,easy,Fixed Eco,12761,30,90,20000,1,1.993,,0.0,0,1,False
+2cb2c032,T8,simple_fact,easy,EcoBudget,12761,30,30,20000,2,2.167,,0.0,0,1,False
+2cb2c032,T9,simple_fact,easy,Normal,225373,101,101,,1,2.444,,0.0,0,1,False
+2cb2c032,T9,simple_fact,easy,Fixed Eco,6204,30,78,20000,1,1.622,,0.0,0,1,False
+2cb2c032,T9,simple_fact,easy,EcoBudget,6204,30,30,10000,1,1.684,,0.0,0,1,False
+2cb2c032,T10,specific_lookup,easy,Normal,280304,253,253,,1,8.929,,0.0,0,1,False
+2cb2c032,T10,specific_lookup,easy,Fixed Eco,6327,30,222,20000,1,2.871,,0.0,0,1,False
+2cb2c032,T10,specific_lookup,easy,EcoBudget,6327,30,30,10000,1,2.901,,0.0,0,1,False
+2cb2c032,T11,specific_lookup,medium,Normal,272518,158,158,,1,5.154,Chemistry,0.97,1,1,True
+2cb2c032,T11,specific_lookup,medium,Fixed Eco,11030,30,130,20000,1,2.272,Chemistry,0.97,1,1,True
+2cb2c032,T11,specific_lookup,medium,EcoBudget,9833,27,30,10000,1,2.412,Chemistry,0.97,1,1,True
+2cb2c032,T12,process_howto,medium,Normal,351828,160,160,,1,5.259,carbon dioxide,0.968,0,1,False
+2cb2c032,T12,process_howto,medium,Fixed Eco,13751,30,142,20000,1,2.503,oxygen,0.892,1,1,True
+2cb2c032,T12,process_howto,medium,EcoBudget,9776,25,30,10000,1,2.713,oxygen,0.892,1,1,True
+2cb2c032,T13,process_howto,medium,Normal,565390,65,65,,1,1.804,Condensation,0.77,0,1,False
+2cb2c032,T13,process_howto,medium,Fixed Eco,13554,30,55,20000,1,1.655,Condensation,0.77,0,1,False
+2cb2c032,T13,process_howto,medium,EcoBudget,9953,21,30,10000,1,1.843,Condensation,0.77,0,1,False
+2cb2c032,T14,general_information,easy,Normal,1000877,247,247,,1,3.779,France,0.878,0,1,False
+2cb2c032,T14,general_information,easy,Fixed Eco,12138,30,96,20000,1,1.984,France,0.878,0,1,False
+2cb2c032,T14,general_information,easy,EcoBudget,9400,28,30,10000,1,2.152,"Paris, France",0.877,1,1,True
+2cb2c032,T15,general_information,easy,Normal,1856274,283,283,,1,8.001,artificial general intelligence,0.95,0,1,False
+2cb2c032,T15,general_information,easy,Fixed Eco,9090,30,256,20000,1,3.171,Artificial intelligence,0.93,1,1,True
+2cb2c032,T15,general_information,easy,EcoBudget,9090,30,30,10000,1,3.262,Artificial intelligence,0.93,1,1,True
+2cb2c032,T16,heavy_page,medium,Normal,332910,202,202,,1,6.846,May 1941,0.943,0,1,False
+2cb2c032,T16,heavy_page,medium,Fixed Eco,14572,30,157,20000,1,2.559,2 September 1945,0.862,1,1,True
+2cb2c032,T16,heavy_page,medium,EcoBudget,9827,23,30,10000,1,2.785,2 September 1945,0.862,1,1,True
+2cb2c032,T17,heavy_page,medium,Normal,468326,245,245,,1,8.205,Delhi,0.861,1,1,True
+2cb2c032,T17,heavy_page,medium,Fixed Eco,12919,30,162,20000,1,2.927,Delhi,0.861,1,1,True
+2cb2c032,T17,heavy_page,medium,EcoBudget,9958,23,30,10000,1,2.945,Delhi,0.861,1,1,True
+2cb2c032,T18,small_page,easy,Normal,152682,86,86,,1,3.162,Rajasthan,0.971,1,1,True
+2cb2c032,T18,small_page,easy,Fixed Eco,15691,30,68,20000,1,2.402,Rajasthan,0.971,1,1,True
+2cb2c032,T18,small_page,easy,EcoBudget,9975,21,30,10000,1,2.354,Rajasthan,0.971,1,1,True
+2cb2c032,T19,small_page,easy,Normal,214148,145,145,,1,4.986,5G Evolution,0.953,0,1,False
+2cb2c032,T19,small_page,easy,Fixed Eco,9157,30,138,20000,1,2.143,5G Evolution,0.953,0,1,False
+2cb2c032,T19,small_page,easy,EcoBudget,9157,30,30,10000,1,2.461,5G Evolution,0.953,0,1,False
+2cb2c032,T20,ambiguous_subtopic,hard,Normal,529950,333,333,,1,9.343,1793,0.838,0,1,False
+2cb2c032,T20,ambiguous_subtopic,hard,Fixed Eco,13831,30,240,20000,1,3.189,22 September 2012,0.809,1,1,True
+2cb2c032,T20,ambiguous_subtopic,hard,EcoBudget,9892,24,30,10000,1,3.68,22 September 2012,0.809,1,1,True
