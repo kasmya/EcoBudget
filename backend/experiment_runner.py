@@ -1,92 +1,80 @@
 import json
+import csv
 import time
 import uuid
-import csv
 import os
-from datetime import datetime, timezone
-
-from scorer import parse_resources, check_task_success_v2
+from scorer import parse_resources, check_task_success
 from conditions import run_normal, run_fixed_eco, run_ecobudget
 
-BENCHMARK_FILE = "benchmark_tasks_v1_FROZEN.json"
-RESULTS_DIR = "results"
-
+BENCHMARK = "benchmark_tasks_v1_FROZEN.json"
 FIXED_BUDGETS = [10_000, 25_000, 50_000, 100_000]
 
 
-def run_condition(name, task_text, resources):
-    if name == "normal":
-        return run_normal(task_text, resources)
-    if name == "ecobudget":
-        return run_ecobudget(task_text, resources)
-    # Fixed budget conditions
-    budget = int(name.replace("fixed_", ""))
-    return run_fixed_eco(task_text, resources, fixed_budget_bytes=budget)
+def load_benchmark():
+    with open(BENCHMARK) as f:
+        return json.load(f)
+
+
+def all_conditions(task_text, resources):
+    yield run_normal(task_text, resources)
+    for b in FIXED_BUDGETS:
+        yield run_fixed_eco(task_text, resources, fixed_budget_bytes=b)
+    yield run_ecobudget(task_text, resources)
 
 
 def main():
-    os.makedirs(RESULTS_DIR, exist_ok=True)
-    run_id = uuid.uuid4().hex[:8]
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    out_path = os.path.join(RESULTS_DIR, f"run_{timestamp}_{run_id}.csv")
+    tasks = load_benchmark()
+    run_id = time.strftime("%Y%m%dT%H%M%SZ") + "_" + uuid.uuid4().hex[:8]
+    os.makedirs("results", exist_ok=True)
+    out_path = f"results/run_{run_id}.csv"
 
-    with open(BENCHMARK_FILE) as f:
-        tasks = json.load(f)
+    fields = ["task_id", "category", "difficulty", "condition", "success",
+              "bytes_used", "co2e_grams", "resources_loaded", "coverage",
+              "stop_reason", "answer", "ground_truth"]
+    rows = []
 
-    conditions = ["normal", "fixed_10000", "fixed_25000", "fixed_50000", "fixed_100000", "ecobudget"]
-
-    fieldnames = [
-        "run_id", "task_id", "category", "difficulty", "condition",
-        "bytes_used", "resources_loaded", "resources_total",
-        "budget_final", "iterations", "time_seconds",
-        "extracted_answer", "answer_score",
-        "facts_matched", "facts_total", "success", "gate_reason",
-    ]
+    for t in tasks:
+        html = open(t["page_file"]).read()
+        resources = parse_resources(html, base_url=t.get("url"))
+        for out in all_conditions(t["question"], resources):
+            success = check_task_success(out.get("answer"), t["ground_truth"])
+            rows.append({
+                "task_id": t["id"],
+                "category": t.get("category", ""),
+                "difficulty": t.get("difficulty", ""),
+                "condition": out["condition"],
+                "success": int(success),
+                "bytes_used": out["bytes_used"],
+                "co2e_grams": out["carbon"]["estimated_co2e_grams"],
+                "resources_loaded": out["resources_loaded"],
+                "coverage": out.get("coverage", ""),
+                "stop_reason": out.get("gate_reason", ""),
+                "answer": (out.get("answer") or "")[:80],
+                "ground_truth": t["ground_truth"],
+            })
+        print(f"  done {t['id']}: {t['question'][:50]}")
 
     with open(out_path, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
+        w = csv.DictWriter(f, fieldnames=fields)
+        w.writeheader()
+        w.writerows(rows)
 
-        for task in tasks:
-            print(f"\n=== {task['id']}: {task['question']} ===")
-            with open(task["page_file"]) as pf:
-                html = pf.read()
-            resources = parse_resources(html, base_url=task["url"])
+    print(f"\nwrote {out_path}\n")
 
-            for cond in conditions:
-                start = time.time()
-                result = run_condition(cond, task["question"], resources)
-                elapsed = time.time() - start
+    from collections import defaultdict
+    agg = defaultdict(lambda: {"success": 0, "bytes": 0, "co2e": 0.0, "n": 0})
+    for r in rows:
+        a = agg[r["condition"]]
+        a["success"] += r["success"]
+        a["bytes"] += r["bytes_used"]
+        a["co2e"] += r["co2e_grams"]
+        a["n"] += 1
 
-                success, matched, total = check_task_success_v2(
-                    result["answer"], result["selected_text"], task["ground_truth"]
-                )
-
-                row = {
-                    "run_id": run_id,
-                    "task_id": task["id"],
-                    "category": task["category"],
-                    "difficulty": task["difficulty"],
-                    "condition": result["condition"],
-                    "bytes_used": result["bytes_used"],
-                    "resources_loaded": result["resources_loaded"],
-                    "resources_total": result["resources_total"],
-                    "budget_final": result["budget_final"],
-                    "iterations": result["iterations"],
-                    "time_seconds": round(elapsed, 3),
-                    "extracted_answer": result["answer"],
-                    "answer_score": round(result["answer_score"], 3),
-                    "facts_matched": matched,
-                    "facts_total": total,
-                    "success": success,
-                    "gate_reason": result.get("gate_reason", ""),
-                }
-                writer.writerow(row)
-                print(f"  {result['condition']:12s} | {result['bytes_used']:>8} bytes | "
-                      f"success={success} ({matched}/{total}) | '{result['answer']}'")
-
-    print(f"\nSaved: {out_path}")
-    return out_path
+    print(f"{'Condition':<14}{'Success':>9}{'AvgBytes':>12}{'AvgCO2e_g':>12}")
+    print("-" * 47)
+    for cond, a in agg.items():
+        print(f"{cond:<14}{a['success']}/{a['n']:>7}"
+              f"{a['bytes'] // a['n']:>12}{a['co2e'] / a['n']:>12.5f}")
 
 
 if __name__ == "__main__":
