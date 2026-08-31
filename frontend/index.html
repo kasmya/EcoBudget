@@ -13,18 +13,8 @@
     background: #f5f7f6;
     color: #1a1a1a;
   }
-  h1 {
-    font-size: 22px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .subtitle {
-    color: #666;
-    font-size: 14px;
-    margin-top: -8px;
-    margin-bottom: 24px;
-  }
+  h1 { font-size: 22px; display: flex; align-items: center; gap: 8px; }
+  .subtitle { color: #666; font-size: 14px; margin-top: -8px; margin-bottom: 24px; }
   select, input, button {
     font-size: 15px;
     padding: 10px 12px;
@@ -43,68 +33,23 @@
   }
   button:hover { background: #0c5c56; }
   button:disabled { background: #999; cursor: not-allowed; }
-  .task-select-row { display: flex; gap: 8px; }
-  .task-select-row select { flex: 1; }
-  .results {
-    margin-top: 20px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-  }
-  .card {
-    background: white;
-    border-radius: 10px;
-    padding: 14px;
-    border: 2px solid transparent;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  }
+  .section-label { font-size: 13px; color: #888; margin: 20px 0 8px; font-weight: 600; }
+  .divider { border: none; border-top: 1px solid #ddd; margin: 24px 0; }
+  .results { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .card { background: white; border-radius: 10px; padding: 14px; border: 2px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
   .card.winner { border-color: #0F766E; }
-  .card h3 {
-    margin: 0 0 8px 0;
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #555;
-  }
-  .bytes {
-    font-size: 20px;
-    font-weight: 700;
-    color: #0F766E;
-  }
-  .success-badge {
-    display: inline-block;
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 12px;
-    margin-top: 6px;
-    font-weight: 600;
-  }
+  .card h3 { margin: 0 0 8px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #555; }
+  .bytes { font-size: 20px; font-weight: 700; color: #0F766E; }
+  .success-badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 12px; margin-top: 6px; font-weight: 600; }
   .success-badge.yes { background: #dcfce7; color: #166534; }
   .success-badge.no { background: #fee2e2; color: #991b1b; }
-  .answer-text {
-    font-size: 12px;
-    color: #444;
-    margin-top: 8px;
-    word-break: break-word;
-  }
-  .savings-banner {
-    margin-top: 16px;
-    background: #ecfdf5;
-    border: 1px solid #0F766E;
-    border-radius: 10px;
-    padding: 16px;
-    text-align: center;
-    font-size: 15px;
-  }
-  .savings-banner .big {
-    font-size: 28px;
-    font-weight: 800;
-    color: #0F766E;
-    display: block;
-    margin: 4px 0;
-  }
+  .answer-text { font-size: 12px; color: #444; margin-top: 8px; word-break: break-word; }
+  .savings-banner { margin-top: 16px; background: #ecfdf5; border: 1px solid #0F766E; border-radius: 10px; padding: 16px; text-align: center; font-size: 15px; }
+  .savings-banner .big { font-size: 28px; font-weight: 800; color: #0F766E; display: block; margin: 4px 0; }
   .loading { text-align: center; padding: 20px; color: #666; }
   .error { color: #c00; padding: 10px; background: #fee; border-radius: 8px; }
+  .live-btn { background: #444; }
+  .live-btn:hover { background: #222; }
 </style>
 </head>
 <body>
@@ -112,11 +57,18 @@
 <h1>🌱 EcoBudget</h1>
 <p class="subtitle">Task-sufficient loading for sustainable web access</p>
 
-<div class="task-select-row">
+<p class="section-label">Benchmark tasks (pre-tested, scored)</p>
+<div>
   <select id="taskSelect"></select>
+  <button onclick="runAll()">Run All 3 Conditions</button>
 </div>
 
-<button id="runBtn" onclick="runAll()">Run All 3 Conditions</button>
+<hr class="divider">
+
+<p class="section-label">Or try any live webpage</p>
+<input id="liveUrl" placeholder="https://en.wikipedia.org/wiki/...">
+<input id="liveQuestion" placeholder="What do you want to know?">
+<button class="live-btn" onclick="runLive()">Run on Live URL</button>
 
 <div id="output"></div>
 
@@ -134,10 +86,7 @@ async function loadBenchmark() {
 }
 
 async function runAll() {
-  const btn = document.getElementById('runBtn');
   const output = document.getElementById('output');
-  btn.disabled = true;
-  btn.textContent = "Running...";
   output.innerHTML = '<div class="loading">Querying Normal, Fixed, and EcoBudget conditions...</div>';
 
   const taskId = document.getElementById('taskSelect').value;
@@ -147,35 +96,54 @@ async function runAll() {
     const htmlResp = await fetch(`pages/${task.page_file}`);
     const html = await htmlResp.text();
 
-    const conditions = ["normal", "fixed", "ecobudget"];
     const results = {};
-
-    for (const condition of conditions) {
+    for (const condition of ["normal", "fixed", "ecobudget"]) {
       const resp = await fetch(`${API_BASE}/run`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
-          task_text: task.task_text,
-          html: html,
-          participant_id: 'demo',
-          task_id: task.task_id,
-          condition: condition,
-          ground_truth: task.ground_truth
+          task_text: task.task_text, html: html,
+          participant_id: 'demo', task_id: task.task_id,
+          condition: condition, ground_truth: task.ground_truth
         })
       });
       results[condition] = await resp.json();
     }
-
-    renderResults(task, results);
+    renderResults(task.ground_truth, results);
   } catch (err) {
     output.innerHTML = `<div class="error">Error: ${err.message}. Is the backend running on port 8000?</div>`;
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "Run All 3 Conditions";
   }
 }
 
-function renderResults(task, results) {
+async function runLive() {
+  const url = document.getElementById('liveUrl').value;
+  const question = document.getElementById('liveQuestion').value;
+  const output = document.getElementById('output');
+
+  if (!url || !question) {
+    output.innerHTML = '<div class="error">Enter both a URL and a question.</div>';
+    return;
+  }
+
+  output.innerHTML = '<div class="loading">Fetching live page and rendering with headless Chromium (~20-30s)...</div>';
+
+  try {
+    const results = {};
+    for (const condition of ["normal", "fixed", "ecobudget"]) {
+      const resp = await fetch(`${API_BASE}/run_live`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ task_text: question, url: url, condition: condition, ground_truth: "" })
+      });
+      results[condition] = await resp.json();
+    }
+    renderResults("(not scored — live mode, no ground truth provided)", results);
+  } catch (err) {
+    output.innerHTML = `<div class="error">Error: ${err.message}. Live fetch can be slow or blocked by some sites.</div>`;
+  }
+}
+
+function renderResults(groundTruth, results) {
   const output = document.getElementById('output');
   const labels = { normal: "Normal", fixed: "Fixed Eco", ecobudget: "EcoBudget" };
 
@@ -183,13 +151,12 @@ function renderResults(task, results) {
   for (const cond of ["normal", "fixed", "ecobudget"]) {
     const r = results[cond];
     const isWinner = cond === "ecobudget";
+    const successKnown = r.task_success !== null;
     cardsHtml += `
       <div class="card ${isWinner ? 'winner' : ''}">
         <h3>${labels[cond]}</h3>
         <div class="bytes">${formatBytes(r.total_bytes)}</div>
-        <span class="success-badge ${r.task_success ? 'yes' : 'no'}">
-          ${r.task_success ? '✓ Success' : '✗ Failed'}
-        </span>
+        ${successKnown ? `<span class="success-badge ${r.task_success ? 'yes' : 'no'}">${r.task_success ? '✓ Success' : '✗ Failed'}</span>` : ''}
         <div class="answer-text">"${r.final_answer || 'no answer'}"</div>
       </div>
     `;
@@ -198,28 +165,16 @@ function renderResults(task, results) {
 
   const normalBytes = results.normal.total_bytes;
   const ecoBytes = results.ecobudget.total_bytes;
-
-  // FIX: cap displayed reduction below 100% to avoid the false "100.0%" claim
   const rawReduction = normalBytes > 0 ? (1 - ecoBytes / normalBytes) * 100 : 0;
   const reduction = rawReduction >= 99.9 ? "99.9+" : rawReduction.toFixed(1);
 
-  let banner = '';
-  if (results.ecobudget.task_success) {
-    banner = `
-      <div class="savings-banner">
-        Ground truth: <b>${task.ground_truth}</b>
-        <span class="big">${reduction}% less data</span>
-        EcoBudget completed the task using ${formatBytes(ecoBytes)} vs ${formatBytes(normalBytes)} for full page load
-      </div>
-    `;
-  } else {
-    banner = `
-      <div class="savings-banner" style="background:#fef3c7; border-color:#d97706;">
-        Ground truth: <b>${task.ground_truth}</b><br>
-        EcoBudget did not find a confident answer for this task on this page.
-      </div>
-    `;
-  }
+  const banner = `
+    <div class="savings-banner">
+      Ground truth: <b>${groundTruth}</b>
+      <span class="big">${reduction}% less data</span>
+      EcoBudget used ${formatBytes(ecoBytes)} vs ${formatBytes(normalBytes)} for full page load
+    </div>
+  `;
 
   output.innerHTML = cardsHtml + banner;
 }
