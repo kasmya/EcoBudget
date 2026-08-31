@@ -1,0 +1,121 @@
+run_id,task_id,category,difficulty,condition,bytes_used,resources_loaded,resources_total,budget_final,iterations,time_seconds,extracted_answer,answer_score,facts_matched,facts_total,success,gate_reason
+5c5f51fd,T1,simple_fact,easy,Normal,609231,333,333,,1,11.54,1793,0.963,1,1,True,n/a
+5c5f51fd,T1,simple_fact,easy,Fixed Eco,9911,21,240,10000,1,3.671,1897,0.944,0,1,False,fixed budget
+5c5f51fd,T1,simple_fact,easy,Fixed Eco,14829,30,240,25000,1,3.018,1897,0.944,0,1,False,fixed budget
+5c5f51fd,T1,simple_fact,easy,Fixed Eco,14829,30,240,50000,1,3.022,1897,0.944,0,1,False,fixed budget
+5c5f51fd,T1,simple_fact,easy,Fixed Eco,14829,30,240,100000,1,3.027,1897,0.944,0,1,False,fixed budget
+5c5f51fd,T1,simple_fact,easy,EcoBudget,1627,3,30,1627,3,3.384,1897,0.944,0,1,False,sufficient (sim=0.94 qa=0.94 type=when)
+5c5f51fd,T2,simple_fact,easy,Normal,1131870,151,151,,1,4.768,seven storeys,0.741,0,1,False,n/a
+5c5f51fd,T2,simple_fact,easy,Fixed Eco,9974,24,111,10000,1,2.365,seven storeys,0.741,0,1,False,fixed budget
+5c5f51fd,T2,simple_fact,easy,Fixed Eco,13258,30,111,25000,1,2.121,seven storeys,0.741,0,1,False,fixed budget
+5c5f51fd,T2,simple_fact,easy,Fixed Eco,13258,30,111,50000,1,2.11,seven storeys,0.741,0,1,False,fixed budget
+5c5f51fd,T2,simple_fact,easy,Fixed Eco,13258,30,111,100000,1,2.112,seven storeys,0.741,0,1,False,fixed budget
+5c5f51fd,T2,simple_fact,easy,EcoBudget,9569,20,30,9569,20,2.746,seven storeys,0.741,0,1,False,max iterations (20)
+5c5f51fd,T3,simple_fact,easy,Normal,345355,124,124,,1,5.054,sixty days' travel,0.419,0,1,False,n/a
+5c5f51fd,T3,simple_fact,easy,Fixed Eco,9987,24,83,10000,1,2.024,sixty days' travel,0.419,0,1,False,fixed budget
+5c5f51fd,T3,simple_fact,easy,Fixed Eco,11978,30,83,25000,1,1.894,sixty days' travel,0.419,0,1,False,fixed budget
+5c5f51fd,T3,simple_fact,easy,Fixed Eco,11978,30,83,50000,1,1.851,sixty days' travel,0.419,0,1,False,fixed budget
+5c5f51fd,T3,simple_fact,easy,Fixed Eco,11978,30,83,100000,1,1.847,sixty days' travel,0.419,0,1,False,fixed budget
+5c5f51fd,T3,simple_fact,easy,EcoBudget,9828,20,30,9828,20,2.186,sixty days' travel,0.419,0,1,False,max iterations (20)
+5c5f51fd,T4,specific_lookup,easy,Normal,2036366,126,126,,1,4.162,Leonardo da Vinci,0.958,1,1,True,n/a
+5c5f51fd,T4,specific_lookup,easy,Fixed Eco,9531,25,90,10000,1,2.118,Leonardo da Vinci,0.958,1,1,True,fixed budget
+5c5f51fd,T4,specific_lookup,easy,Fixed Eco,13786,30,90,25000,1,1.958,Leonardo da Vinci,0.958,1,1,True,fixed budget
+5c5f51fd,T4,specific_lookup,easy,Fixed Eco,13786,30,90,50000,1,1.947,Leonardo da Vinci,0.958,1,1,True,fixed budget
+5c5f51fd,T4,specific_lookup,easy,Fixed Eco,13786,30,90,100000,1,1.93,Leonardo da Vinci,0.958,1,1,True,fixed budget
+5c5f51fd,T4,specific_lookup,easy,EcoBudget,10515,20,30,10515,20,2.276,Leonardo da Vinci,0.958,1,1,True,max iterations (20)
+5c5f51fd,T5,specific_lookup,easy,Normal,339532,154,154,,1,6.111,Bartholdi,0.992,1,1,True,n/a
+5c5f51fd,T5,specific_lookup,easy,Fixed Eco,9912,25,117,10000,1,2.567,Bartholdi,0.992,1,1,True,fixed budget
+5c5f51fd,T5,specific_lookup,easy,Fixed Eco,15325,30,117,25000,1,2.583,Bartholdi,0.992,1,1,True,fixed budget
+5c5f51fd,T5,specific_lookup,easy,Fixed Eco,15325,30,117,50000,1,2.258,Bartholdi,0.992,1,1,True,fixed budget
+5c5f51fd,T5,specific_lookup,easy,Fixed Eco,15325,30,117,100000,1,2.235,Bartholdi,0.992,1,1,True,fixed budget
+5c5f51fd,T5,specific_lookup,easy,EcoBudget,10004,20,30,10004,20,2.595,Bartholdi,0.992,1,1,True,max iterations (20)
+5c5f51fd,T6,list_extraction,hard,Normal,482655,36,36,,1,1.049,Walls of Babylon and the Pyramids,0.292,7,7,True,n/a
+5c5f51fd,T6,list_extraction,hard,Fixed Eco,8839,30,33,10000,1,1.394,Walls of Babylon and the Pyramids,0.292,7,7,True,fixed budget
+5c5f51fd,T6,list_extraction,hard,Fixed Eco,8839,30,33,25000,1,1.255,Walls of Babylon and the Pyramids,0.292,7,7,True,fixed budget
+5c5f51fd,T6,list_extraction,hard,Fixed Eco,8839,30,33,50000,1,1.268,Walls of Babylon and the Pyramids,0.292,7,7,True,fixed budget
+5c5f51fd,T6,list_extraction,hard,Fixed Eco,8839,30,33,100000,1,1.263,Walls of Babylon and the Pyramids,0.292,7,7,True,fixed budget
+5c5f51fd,T6,list_extraction,hard,EcoBudget,5627,20,30,5627,20,1.518,Walls of Babylon and the Pyramids,0.292,7,7,True,max iterations (20)
+5c5f51fd,T7,comparison,hard,Normal,135625,129,129,,1,4.784,1.5 m (4.9 ft).,0.272,2,2,True,n/a
+5c5f51fd,T7,comparison,hard,Fixed Eco,9980,26,115,10000,1,2.227,1.5 m (4.9 ft).,0.272,1,2,False,fixed budget
+5c5f51fd,T7,comparison,hard,Fixed Eco,11612,30,115,25000,1,2.209,1.5 m (4.9 ft).,0.272,2,2,True,fixed budget
+5c5f51fd,T7,comparison,hard,Fixed Eco,11612,30,115,50000,1,2.102,1.5 m (4.9 ft).,0.272,2,2,True,fixed budget
+5c5f51fd,T7,comparison,hard,Fixed Eco,11612,30,115,100000,1,2.521,1.5 m (4.9 ft).,0.272,2,2,True,fixed budget
+5c5f51fd,T7,comparison,hard,EcoBudget,8446,20,30,8446,20,2.972,1.5 m (4.9 ft).,0.272,1,2,False,max iterations (20)
+5c5f51fd,T8,simple_fact,easy,Normal,179267,85,85,,1,3.378,1653,0.88,2,2,True,n/a
+5c5f51fd,T8,simple_fact,easy,Fixed Eco,9672,19,56,10000,1,2.208,1653,0.88,2,2,True,fixed budget
+5c5f51fd,T8,simple_fact,easy,Fixed Eco,18789,30,56,25000,1,1.881,1653,0.88,2,2,True,fixed budget
+5c5f51fd,T8,simple_fact,easy,Fixed Eco,18789,30,56,50000,1,1.867,1653,0.88,2,2,True,fixed budget
+5c5f51fd,T8,simple_fact,easy,Fixed Eco,18789,30,56,100000,1,1.881,1653,0.88,2,2,True,fixed budget
+5c5f51fd,T8,simple_fact,easy,EcoBudget,1337,3,30,1337,3,2.292,1653,0.88,2,2,True,sufficient (sim=0.88 qa=0.88 type=when)
+5c5f51fd,T9,simple_fact,easy,Normal,352593,120,120,,1,4.007,AD 80,0.932,1,1,True,n/a
+5c5f51fd,T9,simple_fact,easy,Fixed Eco,9977,25,81,10000,1,1.952,AD 80,0.932,1,1,True,fixed budget
+5c5f51fd,T9,simple_fact,easy,Fixed Eco,12835,30,81,25000,1,1.845,AD 80,0.932,1,1,True,fixed budget
+5c5f51fd,T9,simple_fact,easy,Fixed Eco,12835,30,81,50000,1,1.86,AD 80,0.932,1,1,True,fixed budget
+5c5f51fd,T9,simple_fact,easy,Fixed Eco,12835,30,81,100000,1,1.839,AD 80,0.932,1,1,True,fixed budget
+5c5f51fd,T9,simple_fact,easy,EcoBudget,2759,3,30,2759,3,2.148,1 July 2016,0.866,0,1,False,sufficient (sim=0.87 qa=0.87 type=when)
+5c5f51fd,T10,specific_lookup,easy,Normal,236370,221,221,,1,7.828,1642,0.991,2,2,True,n/a
+5c5f51fd,T10,specific_lookup,easy,Fixed Eco,9999,22,186,10000,1,2.938,1642,0.991,2,2,True,fixed budget
+5c5f51fd,T10,specific_lookup,easy,Fixed Eco,14151,30,186,25000,1,2.787,1642,0.991,2,2,True,fixed budget
+5c5f51fd,T10,specific_lookup,easy,Fixed Eco,14151,30,186,50000,1,3.042,1642,0.991,2,2,True,fixed budget
+5c5f51fd,T10,specific_lookup,easy,Fixed Eco,14151,30,186,100000,1,2.808,1642,0.991,2,2,True,fixed budget
+5c5f51fd,T10,specific_lookup,easy,EcoBudget,2243,3,30,2243,3,3.209,1642,0.991,1,2,True,sufficient (sim=0.99 qa=0.99 type=when)
+5c5f51fd,T11,specific_lookup,medium,Normal,272518,158,158,,1,4.77,Chemistry,0.97,1,1,True,n/a
+5c5f51fd,T11,specific_lookup,medium,Fixed Eco,9833,27,130,10000,1,2.307,Chemistry,0.97,1,1,True,fixed budget
+5c5f51fd,T11,specific_lookup,medium,Fixed Eco,11030,30,130,25000,1,2.16,Chemistry,0.97,1,1,True,fixed budget
+5c5f51fd,T11,specific_lookup,medium,Fixed Eco,11030,30,130,50000,1,2.176,Chemistry,0.97,1,1,True,fixed budget
+5c5f51fd,T11,specific_lookup,medium,Fixed Eco,11030,30,130,100000,1,2.163,Chemistry,0.97,1,1,True,fixed budget
+5c5f51fd,T11,specific_lookup,medium,EcoBudget,7886,20,30,7886,20,2.429,Chemistry,0.97,1,1,True,max iterations (20)
+5c5f51fd,T12,process_howto,medium,Normal,406020,160,160,,1,5.354,carbon dioxide,0.968,0,1,False,n/a
+5c5f51fd,T12,process_howto,medium,Fixed Eco,9776,25,142,10000,1,2.402,oxygen,0.892,1,1,True,fixed budget
+5c5f51fd,T12,process_howto,medium,Fixed Eco,13751,30,142,25000,1,2.264,oxygen,0.892,1,1,True,fixed budget
+5c5f51fd,T12,process_howto,medium,Fixed Eco,13751,30,142,50000,1,2.294,oxygen,0.892,1,1,True,fixed budget
+5c5f51fd,T12,process_howto,medium,Fixed Eco,13751,30,142,100000,1,2.302,oxygen,0.892,1,1,True,fixed budget
+5c5f51fd,T12,process_howto,medium,EcoBudget,8610,20,30,8610,20,2.603,oxygen,0.892,1,1,True,max iterations (20)
+5c5f51fd,T13,process_howto,medium,Normal,576121,65,65,,1,1.841,Condensation,0.933,0,1,False,n/a
+5c5f51fd,T13,process_howto,medium,Fixed Eco,9962,22,55,10000,1,1.688,Condensation,0.933,0,1,False,fixed budget
+5c5f51fd,T13,process_howto,medium,Fixed Eco,13134,30,55,25000,1,1.601,Condensation,0.933,0,1,False,fixed budget
+5c5f51fd,T13,process_howto,medium,Fixed Eco,13134,30,55,50000,1,1.78,Condensation,0.933,0,1,False,fixed budget
+5c5f51fd,T13,process_howto,medium,Fixed Eco,13134,30,55,100000,1,1.975,Condensation,0.933,0,1,False,fixed budget
+5c5f51fd,T13,process_howto,medium,EcoBudget,391,3,30,391,3,2.081,Condensation,0.933,0,1,False,sufficient (sim=0.93 qa=0.93 type=what)
+5c5f51fd,T14,general_information,easy,Normal,1019455,247,247,,1,4.381,France,0.878,0,1,False,n/a
+5c5f51fd,T14,general_information,easy,Fixed Eco,9400,28,96,10000,1,2.001,France,0.878,0,1,False,fixed budget
+5c5f51fd,T14,general_information,easy,Fixed Eco,12138,30,96,25000,1,1.897,France,0.878,0,1,False,fixed budget
+5c5f51fd,T14,general_information,easy,Fixed Eco,12138,30,96,50000,1,1.895,France,0.878,0,1,False,fixed budget
+5c5f51fd,T14,general_information,easy,Fixed Eco,12138,30,96,100000,1,1.932,France,0.878,0,1,False,fixed budget
+5c5f51fd,T14,general_information,easy,EcoBudget,1695,3,30,1695,3,2.168,"Paris, France",0.877,1,1,True,sufficient (sim=0.88 qa=0.88 type=where)
+5c5f51fd,T15,general_information,easy,Normal,1856274,283,283,,1,9.064,artificial general intelligence,0.95,1,1,True,n/a
+5c5f51fd,T15,general_information,easy,Fixed Eco,9090,30,256,10000,1,3.181,Artificial intelligence,0.93,1,1,True,fixed budget
+5c5f51fd,T15,general_information,easy,Fixed Eco,9090,30,256,25000,1,3.084,Artificial intelligence,0.93,1,1,True,fixed budget
+5c5f51fd,T15,general_information,easy,Fixed Eco,9090,30,256,50000,1,3.102,Artificial intelligence,0.93,1,1,True,fixed budget
+5c5f51fd,T15,general_information,easy,Fixed Eco,9090,30,256,100000,1,3.112,Artificial intelligence,0.93,1,1,True,fixed budget
+5c5f51fd,T15,general_information,easy,EcoBudget,641,3,30,641,3,3.323,Artificial intelligence,0.93,1,1,True,sufficient (sim=0.93 qa=0.93 type=what)
+5c5f51fd,T16,heavy_page,medium,Normal,345257,202,202,,1,10.948,May 1941,0.943,0,1,False,n/a
+5c5f51fd,T16,heavy_page,medium,Fixed Eco,9827,23,157,10000,1,2.635,2 September 1945,0.862,1,1,True,fixed budget
+5c5f51fd,T16,heavy_page,medium,Fixed Eco,14572,30,157,25000,1,2.7,2 September 1945,0.862,1,1,True,fixed budget
+5c5f51fd,T16,heavy_page,medium,Fixed Eco,14572,30,157,50000,1,2.504,2 September 1945,0.862,1,1,True,fixed budget
+5c5f51fd,T16,heavy_page,medium,Fixed Eco,14572,30,157,100000,1,2.508,2 September 1945,0.862,1,1,True,fixed budget
+5c5f51fd,T16,heavy_page,medium,EcoBudget,1868,3,30,1868,3,2.846,2 September 1945,0.862,1,1,True,sufficient (sim=0.86 qa=0.86 type=when)
+5c5f51fd,T17,heavy_page,medium,Normal,439045,245,245,,1,6.963,Delhi,0.861,1,1,True,n/a
+5c5f51fd,T17,heavy_page,medium,Fixed Eco,9958,23,162,10000,1,3.013,Delhi,0.861,1,1,True,fixed budget
+5c5f51fd,T17,heavy_page,medium,Fixed Eco,12919,30,162,25000,1,2.785,Delhi,0.861,1,1,True,fixed budget
+5c5f51fd,T17,heavy_page,medium,Fixed Eco,12919,30,162,50000,1,2.804,Delhi,0.861,1,1,True,fixed budget
+5c5f51fd,T17,heavy_page,medium,Fixed Eco,12919,30,162,100000,1,2.875,Delhi,0.861,1,1,True,fixed budget
+5c5f51fd,T17,heavy_page,medium,EcoBudget,8759,20,30,8759,20,3.041,Delhi,0.861,1,1,True,max iterations (20)
+5c5f51fd,T18,small_page,easy,Normal,138152,86,86,,1,4.225,Rajasthan,0.971,1,1,True,n/a
+5c5f51fd,T18,small_page,easy,Fixed Eco,9975,21,68,10000,1,2.26,Rajasthan,0.971,1,1,True,fixed budget
+5c5f51fd,T18,small_page,easy,Fixed Eco,15691,30,68,25000,1,2.098,Rajasthan,0.971,1,1,True,fixed budget
+5c5f51fd,T18,small_page,easy,Fixed Eco,15691,30,68,50000,1,2.066,Rajasthan,0.971,1,1,True,fixed budget
+5c5f51fd,T18,small_page,easy,Fixed Eco,15691,30,68,100000,1,3.053,Rajasthan,0.971,1,1,True,fixed budget
+5c5f51fd,T18,small_page,easy,EcoBudget,11869,20,30,11869,20,2.616,Rajasthan,0.971,1,1,True,max iterations (20)
+5c5f51fd,T19,small_page,easy,Normal,223149,145,145,,1,5.163,5G Evolution,0.953,0,1,False,n/a
+5c5f51fd,T19,small_page,easy,Fixed Eco,9157,30,138,10000,1,2.2,5G Evolution,0.953,0,1,False,fixed budget
+5c5f51fd,T19,small_page,easy,Fixed Eco,9157,30,138,25000,1,2.1,5G Evolution,0.953,0,1,False,fixed budget
+5c5f51fd,T19,small_page,easy,Fixed Eco,9157,30,138,50000,1,2.097,5G Evolution,0.953,0,1,False,fixed budget
+5c5f51fd,T19,small_page,easy,Fixed Eco,9157,30,138,100000,1,2.112,5G Evolution,0.953,0,1,False,fixed budget
+5c5f51fd,T19,small_page,easy,EcoBudget,1005,6,30,1005,6,2.331,5G Evolution,0.953,0,1,False,sufficient (sim=0.95 qa=0.95 type=what)
+5c5f51fd,T20,ambiguous_subtopic,hard,Normal,660552,333,333,,1,10.548,1793,0.838,0,1,False,n/a
+5c5f51fd,T20,ambiguous_subtopic,hard,Fixed Eco,9892,24,240,10000,1,3.436,22 September 2012,0.809,1,1,True,fixed budget
+5c5f51fd,T20,ambiguous_subtopic,hard,Fixed Eco,13831,30,240,25000,1,3.242,22 September 2012,0.809,1,1,True,fixed budget
+5c5f51fd,T20,ambiguous_subtopic,hard,Fixed Eco,13831,30,240,50000,1,3.228,22 September 2012,0.809,1,1,True,fixed budget
+5c5f51fd,T20,ambiguous_subtopic,hard,Fixed Eco,13831,30,240,100000,1,3.229,22 September 2012,0.809,1,1,True,fixed budget
+5c5f51fd,T20,ambiguous_subtopic,hard,EcoBudget,1823,3,30,1823,3,3.548,22 September 2012,0.809,1,1,True,sufficient (sim=0.81 qa=0.81 type=when)

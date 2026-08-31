@@ -8,24 +8,20 @@ from datetime import datetime, timezone
 from scorer import parse_resources, check_task_success_v2
 from conditions import run_normal, run_fixed_eco, run_ecobudget
 
-BENCHMARK_FILE = "benchmark_tasks.json"
+BENCHMARK_FILE = "benchmark_tasks_v1_FROZEN.json"
 RESULTS_DIR = "results"
-CONDITIONS = ["normal", "fixed_eco", "ecobudget"]
 
-
-def load_benchmark():
-    with open(BENCHMARK_FILE) as f:
-        return json.load(f)
+FIXED_BUDGETS = [10_000, 25_000, 50_000, 100_000]
 
 
 def run_condition(name, task_text, resources):
     if name == "normal":
         return run_normal(task_text, resources)
-    if name == "fixed_eco":
-        return run_fixed_eco(task_text, resources)
     if name == "ecobudget":
         return run_ecobudget(task_text, resources)
-    raise ValueError(f"unknown condition {name}")
+    # Fixed budget conditions
+    budget = int(name.replace("fixed_", ""))
+    return run_fixed_eco(task_text, resources, fixed_budget_bytes=budget)
 
 
 def main():
@@ -34,14 +30,17 @@ def main():
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     out_path = os.path.join(RESULTS_DIR, f"run_{timestamp}_{run_id}.csv")
 
-    tasks = load_benchmark()
+    with open(BENCHMARK_FILE) as f:
+        tasks = json.load(f)
+
+    conditions = ["normal", "fixed_10000", "fixed_25000", "fixed_50000", "fixed_100000", "ecobudget"]
 
     fieldnames = [
         "run_id", "task_id", "category", "difficulty", "condition",
         "bytes_used", "resources_loaded", "resources_total",
         "budget_final", "iterations", "time_seconds",
         "extracted_answer", "answer_score",
-        "facts_matched", "facts_total", "success",
+        "facts_matched", "facts_total", "success", "gate_reason",
     ]
 
     with open(out_path, "w", newline="") as f:
@@ -54,7 +53,7 @@ def main():
                 html = pf.read()
             resources = parse_resources(html, base_url=task["url"])
 
-            for cond in CONDITIONS:
+            for cond in conditions:
                 start = time.time()
                 result = run_condition(cond, task["question"], resources)
                 elapsed = time.time() - start
@@ -80,13 +79,14 @@ def main():
                     "facts_matched": matched,
                     "facts_total": total,
                     "success": success,
+                    "gate_reason": result.get("gate_reason", ""),
                 }
                 writer.writerow(row)
-                print(f"  {result['condition']:10s} | "
-                      f"{result['bytes_used']:>7} bytes (budget={result['budget_final']}) | "
-                      f"success={success} ({matched}/{total}) | answer='{result['answer']}'")
+                print(f"  {result['condition']:12s} | {result['bytes_used']:>8} bytes | "
+                      f"success={success} ({matched}/{total}) | '{result['answer']}'")
 
-    print(f"\nSaved results to {out_path}")
+    print(f"\nSaved: {out_path}")
+    return out_path
 
 
 if __name__ == "__main__":

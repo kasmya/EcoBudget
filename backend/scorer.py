@@ -132,6 +132,7 @@ def rank_by_vpb(task_text, resources, use_entity_filter=True):
 
     for r in candidates:
         score, answer = check_answerability(task_text, r['content'])
+        r['qa_score'] = score   # raw QA confidence — never multiplied by anything
         if use_entity_filter:
             consistency = entity_consistency_score(task_text, r['content'])
             r['entity_consistency'] = consistency
@@ -194,3 +195,108 @@ def check_task_success_v2(extracted_answer, selected_text, ground_truth):
     total = len(required)
     success = (matched / total) >= threshold if total else False
     return success, matched, total
+
+
+# ── Evidence Gate ──────────────────────────────────────────────────────────────
+
+import re as _re
+
+_QUESTION_FORMS = {
+    "when":     _re.compile(r'\b(\d{1,4}s?(\s*(AD|BC|BCE|CE))?|[A-Z][a-z]+ \d{4}|\d{1,2} [A-Z][a-z]+ \d{4})\b'),
+    "how_tall": _re.compile(r'\b\d+[\.,]?\d*\s*(m|ft|km|meters?|feet|kilometres?)\b', _re.I),
+    "how_long": _re.compile(r'\b\d+[\.,]?\d*\s*(m|ft|km|meters?|feet|kilometres?|miles?)\b', _re.I),
+    "how_many": _re.compile(r'\b\d+[\.,]?\d*\b'),
+    "who":      _re.compile(r'\b[A-Z][a-z]+ [A-Z][a-z]+\b'),
+    "where":    _re.compile(r'\b[A-Z][a-zA-Z\s,]+\b'),
+    "what":     _re.compile(r'.{10,}'),
+}
+
+def _question_type(question):
+    q = question.lower().strip()
+    if q.startswith("when") or "what year" in q or "what date" in q:
+        return "when"
+    if "how tall" in q or "how high" in q:
+        return "how_tall"
+    if "how long" in q or "how far" in q:
+        return "how_long"
+    if "how many" in q:
+        return "how_many"
+    if q.startswith("who") or "who " in q:
+        return "who"
+    if q.startswith("where") or "what city" in q or "what country" in q or "what state" in q:
+        return "where"
+    return "what"
+
+def _extract_question_terms(question):
+    stopwords = {'What', 'When', 'Where', 'Who', 'Why', 'How', 'Which',
+                 'Is', 'Does', 'Do', 'Was', 'Were', 'The', 'A', 'An',
+                 'In', 'Of', 'For', 'To', 'And', 'Or'}
+    tokens = question.split()
+    return [t.strip('?.,') for t in tokens
+            if len(t) > 2 and t[0].isupper() and t.strip('?.,') not in stopwords]
+
+def evidence_gate(question, selected_resources, qa_answer, qa_score,
+                  relevance_threshold=0.45, qa_threshold=0.40):
+    """
+    Returns (sufficient: bool, reason: str).
+    Uses four task-agnostic signals — ground truth is never used here.
+    """
+    # 0. Minimum resources: never stop after just 1 resource — too likely to be
+    #    an infobox snippet with a confident-but-wrong date/name
+    if len(selected_resources) < 3:
+        return False, f"too few resources loaded ({len(selected_resources)})"
+
+    # 1. Relevance: at least one loaded passage is topically relevant
+    max_relevance = max((r['utility'] for r in selected_resources), default=0.0)
+    if max_relevance < relevance_threshold:
+        return False, f"no relevant passage (max_sim={max_relevance:.2f})"
+
+    # 2. Key term presence: loaded text contains named entities from the question
+    key_terms = _extract_question_terms(question)
+    loaded_text = " ".join(r['content'] for r in selected_resources).lower()
+    terms_found = [t for t in key_terms if t.lower() in loaded_text]
+    term_coverage = len(terms_found) / len(key_terms) if key_terms else 1.0
+    if term_coverage < 0.5:
+        return False, f"key terms missing ({len(terms_found)}/{len(key_terms)})"
+
+    # 3. Answer form: extracted answer matches expected shape for this question type
+    if not qa_answer:
+        return False, "no answer extracted yet"
+    qtype = _question_type(question)
+    pattern = _QUESTION_FORMS.get(qtype, _QUESTION_FORMS["what"])
+    if not pattern.search(qa_answer):
+        return False, f"answer '{qa_answer[:30]}' wrong form for '{qtype}'"
+
+    # 4. QA confidence: model is sufficiently confident
+    if qa_score < qa_threshold:
+        return False, f"QA confidence too low ({qa_score:.2f})"
+
+    # 5. Answer-question coherence: answer should not be completely unrelated to question terms
+    # Catches cases where QA is confident but answering a different implicit question in the passage
+    question_content_words = set(
+        w.lower().strip("?.,") for w in question.split()
+        if len(w) > 3 and w.lower() not in {
+            'what', 'when', 'where', 'which', 'does', 'called', 'scientists',
+            'process', 'that', 'this', 'with', 'from', 'have', 'were', 'their'
+        }
+    )
+    answer_words = set(qa_answer.lower().split())
+    loaded_text_lower = loaded_text  # already lowercased above
+
+    # The answer OR its context window must overlap with question content words
+    if question_content_words:
+        answer_overlaps = question_content_words & answer_words
+        # Check if answer appears near question terms in the loaded text
+        answer_in_context = False
+        if qa_answer:
+            ans_lower = qa_answer.lower()
+            idx = loaded_text_lower.find(ans_lower)
+            if idx >= 0:
+                window = loaded_text_lower[max(0, idx-150):idx+150]
+                context_overlaps = question_content_words & set(window.split())
+                answer_in_context = len(context_overlaps) >= 1
+
+        if not answer_overlaps and not answer_in_context:
+            return False, f"answer '{qa_answer[:25]}' unrelated to question terms"
+
+    return True, f"sufficient (sim={max_relevance:.2f} qa={qa_score:.2f} type={qtype})"
