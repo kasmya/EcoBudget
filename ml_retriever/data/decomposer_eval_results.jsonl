@@ -1,0 +1,1 @@
+{"n_examples": 35, "exact_match_accuracy": 0.7714285714285715, "precision": 0.9344262295081968, "recall": 0.8769230769230769, "f1": 0.9047619047619049, "tag": "heuristic", "version": "heuristic-v1", "split": "val"}

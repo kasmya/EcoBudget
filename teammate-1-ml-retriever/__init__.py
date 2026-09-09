@@ -1,1 +1,0 @@
-"""EcoBudget research prototype modules."""

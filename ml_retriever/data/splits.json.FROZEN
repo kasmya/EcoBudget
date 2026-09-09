@@ -1,0 +1,6 @@
+This split was frozen on 2026-09-09 after Phase 1. Per plan.md,
+do not regenerate or edit data/splits.json (or the seed-to-split
+assignment in make_splits.py) until Phase 7's final run. Phase 2
+decomposer training uses train only; Phase 3 recall@5 evaluation
+uses a separate held-out requirement->passage set, not these
+task splits; Phase 5 bandit training/eval uses train/val only.
