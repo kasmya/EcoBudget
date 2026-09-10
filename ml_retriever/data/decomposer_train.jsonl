@@ -2,119 +2,103 @@
 {"task_id": "T1-s01", "question": "What is the battery capacity of iPhone 15?", "target": "iPhone 15|battery"}
 {"task_id": "T1-s02", "question": "Can you tell me the battery capacity of iPhone 15?", "target": "iPhone 15|battery"}
 {"task_id": "T1-s03", "question": "How would you describe the battery capacity of iPhone 15?", "target": "iPhone 15|battery"}
-{"task_id": "T1-s04", "question": "I'd like to know the battery capacity of iPhone 15.", "target": "iPhone 15|battery"}
 {"task_id": "T2", "question": "What is the starting price of the Samsung Galaxy S24?", "target": "Samsung Galaxy S24|price"}
 {"task_id": "T2-s01", "question": "What is the price of Samsung Galaxy S24?", "target": "Samsung Galaxy S24|price"}
 {"task_id": "T2-s02", "question": "Can you tell me the price of Samsung Galaxy S24?", "target": "Samsung Galaxy S24|price"}
 {"task_id": "T2-s03", "question": "How would you describe the price of Samsung Galaxy S24?", "target": "Samsung Galaxy S24|price"}
-{"task_id": "T2-s04", "question": "I'd like to know the price of Samsung Galaxy S24.", "target": "Samsung Galaxy S24|price"}
 {"task_id": "T4", "question": "Compare the iPhone 15 and Samsung Galaxy S24 on price and battery capacity.", "target": "iPhone 15|price ## iPhone 15|battery ## Samsung Galaxy S24|price ## Samsung Galaxy S24|battery"}
 {"task_id": "T4-s01", "question": "Compare iPhone 15 and Samsung Galaxy S24 on price and battery capacity.", "target": "iPhone 15|price ## iPhone 15|battery ## Samsung Galaxy S24|price ## Samsung Galaxy S24|battery"}
 {"task_id": "T4-s02", "question": "How do iPhone 15 and Samsung Galaxy S24 differ in price and battery capacity?", "target": "iPhone 15|price ## iPhone 15|battery ## Samsung Galaxy S24|price ## Samsung Galaxy S24|battery"}
 {"task_id": "T4-s03", "question": "I'm choosing between iPhone 15 and Samsung Galaxy S24 -- how do they compare on price and battery capacity?", "target": "iPhone 15|price ## iPhone 15|battery ## Samsung Galaxy S24|price ## Samsung Galaxy S24|battery"}
-{"task_id": "T4-s04", "question": "Which is the better choice, iPhone 15 or Samsung Galaxy S24, considering price and battery capacity?", "target": "iPhone 15|price ## iPhone 15|battery ## Samsung Galaxy S24|price ## Samsung Galaxy S24|battery"}
 {"task_id": "T5", "question": "What is the starting price of the MacBook Air 13 M3?", "target": "MacBook Air 13 M3|price"}
 {"task_id": "T5-s01", "question": "What is the price of MacBook Air 13 M3?", "target": "MacBook Air 13 M3|price"}
 {"task_id": "T5-s02", "question": "Can you tell me the price of MacBook Air 13 M3?", "target": "MacBook Air 13 M3|price"}
 {"task_id": "T5-s03", "question": "How would you describe the price of MacBook Air 13 M3?", "target": "MacBook Air 13 M3|price"}
-{"task_id": "T5-s04", "question": "I'd like to know the price of MacBook Air 13 M3.", "target": "MacBook Air 13 M3|price"}
 {"task_id": "T6", "question": "What is the battery life of the Dell XPS 13 (2024)?", "target": "Dell XPS 13 2024|battery"}
 {"task_id": "T6-s01", "question": "What is the battery capacity of Dell XPS 13 2024?", "target": "Dell XPS 13 2024|battery"}
 {"task_id": "T6-s02", "question": "Can you tell me the battery capacity of Dell XPS 13 2024?", "target": "Dell XPS 13 2024|battery"}
 {"task_id": "T6-s03", "question": "How would you describe the battery capacity of Dell XPS 13 2024?", "target": "Dell XPS 13 2024|battery"}
-{"task_id": "T6-s04", "question": "I'd like to know the battery capacity of Dell XPS 13 2024.", "target": "Dell XPS 13 2024|battery"}
 {"task_id": "T8", "question": "Compare the MacBook Air 13 M3 and the Dell XPS 13 (2024) on price and weight.", "target": "MacBook Air 13 M3|price ## MacBook Air 13 M3|weight ## Dell XPS 13 2024|price ## Dell XPS 13 2024|weight"}
 {"task_id": "T8-s01", "question": "Compare MacBook Air 13 M3 and Dell XPS 13 2024 on price and weight.", "target": "MacBook Air 13 M3|price ## MacBook Air 13 M3|weight ## Dell XPS 13 2024|price ## Dell XPS 13 2024|weight"}
 {"task_id": "T8-s02", "question": "How do MacBook Air 13 M3 and Dell XPS 13 2024 differ in price and weight?", "target": "MacBook Air 13 M3|price ## MacBook Air 13 M3|weight ## Dell XPS 13 2024|price ## Dell XPS 13 2024|weight"}
 {"task_id": "T8-s03", "question": "I'm choosing between MacBook Air 13 M3 and Dell XPS 13 2024 -- how do they compare on price and weight?", "target": "MacBook Air 13 M3|price ## MacBook Air 13 M3|weight ## Dell XPS 13 2024|price ## Dell XPS 13 2024|weight"}
-{"task_id": "T8-s04", "question": "Which is the better choice, MacBook Air 13 M3 or Dell XPS 13 2024, considering price and weight?", "target": "MacBook Air 13 M3|price ## MacBook Air 13 M3|weight ## Dell XPS 13 2024|price ## Dell XPS 13 2024|weight"}
 {"task_id": "T9", "question": "What is the best time of year to visit Jaipur?", "target": "Jaipur|best_time_to_visit"}
 {"task_id": "T9-s01", "question": "What is the recommended travel season of Jaipur?", "target": "Jaipur|best_time_to_visit"}
 {"task_id": "T9-s02", "question": "Can you tell me the recommended travel season of Jaipur?", "target": "Jaipur|best_time_to_visit"}
 {"task_id": "T9-s03", "question": "How would you describe the recommended travel season of Jaipur?", "target": "Jaipur|best_time_to_visit"}
-{"task_id": "T9-s04", "question": "I'd like to know the recommended travel season of Jaipur.", "target": "Jaipur|best_time_to_visit"}
 {"task_id": "T11", "question": "Compare Jaipur and Kyoto on typical daily travel budget.", "target": "Jaipur|daily_budget ## Kyoto|daily_budget"}
 {"task_id": "T11-s01", "question": "Compare Jaipur and Kyoto on daily travel budget.", "target": "Jaipur|daily_budget ## Kyoto|daily_budget"}
 {"task_id": "T11-s02", "question": "Which is better in terms of daily travel budget: Jaipur or Kyoto?", "target": "Jaipur|daily_budget ## Kyoto|daily_budget"}
 {"task_id": "T11-s03", "question": "How does Jaipur's daily travel budget compare to Kyoto's?", "target": "Jaipur|daily_budget ## Kyoto|daily_budget"}
-{"task_id": "T11-s04", "question": "Between Jaipur and Kyoto, which has the better daily travel budget?", "target": "Jaipur|daily_budget ## Kyoto|daily_budget"}
 {"task_id": "T13", "question": "What chip powers the iPhone 15?", "target": "iPhone 15|chip"}
 {"task_id": "T13-s01", "question": "What is the chip of iPhone 15?", "target": "iPhone 15|chip"}
 {"task_id": "T13-s02", "question": "Can you tell me the chip of iPhone 15?", "target": "iPhone 15|chip"}
 {"task_id": "T13-s03", "question": "How would you describe the chip of iPhone 15?", "target": "iPhone 15|chip"}
-{"task_id": "T13-s04", "question": "I'd like to know the chip of iPhone 15.", "target": "iPhone 15|chip"}
 {"task_id": "T14", "question": "What processor options are available for the Dell XPS 13 (2024)?", "target": "Dell XPS 13 2024|chip"}
 {"task_id": "T14-s01", "question": "What is the chip of Dell XPS 13 2024?", "target": "Dell XPS 13 2024|chip"}
 {"task_id": "T14-s02", "question": "Can you tell me the chip of Dell XPS 13 2024?", "target": "Dell XPS 13 2024|chip"}
 {"task_id": "T14-s03", "question": "How would you describe the chip of Dell XPS 13 2024?", "target": "Dell XPS 13 2024|chip"}
-{"task_id": "T14-s04", "question": "I'd like to know the chip of Dell XPS 13 2024.", "target": "Dell XPS 13 2024|chip"}
 {"task_id": "T16", "question": "How many rooms does The Oberoi Rajvilas Jaipur have?", "target": "Oberoi Rajvilas Jaipur|room_count"}
 {"task_id": "T16-s01", "question": "What is the room count of Oberoi Rajvilas Jaipur?", "target": "Oberoi Rajvilas Jaipur|room_count"}
 {"task_id": "T16-s02", "question": "Can you tell me the room count of Oberoi Rajvilas Jaipur?", "target": "Oberoi Rajvilas Jaipur|room_count"}
 {"task_id": "T16-s03", "question": "How would you describe the room count of Oberoi Rajvilas Jaipur?", "target": "Oberoi Rajvilas Jaipur|room_count"}
-{"task_id": "T16-s04", "question": "I'd like to know the room count of Oberoi Rajvilas Jaipur.", "target": "Oberoi Rajvilas Jaipur|room_count"}
 {"task_id": "T18", "question": "Compare The Oberoi Rajvilas Jaipur and Ibis Jaipur City Centre on price per night and amenities.", "target": "Oberoi Rajvilas Jaipur|price_per_night ## Oberoi Rajvilas Jaipur|amenities ## Ibis Jaipur City Centre|price_per_night ## Ibis Jaipur City Centre|amenities"}
 {"task_id": "T18-s01", "question": "Compare Oberoi Rajvilas Jaipur and Ibis Jaipur City Centre on price per night and amenities.", "target": "Oberoi Rajvilas Jaipur|price_per_night ## Oberoi Rajvilas Jaipur|amenities ## Ibis Jaipur City Centre|price_per_night ## Ibis Jaipur City Centre|amenities"}
 {"task_id": "T18-s02", "question": "How do Oberoi Rajvilas Jaipur and Ibis Jaipur City Centre differ in price per night and amenities?", "target": "Oberoi Rajvilas Jaipur|price_per_night ## Oberoi Rajvilas Jaipur|amenities ## Ibis Jaipur City Centre|price_per_night ## Ibis Jaipur City Centre|amenities"}
 {"task_id": "T18-s03", "question": "I'm choosing between Oberoi Rajvilas Jaipur and Ibis Jaipur City Centre -- how do they compare on price per night and amenities?", "target": "Oberoi Rajvilas Jaipur|price_per_night ## Oberoi Rajvilas Jaipur|amenities ## Ibis Jaipur City Centre|price_per_night ## Ibis Jaipur City Centre|amenities"}
-{"task_id": "T18-s04", "question": "Which is the better choice, Oberoi Rajvilas Jaipur or Ibis Jaipur City Centre, considering price per night and amenities?", "target": "Oberoi Rajvilas Jaipur|price_per_night ## Oberoi Rajvilas Jaipur|amenities ## Ibis Jaipur City Centre|price_per_night ## Ibis Jaipur City Centre|amenities"}
 {"task_id": "T19", "question": "What is the battery life of the Sony WF-1000XM5?", "target": "Sony WF-1000XM5|battery_life"}
 {"task_id": "T19-s01", "question": "What is the battery life of Sony WF-1000XM5?", "target": "Sony WF-1000XM5|battery_life"}
 {"task_id": "T19-s02", "question": "Can you tell me the battery life of Sony WF-1000XM5?", "target": "Sony WF-1000XM5|battery_life"}
 {"task_id": "T19-s03", "question": "How would you describe the battery life of Sony WF-1000XM5?", "target": "Sony WF-1000XM5|battery_life"}
-{"task_id": "T19-s04", "question": "I'd like to know the battery life of Sony WF-1000XM5.", "target": "Sony WF-1000XM5|battery_life"}
 {"task_id": "T21", "question": "Compare AirPods Pro 2 and Sony WF-1000XM5 on price and battery life.", "target": "AirPods Pro 2|price ## AirPods Pro 2|battery_life ## Sony WF-1000XM5|price ## Sony WF-1000XM5|battery_life"}
 {"task_id": "T21-s01", "question": "Compare AirPods Pro 2 and Sony WF-1000XM5 on price and battery life.", "target": "AirPods Pro 2|price ## AirPods Pro 2|battery_life ## Sony WF-1000XM5|price ## Sony WF-1000XM5|battery_life"}
 {"task_id": "T21-s02", "question": "How do AirPods Pro 2 and Sony WF-1000XM5 differ in price and battery life?", "target": "AirPods Pro 2|price ## AirPods Pro 2|battery_life ## Sony WF-1000XM5|price ## Sony WF-1000XM5|battery_life"}
 {"task_id": "T21-s03", "question": "I'm choosing between AirPods Pro 2 and Sony WF-1000XM5 -- how do they compare on price and battery life?", "target": "AirPods Pro 2|price ## AirPods Pro 2|battery_life ## Sony WF-1000XM5|price ## Sony WF-1000XM5|battery_life"}
-{"task_id": "T21-s04", "question": "Which is the better choice, AirPods Pro 2 or Sony WF-1000XM5, considering price and battery life?", "target": "AirPods Pro 2|price ## AirPods Pro 2|battery_life ## Sony WF-1000XM5|price ## Sony WF-1000XM5|battery_life"}
 {"task_id": "T22", "question": "How tall is the Burj Khalifa?", "target": "Burj Khalifa|height"}
 {"task_id": "T22-s01", "question": "What is the height of Burj Khalifa?", "target": "Burj Khalifa|height"}
 {"task_id": "T22-s02", "question": "Can you tell me the height of Burj Khalifa?", "target": "Burj Khalifa|height"}
 {"task_id": "T22-s03", "question": "How would you describe the height of Burj Khalifa?", "target": "Burj Khalifa|height"}
-{"task_id": "T22-s04", "question": "I'd like to know the height of Burj Khalifa.", "target": "Burj Khalifa|height"}
 {"task_id": "T24", "question": "Compare the Burj Khalifa and the Empire State Building on height and completion year.", "target": "Burj Khalifa|height ## Burj Khalifa|completion_year ## Empire State Building|height ## Empire State Building|completion_year"}
 {"task_id": "T24-s01", "question": "Compare Burj Khalifa and Empire State Building on height and completion year.", "target": "Burj Khalifa|height ## Burj Khalifa|completion_year ## Empire State Building|height ## Empire State Building|completion_year"}
 {"task_id": "T24-s02", "question": "How do Burj Khalifa and Empire State Building differ in height and completion year?", "target": "Burj Khalifa|height ## Burj Khalifa|completion_year ## Empire State Building|height ## Empire State Building|completion_year"}
 {"task_id": "T24-s03", "question": "I'm choosing between Burj Khalifa and Empire State Building -- how do they compare on height and completion year?", "target": "Burj Khalifa|height ## Burj Khalifa|completion_year ## Empire State Building|height ## Empire State Building|completion_year"}
-{"task_id": "T24-s04", "question": "Which is the better choice, Burj Khalifa or Empire State Building, considering height and completion year?", "target": "Burj Khalifa|height ## Burj Khalifa|completion_year ## Empire State Building|height ## Empire State Building|completion_year"}
 {"task_id": "T25", "question": "What is the elevation of Mount Everest?", "target": "Mount Everest|elevation"}
 {"task_id": "T25-s01", "question": "What is the elevation of Mount Everest?", "target": "Mount Everest|elevation"}
 {"task_id": "T25-s02", "question": "Can you tell me the elevation of Mount Everest?", "target": "Mount Everest|elevation"}
 {"task_id": "T25-s03", "question": "How would you describe the elevation of Mount Everest?", "target": "Mount Everest|elevation"}
-{"task_id": "T25-s04", "question": "I'd like to know the elevation of Mount Everest.", "target": "Mount Everest|elevation"}
 {"task_id": "T27", "question": "Compare Mount Everest and K2 on elevation and location.", "target": "Mount Everest|elevation ## Mount Everest|location ## K2|elevation ## K2|location"}
 {"task_id": "T27-s01", "question": "Compare Mount Everest and K2 on elevation and location.", "target": "Mount Everest|elevation ## Mount Everest|location ## K2|elevation ## K2|location"}
 {"task_id": "T27-s02", "question": "How do Mount Everest and K2 differ in elevation and location?", "target": "Mount Everest|elevation ## Mount Everest|location ## K2|elevation ## K2|location"}
 {"task_id": "T27-s03", "question": "I'm choosing between Mount Everest and K2 -- how do they compare on elevation and location?", "target": "Mount Everest|elevation ## Mount Everest|location ## K2|elevation ## K2|location"}
-{"task_id": "T27-s04", "question": "Which is the better choice, Mount Everest or K2, considering elevation and location?", "target": "Mount Everest|elevation ## Mount Everest|location ## K2|elevation ## K2|location"}
 {"task_id": "T28", "question": "What is the capital of Japan?", "target": "Japan|capital"}
 {"task_id": "T28-s01", "question": "What is the capital of Japan?", "target": "Japan|capital"}
 {"task_id": "T28-s02", "question": "Can you tell me the capital of Japan?", "target": "Japan|capital"}
 {"task_id": "T28-s03", "question": "How would you describe the capital of Japan?", "target": "Japan|capital"}
-{"task_id": "T28-s04", "question": "I'd like to know the capital of Japan.", "target": "Japan|capital"}
 {"task_id": "T30", "question": "Compare India and Japan on population and land area.", "target": "India|population ## India|area ## Japan|population ## Japan|area"}
 {"task_id": "T30-s01", "question": "Compare India and Japan on population and land area.", "target": "India|population ## India|area ## Japan|population ## Japan|area"}
 {"task_id": "T30-s02", "question": "How do India and Japan differ in population and land area?", "target": "India|population ## India|area ## Japan|population ## Japan|area"}
 {"task_id": "T30-s03", "question": "I'm choosing between India and Japan -- how do they compare on population and land area?", "target": "India|population ## India|area ## Japan|population ## Japan|area"}
-{"task_id": "T30-s04", "question": "Which is the better choice, India or Japan, considering population and land area?", "target": "India|population ## India|area ## Japan|population ## Japan|area"}
 {"task_id": "T31", "question": "What is the price of the Nike Pegasus 41?", "target": "Nike Pegasus 41|price"}
 {"task_id": "T31-s01", "question": "What is the price of Nike Pegasus 41?", "target": "Nike Pegasus 41|price"}
 {"task_id": "T31-s02", "question": "Can you tell me the price of Nike Pegasus 41?", "target": "Nike Pegasus 41|price"}
 {"task_id": "T31-s03", "question": "How would you describe the price of Nike Pegasus 41?", "target": "Nike Pegasus 41|price"}
-{"task_id": "T31-s04", "question": "I'd like to know the price of Nike Pegasus 41.", "target": "Nike Pegasus 41|price"}
 {"task_id": "T33", "question": "Compare the Nike Pegasus 41 and Hoka Clifton 9 on cushioning and recommended use.", "target": "Nike Pegasus 41|cushioning ## Nike Pegasus 41|best_for ## Hoka Clifton 9|cushioning ## Hoka Clifton 9|best_for"}
 {"task_id": "T33-s01", "question": "Compare Nike Pegasus 41 and Hoka Clifton 9 on cushioning and recommended use.", "target": "Nike Pegasus 41|cushioning ## Nike Pegasus 41|best_for ## Hoka Clifton 9|cushioning ## Hoka Clifton 9|best_for"}
 {"task_id": "T33-s02", "question": "How do Nike Pegasus 41 and Hoka Clifton 9 differ in cushioning and recommended use?", "target": "Nike Pegasus 41|cushioning ## Nike Pegasus 41|best_for ## Hoka Clifton 9|cushioning ## Hoka Clifton 9|best_for"}
 {"task_id": "T33-s03", "question": "I'm choosing between Nike Pegasus 41 and Hoka Clifton 9 -- how do they compare on cushioning and recommended use?", "target": "Nike Pegasus 41|cushioning ## Nike Pegasus 41|best_for ## Hoka Clifton 9|cushioning ## Hoka Clifton 9|best_for"}
-{"task_id": "T33-s04", "question": "Which is the better choice, Nike Pegasus 41 or Hoka Clifton 9, considering cushioning and recommended use?", "target": "Nike Pegasus 41|cushioning ## Nike Pegasus 41|best_for ## Hoka Clifton 9|cushioning ## Hoka Clifton 9|best_for"}
 {"task_id": "T34", "question": "What is the EPA-estimated range of the Tesla Model 3?", "target": "Tesla Model 3|range"}
 {"task_id": "T34-s01", "question": "What is the driving range of Tesla Model 3?", "target": "Tesla Model 3|range"}
 {"task_id": "T34-s02", "question": "Can you tell me the driving range of Tesla Model 3?", "target": "Tesla Model 3|range"}
 {"task_id": "T34-s03", "question": "How would you describe the driving range of Tesla Model 3?", "target": "Tesla Model 3|range"}
-{"task_id": "T34-s04", "question": "I'd like to know the driving range of Tesla Model 3.", "target": "Tesla Model 3|range"}
 {"task_id": "T36", "question": "Compare the Tesla Model 3 and Nissan Leaf on price and battery capacity.", "target": "Tesla Model 3|price ## Tesla Model 3|battery_capacity ## Nissan Leaf|price ## Nissan Leaf|battery_capacity"}
 {"task_id": "T36-s01", "question": "Compare Tesla Model 3 and Nissan Leaf on price and battery capacity.", "target": "Tesla Model 3|price ## Tesla Model 3|battery_capacity ## Nissan Leaf|price ## Nissan Leaf|battery_capacity"}
 {"task_id": "T36-s02", "question": "How do Tesla Model 3 and Nissan Leaf differ in price and battery capacity?", "target": "Tesla Model 3|price ## Tesla Model 3|battery_capacity ## Nissan Leaf|price ## Nissan Leaf|battery_capacity"}
 {"task_id": "T36-s03", "question": "I'm choosing between Tesla Model 3 and Nissan Leaf -- how do they compare on price and battery capacity?", "target": "Tesla Model 3|price ## Tesla Model 3|battery_capacity ## Nissan Leaf|price ## Nissan Leaf|battery_capacity"}
-{"task_id": "T36-s04", "question": "Which is the better choice, Tesla Model 3 or Nissan Leaf, considering price and battery capacity?", "target": "Tesla Model 3|price ## Tesla Model 3|battery_capacity ## Nissan Leaf|price ## Nissan Leaf|battery_capacity"}
+{"task_id": "T37", "question": "Does the Tesla Model 3 have a longer EPA-estimated range than the Nissan Leaf?", "target": "Tesla Model 3|range ## Nissan Leaf|range"}
+{"task_id": "T37-s01", "question": "Is Tesla Model 3's driving range higher than Nissan Leaf's?", "target": "Tesla Model 3|range ## Nissan Leaf|range"}
+{"task_id": "T37-s02", "question": "Does Tesla Model 3 have a greater driving range than Nissan Leaf?", "target": "Tesla Model 3|range ## Nissan Leaf|range"}
+{"task_id": "T37-s03", "question": "Is Tesla Model 3 ahead of Nissan Leaf on driving range?", "target": "Tesla Model 3|range ## Nissan Leaf|range"}
+{"task_id": "T39", "question": "What are the capital and official languages of India?", "target": "India|capital ## India|official_language"}
+{"task_id": "T39-s01", "question": "What are India's capital and official languages?", "target": "India|capital ## India|official_language"}
+{"task_id": "T39-s02", "question": "Tell me the capital and official languages for India.", "target": "India|capital ## India|official_language"}
+{"task_id": "T39-s03", "question": "Provide India's capital along with its official languages.", "target": "India|capital ## India|official_language"}

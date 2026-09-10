@@ -50,7 +50,7 @@ ATTRIBUTE_PHRASES = {
     "population": "population",
     "area": "land area",
     "capital": "capital",
-    "official_language": "official language",
+    "official_language": "official languages",
     "cushioning": "cushioning",
     "best_for": "recommended use",
     "range": "driving range",
@@ -95,6 +95,36 @@ COMPARISON_2ATTR_TEMPLATES = [
     "Help me weigh {e1} against {e2} on {attr1} and {attr2}.",
 ]
 
+YES_NO_TEMPLATES = [
+    "Is {e1}'s {attr} higher than {e2}'s?",
+    "Does {e1} have a greater {attr} than {e2}?",
+    "Is {e1} ahead of {e2} on {attr}?",
+]
+
+LIST_TEMPLATES = [
+    "List the {attr} offered by {e}.",
+    "What {attr} are available at {e}?",
+    "Name the {attr} at {e}.",
+]
+
+MULTI_PART_TEMPLATES = [
+    "What are {e}'s {attr1} and {attr2}?",
+    "Tell me the {attr1} and {attr2} for {e}.",
+    "Provide {e}'s {attr1} along with its {attr2}.",
+]
+
+PROCEDURE_TEMPLATES = [
+    "What are the steps to change a flat car tire?",
+    "Walk me through replacing a flat tire on a car.",
+    "How should I replace a flat vehicle tire safely?",
+]
+
+NARRATIVE_TEMPLATES = [
+    "Give me a brief summary of {e}.",
+    "What is the premise of {e}?",
+    "Briefly describe the story of {e}.",
+]
+
 
 def _phrase(attribute: str) -> str:
     return ATTRIBUTE_PHRASES.get(attribute, attribute.replace("_", " "))
@@ -109,19 +139,42 @@ def _requirement_shape(reqs: list[dict]):
 def generate_variants(task: dict) -> list[str]:
     """Generates up to N_VARIANTS_PER_FAMILY paraphrases per seed task.
 
-    With 15 seeds this used the full template lists (8-10 variants each)
-    to help reach the 150-200 target. After adding 21 more seeds to cover
-    travel, product selection, specification lookup, multi-attribute
-    research, decision making, and sustainability (see plan.md /
-    codebase feedback on corpus breadth), using the full template lists
-    for all 36 seeds would overshoot 200. Capping at 4 variants per seed
-    keeps the total in range while still giving each seed multiple
-    paraphrases.
+    With 41 seeds, three variants per seed keeps the generated dataset at
+    164 tasks: inside the reviewed 150-200 target without letting the new
+    answer-type coverage inflate the dataset.
     """
-    N_VARIANTS_PER_FAMILY = 4
+    N_VARIANTS_PER_FAMILY = 3
 
     reqs = task["decomposed_requirements"]
     entities, attributes = _requirement_shape(reqs)
+
+    if task["answer_type"] == "yes_no":
+        return [
+            t.format(e1=entities[0], e2=entities[1], attr=_phrase(attributes[0]))
+            for t in YES_NO_TEMPLATES[:N_VARIANTS_PER_FAMILY]
+        ]
+
+    if task["answer_type"] == "list":
+        return [
+            t.format(e=entities[0], attr=_phrase(attributes[0]))
+            for t in LIST_TEMPLATES[:N_VARIANTS_PER_FAMILY]
+        ]
+
+    if task["answer_type"] == "multi_part":
+        return [
+            t.format(
+                e=entities[0],
+                attr1=_phrase(attributes[0]),
+                attr2=_phrase(attributes[1]),
+            )
+            for t in MULTI_PART_TEMPLATES[:N_VARIANTS_PER_FAMILY]
+        ]
+
+    if task["answer_type"] == "procedure":
+        return PROCEDURE_TEMPLATES[:N_VARIANTS_PER_FAMILY]
+
+    if task["answer_type"] == "narrative":
+        return [t.format(e=entities[0]) for t in NARRATIVE_TEMPLATES[:N_VARIANTS_PER_FAMILY]]
 
     if len(reqs) == 1:
         e = entities[0]

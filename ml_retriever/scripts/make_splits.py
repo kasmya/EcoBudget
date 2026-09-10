@@ -21,10 +21,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-# 36 seed task ids -> split, chosen to keep each split's difficulty and
-# topic mix roughly representative (each split gets a mix of phones,
-# laptops, travel, electronics, buildings, geography, countries, running
-# shoes, vehicles; easy/medium/hard; single_fact/comparison).
+# 41 seed task ids -> split, chosen to keep each split's difficulty, topic,
+# and answer-type mix roughly representative. Existing assignments are frozen;
+# T37-T41 extend the same seed-grouping rule for new answer types.
 SEED_SPLIT_ASSIGNMENT = {
     # train (24 seeds, ~2/3)
     "T1": "train", "T2": "train", "T4": "train", "T5": "train", "T6": "train",
@@ -37,6 +36,8 @@ SEED_SPLIT_ASSIGNMENT = {
     "T26": "val", "T32": "val",
     # test (5 seeds)
     "T12": "test", "T15": "test", "T23": "test", "T29": "test", "T35": "test",
+    # General question-type expansion
+    "T37": "train", "T38": "val", "T39": "train", "T40": "test", "T41": "val",
 }
 
 
@@ -59,9 +60,10 @@ def main() -> None:
 
     lock_path = ROOT / "data" / "splits.json.FROZEN"
     lock_path.write_text(
-        "This split was frozen on 2026-09-09 after Phase 1. Per plan.md,\n"
-        "do not regenerate or edit data/splits.json (or the seed-to-split\n"
-        "assignment in make_splits.py) until Phase 7's final run. Phase 2\n"
+        "This split was re-frozen on 2026-09-09 after the Phase 1 general\n"
+        "question-type expansion (41 seed groups; seven answer types). Per\n"
+        "plan.md, do not regenerate or edit data/splits.json (or the\n"
+        "seed-to-split assignment in make_splits.py) until Phase 7's final run. Phase 2\n"
         "decomposer training uses train only; Phase 3 recall@5 evaluation\n"
         "uses a separate held-out requirement->passage set, not these\n"
         "task splits; Phase 5 bandit training/eval uses train/val only.\n",

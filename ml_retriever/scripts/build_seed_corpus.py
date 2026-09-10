@@ -398,6 +398,20 @@ RAW_PASSAGES = [
      "The Nissan Leaf suits budget-conscious buyers prioritizing a lower "
      "purchase price over maximum range.",
      "https://www.nissanofvalencia.com/blog/nissan-leaf-vs-tesla-model-3-full-commuters-guide/"),
+
+    # --- Procedure and narrative answer support ---
+    ("tire", "procedure",
+     "To replace a flat car tire safely, pull over on firm ground, use the "
+     "parking brake, and loosen the lug nuts before lifting the car at its "
+     "specified jacking point. Remove the flat, fit the spare, lower the "
+     "vehicle, then tighten the lug nuts in a cross pattern.",
+     "https://www.michelinman.com/auto/auto-tips-and-advice/tire-maintenance/how-to-change-a-car-tire"),
+    ("Mamma Mia", "summary",
+     "In the 2008 musical Mamma Mia!, Sophie prepares to marry on a Greek "
+     "island and secretly invites three men from her mother Donna's past, "
+     "hoping to identify which one is her father. Their arrival unsettles "
+     "Donna and revives old relationships around the wedding.",
+     "https://www.universalpicturesathome.com/movies/mamma-mia-the-movie"),
 ]
 
 

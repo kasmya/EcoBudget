@@ -27,7 +27,7 @@ def splits():
 class TestCorpus:
     def test_expected_seed_size(self, corpus_rows):
         # Seed corpus; Phase 1's eventual target is 200-500 (see plan.md).
-        assert len(corpus_rows) == 84
+        assert len(corpus_rows) == 86
 
     def test_every_row_is_a_valid_passage(self, corpus_rows):
         for row in corpus_rows:
@@ -61,7 +61,7 @@ class TestTasks:
 
     def test_seed_task_count(self, tasks):
         seeds = [t for t in tasks if not t["synthetic"]]
-        assert len(seeds) == 36
+        assert len(seeds) == 41
 
     def test_task_ids_are_unique(self, tasks):
         ids = [t["id"] for t in tasks]
@@ -87,9 +87,30 @@ class TestTasks:
         for t in tasks:
             assert len(t["decomposed_requirements"]) >= 1
 
-    def test_answer_type_is_single_fact_or_comparison(self, tasks):
+    def test_answer_type_is_a_supported_closed_set(self, tasks):
+        answer_types = {
+            "single_fact",
+            "yes_no",
+            "list",
+            "comparison",
+            "multi_part",
+            "procedure",
+            "narrative",
+        }
         for t in tasks:
-            assert t["answer_type"] in {"single_fact", "comparison"}
+            assert t["answer_type"] in answer_types
+
+    def test_every_answer_type_has_a_seed_task(self, tasks):
+        seed_answer_types = {t["answer_type"] for t in tasks if not t["synthetic"]}
+        assert seed_answer_types == {
+            "single_fact",
+            "yes_no",
+            "list",
+            "comparison",
+            "multi_part",
+            "procedure",
+            "narrative",
+        }
 
     def test_topic_diversity_covers_all_five_categories(self, tasks):
         """Regression guard: the corpus/tasks must span all five categories

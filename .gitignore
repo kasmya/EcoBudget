@@ -3,5 +3,6 @@ __pycache__/
 files/
 .venv/
 .pytest_cache/
-
-
+*.safetensors
+*checkpoint*/
+models/

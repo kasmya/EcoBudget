@@ -732,5 +732,106 @@
     "topic": "vehicles",
     "difficulty": "hard",
     "answer_type": "comparison"
+  },
+  {
+    "id": "T37",
+    "question": "Does the Tesla Model 3 have a longer EPA-estimated range than the Nissan Leaf?",
+    "decomposed_requirements": [
+      {
+        "entity": "Tesla Model 3",
+        "attribute": "range"
+      },
+      {
+        "entity": "Nissan Leaf",
+        "attribute": "range"
+      }
+    ],
+    "expected_answer": "Yes",
+    "topic": "vehicles",
+    "difficulty": "easy",
+    "answer_type": "yes_no"
+  },
+  {
+    "id": "T38",
+    "question": "What amenities does The Oberoi Rajvilas Jaipur offer?",
+    "decomposed_requirements": [
+      {
+        "entity": "Oberoi Rajvilas Jaipur",
+        "attribute": "amenities"
+      }
+    ],
+    "ground_truth": {
+      "required_facts": [
+        "outdoor pool",
+        "full-service spa",
+        "fitness center",
+        "restaurants",
+        "tennis courts"
+      ],
+      "match_threshold": 0.6
+    },
+    "topic": "travel",
+    "difficulty": "medium",
+    "answer_type": "list"
+  },
+  {
+    "id": "T39",
+    "question": "What are the capital and official languages of India?",
+    "decomposed_requirements": [
+      {
+        "entity": "India",
+        "attribute": "capital"
+      },
+      {
+        "entity": "India",
+        "attribute": "official_language"
+      }
+    ],
+    "ground_truth": {
+      "required_facts": [
+        "India's capital is New Delhi",
+        "Hindi and English are official languages at the union level"
+      ],
+      "match_threshold": 1.0
+    },
+    "topic": "countries",
+    "difficulty": "medium",
+    "answer_type": "multi_part"
+  },
+  {
+    "id": "T40",
+    "question": "How do I change a flat car tire?",
+    "decomposed_requirements": [
+      {
+        "entity": "tire",
+        "attribute": "procedure"
+      }
+    ],
+    "ground_truth": {
+      "required_facts": [
+        "secure the vehicle and loosen the lug nuts",
+        "raise the vehicle at the jacking point",
+        "remove the flat tire and install the spare",
+        "lower the vehicle and tighten the lug nuts"
+      ],
+      "match_threshold": 1.0
+    },
+    "topic": "vehicles",
+    "difficulty": "hard",
+    "answer_type": "procedure"
+  },
+  {
+    "id": "T41",
+    "question": "Summarize the premise of Mamma Mia! (2008).",
+    "decomposed_requirements": [
+      {
+        "entity": "Mamma Mia",
+        "attribute": "summary"
+      }
+    ],
+    "ground_truth": "On a Greek island, Sophie secretly invites three former lovers of her mother Donna to her wedding because one may be her father, reviving old relationships.",
+    "topic": "film",
+    "difficulty": "medium",
+    "answer_type": "narrative"
   }
 ]

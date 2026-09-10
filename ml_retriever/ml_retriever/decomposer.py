@@ -129,6 +129,12 @@ _ATTRIBUTE_KEYWORDS = {
     "driving range": "range",
     "range": "range",
     "battery capacity": "battery_capacity",
+    "change a flat car tire": "procedure",
+    "change a tire": "procedure",
+    "replace a flat tire": "procedure",
+    "summarize": "summary",
+    "summary": "summary",
+    "premise": "summary",
 }
 
 # Longest-keyword-first so "battery life" matches before "battery".

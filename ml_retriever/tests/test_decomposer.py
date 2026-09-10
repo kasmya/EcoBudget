@@ -99,6 +99,18 @@ class TestHeuristicDecomposer:
         result = d.decompose("How tall is the Empire State Building?")
         assert result == [Requirement(entity="Empire State Building", attribute="height")]
 
+    def test_procedure_convention(self):
+        d = HeuristicDecomposer(known_entities=["tire"])
+        assert d.decompose("How do I change a flat car tire?") == [
+            Requirement(entity="tire", attribute="procedure")
+        ]
+
+    def test_narrative_convention(self):
+        d = HeuristicDecomposer(known_entities=["Mamma Mia"])
+        assert d.decompose("Summarize the premise of Mamma Mia.") == [
+            Requirement(entity="Mamma Mia", attribute="summary")
+        ]
+
 
 class TestHeuristicBaselineOnValSplit:
     """Runs the heuristic against the real val split as a smoke test for
