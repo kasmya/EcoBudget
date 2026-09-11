@@ -6,3 +6,12 @@ files/
 *.safetensors
 *checkpoint*/
 models/
+*.zip
+
+# generated/runtime artifacts (backend prototype)
+backend/pages/*.html
+backend/live_test_output.html
+backend/logs/*.db
+backend/logs/pilot_results*.json
+backend/results/*.csv
+backend/_diag*.py
