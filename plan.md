@@ -116,6 +116,17 @@ This plan starts clean. Nothing from the scrapped folder is assumed to exist. Wh
 
 **Build new — no shortcuts:** nothing in `backend/` or elsewhere should be treated as "close enough" here. This is flagged specifically because it's the easiest phase to fake.
 
+**Phase 5/6 sequencing clarification (2026-09-13, discovered during implementation):**
+The bandit's reward needs an `AnswerGenerator` at STOP, and `success` comes from the v1 judge. The v1 judge only gives a valid, retrieval-dependent signal when task gold is **structured `required_facts`**, not free-text verdict strings — with a concat-evidence answer generator and verdict-string gold, even an oracle that retrieves everything scored ~0 on comparisons, making the reward degenerate. Resolution adopted:
+- **Data realignment (done):** `scripts/build_structured_gold.py` sets `ground_truth.required_facts` (grounded in the corpus via QA extraction) for comparison/yes_no/multi_part/list tasks; `expected_answer` is kept display-only, never the success criterion. This lifted oracle success on comparisons from 0.00 to 0.95. `narrative` stays free-text and is a known residual pending Phase 6.
+- **Generator/reward decoupling:** the Phase 6 generative `AnswerGenerator` is built separately and evaluated with its own metric (ROUGE / manual) — it must **not** change the reward used for bandit training, to avoid a moving target. The bandit trains against the structured-gold judge regardless of generator quality.
+- **Do not tune λ/exploration until the reward is valid.** A λ sweep (`scripts/sweep_lambda.py`) is the mechanism for picking the success-vs-bytes operating point once the reward is valid.
+
+**Phase 5 result (v1):**
+- *Terminal (Monte-Carlo) credit — negative result:* crediting every step the episode objective (success − λ·bytes/max) made the bandit reach ceiling success (0.778, above naive `normal`'s 0.444) but over-retrieve (λ=0.5→741 bytes, λ=1→384) and collapse to always-STOP at λ≥2 — a knife-edge with no stable operating point that beats the baselines.
+- *Per-step credit — resolved:* giving each RETRIEVE its marginal coverage gain minus its byte cost (redundant retrievals go negative) and STOP the realized success localizes the decision. The bandit now reaches ceiling success **0.778 at ~277 bytes on val — below the heuristic (294), fixed@2 (281), and fixed@4 (516)** — meeting Phase 5's goal (comparable success, less data than fixed budgets), and the λ landscape is a stable plateau (λ∈[1,4]) rather than a cliff. Confirms the earlier shortfall was credit assignment, not the bandit itself. `scripts/sweep_lambda.py --reward_mode {terminal,per_step}` reproduces both. Operating point: per-step, λ=4.
+- *Remaining caveat:* ceiling success is 0.778 (not ~1.0) because of the placeholder concat-evidence answer generator + `narrative` free-text gold; Phase 6's generative answerer lifts the ceiling but must stay decoupled from the bandit reward.
+
 ---
 
 ## Phase 6 — AnswerGenerator & Full Pipeline Integration

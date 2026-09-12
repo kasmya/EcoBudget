@@ -43,7 +43,14 @@
     "expected_answer": "Samsung Galaxy S24 (up to 120Hz vs iPhone 15's 60Hz)",
     "topic": "phones",
     "difficulty": "medium",
-    "answer_type": "comparison"
+    "answer_type": "comparison",
+    "ground_truth": {
+      "required_facts": [
+        "60Hz",
+        "1Hz to 120Hz"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T4",
@@ -68,10 +75,9 @@
     ],
     "ground_truth": {
       "required_facts": [
-        "iPhone 15 starts at $799",
-        "Samsung Galaxy S24 starts at $799",
-        "iPhone 15 has a 3349 mAh battery",
-        "Samsung Galaxy S24 has a 4000 mAh battery"
+        "$799",
+        "3349 mAh",
+        "4,000 mAh"
       ],
       "match_threshold": 1.0
     },
@@ -123,7 +129,14 @@
     "expected_answer": "Dell XPS 13 2024 (about 2.6 lb vs MacBook Air's 2.7 lb)",
     "topic": "laptops",
     "difficulty": "medium",
-    "answer_type": "comparison"
+    "answer_type": "comparison",
+    "ground_truth": {
+      "required_facts": [
+        "2.7 pounds",
+        "2.6 pounds"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T8",
@@ -148,10 +161,10 @@
     ],
     "ground_truth": {
       "required_facts": [
-        "MacBook Air 13 M3 starts at $1,099",
-        "MacBook Air 13 M3 weighs about 2.7 pounds",
-        "Dell XPS 13 2024 starts at $1,299",
-        "Dell XPS 13 2024 weighs about 2.6 pounds"
+        "$1,099",
+        "2.7 pounds",
+        "$1,299",
+        "2.6 pounds"
       ],
       "match_threshold": 1.0
     },
@@ -202,8 +215,8 @@
     ],
     "ground_truth": {
       "required_facts": [
-        "Jaipur is cheaper in its April-June off-season",
-        "Kyoto ranges from about $40-60/day backpacker to $264+/day luxury"
+        "budget",
+        "$40-60 per day"
       ],
       "match_threshold": 1.0
     },
@@ -227,7 +240,14 @@
     "expected_answer": "Both are similar (Jaipur 2-4 days, Kyoto 3-4 days), Jaipur slightly shorter at the low end",
     "topic": "travel",
     "difficulty": "medium",
-    "answer_type": "comparison"
+    "answer_type": "comparison",
+    "ground_truth": {
+      "required_facts": [
+        "two to four days",
+        "three to four days"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T13",
@@ -273,7 +293,14 @@
     "expected_answer": "Samsung Galaxy S24 has a 50MP main camera vs iPhone 15's 48MP",
     "topic": "phones",
     "difficulty": "medium",
-    "answer_type": "comparison"
+    "answer_type": "comparison",
+    "ground_truth": {
+      "required_facts": [
+        "48MP",
+        "50MP"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T16",
@@ -305,7 +332,14 @@
     "expected_answer": "Ibis Jaipur City Centre (roughly $28-40/night vs Oberoi Rajvilas's $260+/night)",
     "topic": "travel",
     "difficulty": "medium",
-    "answer_type": "comparison"
+    "answer_type": "comparison",
+    "ground_truth": {
+      "required_facts": [
+        "$260 to $800",
+        "$28-40"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T18",
@@ -330,10 +364,10 @@
     ],
     "ground_truth": {
       "required_facts": [
-        "Oberoi Rajvilas is roughly $260-800+ per night",
-        "Ibis Jaipur City Centre is roughly $28-40 per night",
-        "Oberoi Rajvilas has a spa, pool, tennis courts, and multiple restaurants",
-        "Ibis Jaipur City Centre has a rooftop pool, gym, and one restaurant"
+        "$260 to $800",
+        "an outdoor pool, a full-service spa, a fitness center, two to three restaurants, and outdoor tennis courts",
+        "$28-40",
+        "a rooftop pool, a 24-hour gym, an on-site restaurant serving Indian cuisine, and a rooftop terrace"
       ],
       "match_threshold": 1.0
     },
@@ -371,7 +405,14 @@
     "expected_answer": "Sony WF-1000XM5, per independent reviewer testing",
     "topic": "electronics",
     "difficulty": "medium",
-    "answer_type": "comparison"
+    "answer_type": "comparison",
+    "ground_truth": {
+      "required_facts": [
+        "strong active",
+        "active"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T21",
@@ -396,10 +437,10 @@
     ],
     "ground_truth": {
       "required_facts": [
-        "AirPods Pro 2 costs $249",
-        "Sony WF-1000XM5 costs $299.99",
-        "AirPods Pro 2 lasts about 6 hours with ANC on",
-        "Sony WF-1000XM5 lasts about 8 hours with ANC on"
+        "$249",
+        "6 hours",
+        "$299.99",
+        "8 hours"
       ],
       "match_threshold": 1.0
     },
@@ -437,7 +478,14 @@
     "expected_answer": "Burj Khalifa (828m vs 381m roof height)",
     "topic": "buildings",
     "difficulty": "easy",
-    "answer_type": "comparison"
+    "answer_type": "comparison",
+    "ground_truth": {
+      "required_facts": [
+        "828 meters",
+        "1,250 feet"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T24",
@@ -462,10 +510,10 @@
     ],
     "ground_truth": {
       "required_facts": [
-        "Burj Khalifa is 828 meters tall",
-        "Empire State Building is 381 meters tall at the roof",
-        "Burj Khalifa was completed in 2010",
-        "Empire State Building was completed in 1931"
+        "828 meters",
+        "2009",
+        "1,250 feet",
+        "1931"
       ],
       "match_threshold": 1.0
     },
@@ -503,7 +551,14 @@
     "expected_answer": "Mount Everest (1953 vs K2's 1954)",
     "topic": "geography",
     "difficulty": "medium",
-    "answer_type": "comparison"
+    "answer_type": "comparison",
+    "ground_truth": {
+      "required_facts": [
+        "1953",
+        "1954"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T27",
@@ -528,8 +583,10 @@
     ],
     "ground_truth": {
       "required_facts": [
-        "Everest is 8,849 meters, in the Himalayas on the Nepal-China border",
-        "K2 is 8,611 meters, in the Karakoram Range on the Pakistan-China border"
+        "8,849 meters",
+        "Himalayas",
+        "8,611 meters (28,251 feet) above sea level",
+        "Karakoram Range"
       ],
       "match_threshold": 1.0
     },
@@ -567,7 +624,14 @@
     "expected_answer": "India (about 1.4-1.48 billion vs Japan's ~123 million)",
     "topic": "countries",
     "difficulty": "easy",
-    "answer_type": "comparison"
+    "answer_type": "comparison",
+    "ground_truth": {
+      "required_facts": [
+        "1.4 to 1.48 billion",
+        "123 million"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T30",
@@ -592,10 +656,10 @@
     ],
     "ground_truth": {
       "required_facts": [
-        "India has roughly 1.4-1.48 billion people",
-        "Japan has roughly 123 million people",
-        "India covers about 3,287,263 sq km",
-        "Japan covers about 377,930-377,975 sq km"
+        "1.4 to 1.48 billion",
+        "3,287,263 square kilometers",
+        "123 million",
+        "377,930 to 377,975 square kilometers"
       ],
       "match_threshold": 1.0
     },
@@ -633,7 +697,14 @@
     "expected_answer": "Hoka Clifton 9 (about 9.7 oz vs Pegasus 41's 10.0 oz)",
     "topic": "running_shoes",
     "difficulty": "medium",
-    "answer_type": "comparison"
+    "answer_type": "comparison",
+    "ground_truth": {
+      "required_facts": [
+        "10.0 ounces",
+        "9.7 ounces"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T33",
@@ -658,8 +729,10 @@
     ],
     "ground_truth": {
       "required_facts": [
-        "Pegasus 41 has moderate cushioning, suited to daily training and tempo work",
-        "Clifton 9 has maximal cushioning, suited to long runs and easy mileage"
+        "moderate",
+        "daily training and tempo-leaning efforts",
+        "5 out of 5",
+        "long runs and easy mileage"
       ],
       "match_threshold": 1.0
     },
@@ -697,7 +770,14 @@
     "expected_answer": "Tesla Model 3 (309-363 miles vs Leaf's 259-303 miles)",
     "topic": "vehicles",
     "difficulty": "medium",
-    "answer_type": "comparison"
+    "answer_type": "comparison",
+    "ground_truth": {
+      "required_facts": [
+        "309 to 363 miles",
+        "259 to 303 miles"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T36",
@@ -722,10 +802,10 @@
     ],
     "ground_truth": {
       "required_facts": [
-        "Tesla Model 3 starts around $37,000-44,000",
-        "Nissan Leaf starts around $29,990",
-        "Tesla Model 3 battery ranges from about 60 to 82 kWh",
-        "Nissan Leaf uses a 75 kWh battery (52 kWh entry trim)"
+        "$37,000 to $44,000",
+        "60 kWh",
+        "$29,990",
+        "75 kWh"
       ],
       "match_threshold": 1.0
     },
@@ -749,7 +829,14 @@
     "expected_answer": "Yes",
     "topic": "vehicles",
     "difficulty": "easy",
-    "answer_type": "yes_no"
+    "answer_type": "yes_no",
+    "ground_truth": {
+      "required_facts": [
+        "309 to 363 miles",
+        "259 to 303 miles"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T38",
@@ -762,13 +849,9 @@
     ],
     "ground_truth": {
       "required_facts": [
-        "outdoor pool",
-        "full-service spa",
-        "fitness center",
-        "restaurants",
-        "tennis courts"
+        "an outdoor pool, a full-service spa, a fitness center, two to three restaurants, and outdoor tennis courts"
       ],
-      "match_threshold": 0.6
+      "match_threshold": 1.0
     },
     "topic": "travel",
     "difficulty": "medium",
@@ -789,8 +872,8 @@
     ],
     "ground_truth": {
       "required_facts": [
-        "India's capital is New Delhi",
-        "Hindi and English are official languages at the union level"
+        "New Delhi",
+        "Hindi and English"
       ],
       "match_threshold": 1.0
     },
@@ -859,13 +942,9 @@
     ],
     "ground_truth": {
       "required_facts": [
-        "restaurant",
-        "bar",
-        "fitness center",
-        "free wifi",
-        "24-hour front desk"
+        "a rooftop pool, a 24-hour gym, an on-site restaurant serving Indian cuisine, and a rooftop terrace"
       ],
-      "match_threshold": 0.6
+      "match_threshold": 1.0
     },
     "topic": "travel",
     "difficulty": "medium",
@@ -928,10 +1007,10 @@
     ],
     "ground_truth": {
       "required_facts": [
-        "50-megapixel main camera",
-        "120 Hz refresh rate"
+        "50-megapixel",
+        "120 Hz"
       ],
-      "match_threshold": 0.6
+      "match_threshold": 1.0
     },
     "topic": "phones",
     "difficulty": "medium",
@@ -1051,7 +1130,14 @@
     "topic": "buildings",
     "difficulty": "medium",
     "answer_type": "comparison",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "Adrian Smith",
+        "Shreve, Lamb and Harmon"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T56",
@@ -1069,7 +1155,14 @@
     "topic": "countries",
     "difficulty": "medium",
     "answer_type": "comparison",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "3,287,263 square kilometers",
+        "377,930 to 377,975 square kilometers"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T57",
@@ -1087,7 +1180,14 @@
     "topic": "laptops",
     "difficulty": "medium",
     "answer_type": "comparison",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "17 hours",
+        "52.6 watt-hour"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T58",
@@ -1105,7 +1205,14 @@
     "topic": "vehicles",
     "difficulty": "medium",
     "answer_type": "comparison",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "75 kWh",
+        "60 kWh"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T59",
@@ -1123,7 +1230,14 @@
     "topic": "countries",
     "difficulty": "medium",
     "answer_type": "yes_no",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "3,287,263 square kilometers",
+        "377,930 to 377,975 square kilometers"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T60",
@@ -1141,7 +1255,14 @@
     "topic": "laptops",
     "difficulty": "medium",
     "answer_type": "yes_no",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "17 hours",
+        "52.6 watt-hour"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T61",
@@ -1159,7 +1280,14 @@
     "topic": "laptops",
     "difficulty": "medium",
     "answer_type": "yes_no",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "17 hours",
+        "4,000 mAh"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T62",
@@ -1177,7 +1305,14 @@
     "topic": "laptops",
     "difficulty": "medium",
     "answer_type": "yes_no",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "17 hours",
+        "3349 mAh"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T63",
@@ -1195,7 +1330,14 @@
     "topic": "laptops",
     "difficulty": "medium",
     "answer_type": "yes_no",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "52.6 watt-hour",
+        "4,000 mAh"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T64",
@@ -1213,7 +1355,14 @@
     "topic": "laptops",
     "difficulty": "medium",
     "answer_type": "yes_no",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "52.6 watt-hour",
+        "3349 mAh"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T65",
@@ -1231,7 +1380,14 @@
     "topic": "phones",
     "difficulty": "medium",
     "answer_type": "yes_no",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "4,000 mAh",
+        "3349 mAh"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T66",
@@ -1249,7 +1405,14 @@
     "topic": "vehicles",
     "difficulty": "medium",
     "answer_type": "yes_no",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "75 kWh",
+        "60 kWh"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T67",
@@ -1267,7 +1430,14 @@
     "topic": "buildings",
     "difficulty": "medium",
     "answer_type": "yes_no",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "2009",
+        "1931"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T68",
@@ -1285,7 +1455,14 @@
     "topic": "geography",
     "difficulty": "medium",
     "answer_type": "yes_no",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "8,611 meters (28,251 feet) above sea level",
+        "8,849 meters"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T69",
@@ -1303,7 +1480,14 @@
     "topic": "buildings",
     "difficulty": "medium",
     "answer_type": "yes_no",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "163",
+        "102"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T70",
@@ -1321,7 +1505,14 @@
     "topic": "electronics",
     "difficulty": "medium",
     "answer_type": "yes_no",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "$249",
+        "$1,299"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T71",
@@ -1339,7 +1530,14 @@
     "topic": "electronics",
     "difficulty": "medium",
     "answer_type": "yes_no",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "$249",
+        "$150"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T72",
@@ -1357,7 +1555,14 @@
     "topic": "electronics",
     "difficulty": "medium",
     "answer_type": "multi_part",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "6 hours",
+        "AAC"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T73",
@@ -1375,7 +1580,14 @@
     "topic": "buildings",
     "difficulty": "medium",
     "answer_type": "multi_part",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "Adrian Smith",
+        "2009"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T74",
@@ -1393,7 +1605,14 @@
     "topic": "laptops",
     "difficulty": "medium",
     "answer_type": "multi_part",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "17 hours",
+        "Qualcomm Snapdragon X Elite"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T75",
@@ -1411,7 +1630,14 @@
     "topic": "buildings",
     "difficulty": "medium",
     "answer_type": "multi_part",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "Shreve, Lamb and Harmon",
+        "1931"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T76",
@@ -1429,7 +1655,14 @@
     "topic": "phones",
     "difficulty": "medium",
     "answer_type": "multi_part",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "50-megapixel",
+        "120 Hz"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T77",
@@ -1447,7 +1680,14 @@
     "topic": "running_shoes",
     "difficulty": "medium",
     "answer_type": "multi_part",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "long runs and easy mileage",
+        "5 out of 5"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T78",
@@ -1465,7 +1705,14 @@
     "topic": "travel",
     "difficulty": "medium",
     "answer_type": "multi_part",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "a rooftop pool, a 24-hour gym, an on-site restaurant serving Indian cuisine, and a rooftop terrace",
+        "4.3 out of 5"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T79",
@@ -1483,7 +1730,14 @@
     "topic": "countries",
     "difficulty": "medium",
     "answer_type": "multi_part",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "3,287,263 square kilometers",
+        "New Delhi"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T80",
@@ -1501,7 +1755,14 @@
     "topic": "travel",
     "difficulty": "medium",
     "answer_type": "multi_part",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "October to March",
+        "budget"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T81",
@@ -1519,7 +1780,14 @@
     "topic": "countries",
     "difficulty": "medium",
     "answer_type": "multi_part",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "377,930 to 377,975 square kilometers",
+        "Tokyo"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T82",
@@ -1537,7 +1805,14 @@
     "topic": "geography",
     "difficulty": "medium",
     "answer_type": "multi_part",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "8,611 meters (28,251 feet) above sea level",
+        "Karakoram Range"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T83",
@@ -1555,7 +1830,14 @@
     "topic": "travel",
     "difficulty": "medium",
     "answer_type": "multi_part",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "spring",
+        "$40-60 per day"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T84",
@@ -1569,7 +1851,13 @@
     "topic": "travel",
     "difficulty": "medium",
     "answer_type": "list",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "a rooftop pool, a 24-hour gym, an on-site restaurant serving Indian cuisine, and a rooftop terrace"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T85",
@@ -1583,7 +1871,13 @@
     "topic": "electronics",
     "difficulty": "medium",
     "answer_type": "list",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "AAC"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T86",
@@ -1597,7 +1891,13 @@
     "topic": "electronics",
     "difficulty": "medium",
     "answer_type": "list",
-    "decomposer_only": true
+    "decomposer_only": true,
+    "ground_truth": {
+      "required_facts": [
+        "LDAC high-resolution"
+      ],
+      "match_threshold": 1.0
+    }
   },
   {
     "id": "T87",

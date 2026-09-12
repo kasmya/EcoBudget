@@ -102,30 +102,63 @@ class QAScorer:
             self._model.eval()
         return self._tokenizer, self._model
 
-    def __call__(self, requirement: Requirement, passage: Passage) -> float:
-        text = passage.text
-        if not text or len(text.strip()) < 10:
-            return 0.0
+    def _question(self, requirement: Requirement) -> str:
+        attribute = requirement.attribute.replace("_", " ").strip()
+        return f"What is the {attribute} of {requirement.entity}?"
+
+    def _answer(self, question: str, context: str) -> tuple[str, float]:
+        """Best answer span + its confidence (net of the impossible score)."""
         import torch
 
-        attribute = requirement.attribute.replace("_", " ").strip()
-        question = f"What is the {attribute} of {requirement.entity}?"
         tokenizer, model = self._load()
         inputs = tokenizer(
-            question, text, return_tensors="pt", truncation=True, max_length=self.max_length
+            question, context, return_tensors="pt", truncation=True, max_length=self.max_length
         )
         with torch.no_grad():
             out = model(**inputs)
         start = torch.softmax(out.start_logits[0], dim=-1)
         end = torch.softmax(out.end_logits[0], dim=-1)
-        # CLS (index 0) is the "no answer" / impossible span.
-        null_prob = float(start[0] * end[0])
+        null_prob = float(start[0] * end[0])  # CLS = "no answer"
         s = int(torch.argmax(start[1:]).item()) + 1
-        e = int(torch.argmax(end[s:]).item()) + s  # end must not precede start
-        best_prob = float(start[s] * end[e])
-        # Confidence that the attribute IS answerable here, net of the
-        # impossible-answer score: stays ~0 when the passage lacks the attribute.
-        return max(0.0, best_prob - null_prob)
+        e = int(torch.argmax(end[s:]).item()) + s
+        conf = max(0.0, float(start[s] * end[e]) - null_prob)
+        span = tokenizer.decode(inputs["input_ids"][0][s : e + 1], skip_special_tokens=True).strip()
+        return span, conf
+
+    def __call__(self, requirement: Requirement, passage: Passage) -> float:
+        text = passage.text
+        if not text or len(text.strip()) < 10:
+            return 0.0
+        span, conf = self._answer(self._question(requirement), text)
+        return conf if span else 0.0
+
+    def extract_answer(self, requirement: Requirement, passage: Passage) -> str:
+        """The answer span the model extracts for this requirement from the
+        passage -- used to derive grounded `required_facts` for the judge."""
+        text = passage.text
+        if not text or len(text.strip()) < 10:
+            return ""
+        span, _ = self._answer(self._question(requirement), text)
+        return span
+
+
+class CachedScorer:
+    """Memoizes a scorer by (requirement key, passage_id).
+
+    Retrieval is deterministic, so the same (requirement, passage) pair recurs
+    across bandit epochs and conditions; caching the (expensive) QA call keeps
+    training and the multi-condition comparison from re-running the model on
+    pairs already seen."""
+
+    def __init__(self, score_fn: ScoreFn):
+        self._score_fn = score_fn
+        self._cache: dict[tuple[tuple[str, str], str], float] = {}
+
+    def __call__(self, requirement: Requirement, passage: Passage) -> float:
+        key = (requirement.key(), passage.passage_id)
+        if key not in self._cache:
+            self._cache[key] = self._score_fn(requirement, passage)
+        return self._cache[key]
 
 
 class EvidenceCoverageTracker:
