@@ -14,9 +14,16 @@ Usage:
         --output_dir models/decomposer-small --epochs 5
 
     # LoRA fine-tune of the base model (recommended -- base is larger,
-    # LoRA keeps the trainable parameter count and checkpoint size down):
+    # LoRA keeps the trainable parameter count and checkpoint size down).
+    # These hyperparameters were tuned on the 132-example train split: the
+    # 5-epoch/r=16/q,v default badly underfit (train_loss ~1.1, val
+    # exact-match 0.22); 20 epochs, r=32, and adapting q,v,k,o (not just q,v)
+    # lifted val exact-match to ~0.44 and attribute_f1 from 0.42 to 0.70.
+    # Higher rank (r=64) overfit this small a dataset, so r=32 is the sweet
+    # spot. Retune if the dataset size changes materially.
     python scripts/train_decomposer.py --model google/flan-t5-base \
-        --output_dir models/decomposer-base-lora --epochs 5 --lora
+        --output_dir models/decomposer-base-lora --epochs 20 --lora \
+        --lora_r 32 --lora_alpha 64 --lr 5e-4 --lora_target_modules q,v,k,o
 
 Per plan.md Phase 2, benchmark both flan-t5-small and flan-t5-base:
 train each with this script, then compare with scripts/eval_decomposer.py.
@@ -45,6 +52,13 @@ def main():
     parser.add_argument("--lora", action="store_true", help="Fine-tune with a LoRA adapter instead of full fine-tuning")
     parser.add_argument("--lora_r", type=int, default=16)
     parser.add_argument("--lora_alpha", type=int, default=32)
+    parser.add_argument(
+        "--lora_target_modules",
+        default="q,v",
+        help="Comma-separated flan-t5 sub-layers to adapt (e.g. 'q,v' or 'q,v,k,o'). "
+        "Adding k/o gives LoRA more of the attention block, which helps the model "
+        "copy multi-token entity spans faithfully.",
+    )
     parser.add_argument("--max_input_len", type=int, default=128)
     parser.add_argument("--max_target_len", type=int, default=128)
     args = parser.parse_args()
@@ -76,7 +90,7 @@ def main():
             r=args.lora_r,
             lora_alpha=args.lora_alpha,
             lora_dropout=0.05,
-            target_modules=["q", "v"],  # flan-t5 attention projections
+            target_modules=[m.strip() for m in args.lora_target_modules.split(",") if m.strip()],
         )
         model = get_peft_model(model, lora_config)
         model.print_trainable_parameters()
@@ -133,7 +147,10 @@ def main():
         "base_model": args.model,
         "lora": args.lora,
         "lora_r": args.lora_r if args.lora else None,
+        "lora_alpha": args.lora_alpha if args.lora else None,
+        "lora_target_modules": args.lora_target_modules if args.lora else None,
         "epochs": args.epochs,
+        "learning_rate": args.lr,
         "train_examples": len(train_pairs),
         "val_examples": len(val_pairs),
         "training_seconds": elapsed,
