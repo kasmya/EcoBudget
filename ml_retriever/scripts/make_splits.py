@@ -49,6 +49,10 @@ SEED_SPLIT_ASSIGNMENT = {
     "T46": "train",  # first_ascent_year slug (Kangchenjunga; val keeps Everest/K2/T26)
     "T47": "train",  # camera + display_refresh_rate slugs (Pixel 8; test/val keep iPhone/S24)
     "T48": "train",  # typical_trip_length slug (Bali; test keeps Jaipur/Kyoto/T12)
+    # Phase 1 scale-up (2026-09-12): 42 balanced train seeds (T49-T90) added by
+    # scripts/expand_seed_tasks.py, all train-bound and built only from corpus
+    # pairs not used by any val/test seed -- no leakage. See Phase-1-lever-plan.md.
+    **{f"T{i}": "train" for i in range(49, 91)},
 }
 
 # 'procedure' as an attribute slug is exempt for the same reason as the

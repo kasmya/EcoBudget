@@ -3,6 +3,13 @@ built by build_seed_corpus.py. Answers below are derived directly from the
 same sourced facts as the corpus passages -- ground truth, never used by
 retrieval/stopping logic, only by evaluation.
 
+DEPRECATED as a regeneration tool (2026-09-12). data/tasks_seed.json is now the
+canonical source of truth and contains many seeds added after this script
+(T16+ from earlier expansions, T42-T48 from the train-coverage fix, T49+ from
+the Phase 1 scale-up). Re-running this script would OVERWRITE all of them. Kept
+only as the historical record of the original 15 seeds. Add new seeds via
+scripts/expand_seed_tasks.py (idempotent append), not here.
+
 Each task's `decomposed_requirements` uses (entity, attribute) pairs that
 must exist in the corpus; scripts/validate_corpus_task_coverage.py checks
 this automatically.

@@ -34,33 +34,18 @@ Usage:
 
 import argparse
 import json
-import re
 import statistics
 from pathlib import Path
 
-from ml_retriever.decomposer import HeuristicDecomposer, parse_requirements
+from ml_retriever.decomposer import (
+    HeuristicDecomposer,
+    load_attribute_vocab,
+    normalize_attribute,
+    parse_requirements,
+)
 from ml_retriever.types import Requirement
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
-
-# Tokens dropped before canonicalizing an attribute, so semantically identical
-# slugs that differ only in glue words match -- e.g. "year of first ascent"
-# and "first_ascent_year" both become "ascent_first_year". Kept deliberately
-# tiny: only true glue words, never content words, so distinct attributes can
-# never collapse together. tests/test_eval_metric.py asserts no collision on
-# the real attribute vocabulary.
-_ATTR_STOPWORDS = {"of", "the", "a", "an"}
-
-
-def normalize_attribute(attr: str) -> str:
-    """Canonical form of an attribute slug for lenient matching.
-
-    Lowercases, splits on any non-alphanumeric run, drops glue words, and
-    token-sorts so word order and separator style don't matter.
-    """
-    tokens = [t for t in re.split(r"[^a-z0-9]+", attr.lower()) if t]
-    tokens = [t for t in tokens if t not in _ATTR_STOPWORDS]
-    return "_".join(sorted(tokens))
 
 
 def load_pairs(path: Path) -> list[dict]:
@@ -183,6 +168,12 @@ def main():
     parser.add_argument("--model_path", default=None)
     parser.add_argument("--adapter_path", default=None)
     parser.add_argument("--tag", default=None, help="Label for this run in eval_results.jsonl")
+    parser.add_argument(
+        "--no_attr_snap",
+        action="store_true",
+        help="Disable snapping model-generated attributes to the known corpus "
+        "vocabulary (for A/B comparison; snapping is on by default for model runs).",
+    )
     args = parser.parse_args()
 
     if not args.heuristic and not args.model_path:
@@ -199,7 +190,10 @@ def main():
     else:
         from ml_retriever.decomposer import TaskDecomposer
 
-        decomposer = TaskDecomposer(args.model_path, adapter_path=args.adapter_path)
+        vocab = None if args.no_attr_snap else load_attribute_vocab(DATA_DIR / "corpus.jsonl")
+        decomposer = TaskDecomposer(
+            args.model_path, adapter_path=args.adapter_path, attribute_vocab=vocab
+        )
 
         # evaluate() understands either a bare prediction or a
         # (prediction, latency) tuple; use the latter so latency stats

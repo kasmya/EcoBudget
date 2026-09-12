@@ -27,10 +27,9 @@ def splits():
 class TestCorpus:
     def test_expected_seed_size(self, corpus_rows):
         # Seed corpus; Phase 1's eventual target is 200-500 (see plan.md).
-        # 86 original + 6 added by the 2026 train-coverage fix (Titanic
-        # summary, Bose noise_cancellation, Kangchenjunga first_ascent_year,
-        # Pixel 8 camera + display_refresh_rate, Bali typical_trip_length).
-        assert len(corpus_rows) == 92
+        # 86 original + 6 (train-coverage fix) + 4 (Phase 1 scale-up film
+        # summary passages: Inception, Lion King, Finding Nemo, Jurassic Park).
+        assert len(corpus_rows) == 96
 
     def test_every_row_is_a_valid_passage(self, corpus_rows):
         for row in corpus_rows:
@@ -59,13 +58,17 @@ class TestCorpus:
 
 class TestTasks:
     def test_task_count_in_target_range(self, tasks):
-        # Plan.md's reviewed target is 150-200 tasks.
-        assert 150 <= len(tasks) <= 200
+        # Original reviewed target was 150-200. Raised for the Phase 1 scale-up
+        # (Phase-1-lever-plan.md): ~90 balanced seeds x synthetic variants to
+        # push the decomposer past its 44% plateau toward the >90% Phase 2
+        # target. Upper bound guards against runaway generation.
+        assert 150 <= len(tasks) <= 450
 
     def test_seed_task_count(self, tasks):
-        # 41 original + 7 added by the 2026 train-coverage fix (T42-T48).
+        # 41 original + 7 (train-coverage fix, T42-T48) + 42 (Phase 1
+        # scale-up, T49-T90).
         seeds = [t for t in tasks if not t["synthetic"]]
-        assert len(seeds) == 48
+        assert len(seeds) == 90
 
     def test_task_ids_are_unique(self, tasks):
         ids = [t["id"] for t in tasks]

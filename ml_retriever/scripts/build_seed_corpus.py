@@ -1,5 +1,13 @@
 """Builds data/corpus.jsonl: a real (not placeholder) seed passage corpus.
 
+DEPRECATED as a regeneration tool (2026-09-12). data/corpus.jsonl is now the
+canonical source of truth: it carries passages and embeddings added after this
+script was written (the decomposer train-coverage fix + Phase 1 scale-up).
+Re-running this script would OVERWRITE those and drop the embeddings. Kept only
+as the historical record of the original seed. Add new passages via
+scripts/expand_seed_tasks.py (idempotent append), not here.
+
+
 Facts below are paraphrased in our own words from web-sourced material
 (product spec pages / review sites for the phones and laptops, travel-guide
 sites for the cities), gathered 2026-09-09. Each passage carries its

@@ -43,6 +43,73 @@ from ml_retriever.types import Requirement
 REQ_SEP = " ## "
 FIELD_SEP = "|"
 
+# Glue words dropped before canonicalizing an attribute, so slugs that differ
+# only in connecting words match (e.g. "year of first ascent" vs
+# "first_ascent_year"). Kept tiny -- only true glue words -- so distinct
+# attributes never collapse together (tests/test_eval_metric.py guards this).
+_ATTR_STOPWORDS = {"of", "the", "a", "an"}
+
+
+def normalize_attribute(attr: str) -> str:
+    """Canonical form of an attribute slug: lowercase, split on non-alphanumerics,
+    drop glue words, token-sort. Word order and separator style stop mattering."""
+    tokens = [t for t in re.split(r"[^a-z0-9]+", attr.lower()) if t]
+    tokens = [t for t in tokens if t not in _ATTR_STOPWORDS]
+    return "_".join(sorted(tokens))
+
+
+def _levenshtein(a: str, b: str) -> int:
+    if a == b:
+        return 0
+    if not a:
+        return len(b)
+    if not b:
+        return len(a)
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        cur = [i]
+        for j, cb in enumerate(b, 1):
+            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
+        prev = cur
+    return prev[-1]
+
+
+def snap_attribute(attr: str, norm_vocab: dict[str, str], max_rel_dist: float = 0.4) -> str:
+    """Snap a free-form attribute to the nearest known slug.
+
+    The decomposer emits open-vocabulary attributes and often lands one edit
+    away from a real slug ("noises_cancelation", "first_ascent" for
+    "first_ascent_year"). `norm_vocab` maps each known slug's normalized form to
+    its canonical spelling. An exact normalized hit returns the canonical slug;
+    otherwise the nearest slug by edit distance wins, but only if it is within
+    `max_rel_dist` of the longer string -- far-off predictions are left as-is
+    rather than force-snapped to a wrong slug."""
+    if not norm_vocab:
+        return attr
+    na = normalize_attribute(attr)
+    if na in norm_vocab:
+        return norm_vocab[na]
+    best, best_d = None, None
+    for nv, canonical in norm_vocab.items():
+        d = _levenshtein(na, nv)
+        if best_d is None or d < best_d:
+            best, best_d, best_nv = canonical, d, nv
+    if best is not None and best_d <= max_rel_dist * max(len(na), len(best_nv), 1):
+        return best
+    return attr
+
+
+def load_attribute_vocab(corpus_path) -> list[str]:
+    """Distinct attribute slugs present in a corpus.jsonl, for snap_attribute."""
+    import json
+
+    attrs = set()
+    with open(corpus_path) as f:
+        for line in f:
+            row = json.loads(line)
+            attrs.add(row["metadata"]["attribute"])
+    return sorted(attrs)
+
 
 def serialize_requirements(reqs: list[Requirement]) -> str:
     if not reqs:
@@ -223,6 +290,8 @@ class TaskDecomposer:
         adapter_path: Optional[str] = None,
         max_new_tokens: int = 64,
         device: Optional[str] = None,
+        attribute_vocab: Optional[list[str]] = None,
+        snap_max_rel_dist: float = 0.4,
     ):
         try:
             import torch
@@ -253,6 +322,15 @@ class TaskDecomposer:
         self.model.to(self.device)
         self.model.eval()
         self.max_new_tokens = max_new_tokens
+        # Closed-vocabulary attribute constraint: snap each generated attribute
+        # to the nearest known slug. Entity extraction is near-solved; most
+        # remaining errors are attributes a single edit off a real slug.
+        self._norm_vocab = (
+            {normalize_attribute(v): v for v in attribute_vocab}
+            if attribute_vocab
+            else {}
+        )
+        self.snap_max_rel_dist = snap_max_rel_dist
 
     def decompose(self, question: str) -> list[Requirement]:
         reqs, _ = self.decompose_with_benchmark(question)
@@ -291,6 +369,20 @@ class TaskDecomposer:
 
         text = self.tokenizer.decode(output_ids[0], skip_special_tokens=True)
         reqs = parse_requirements(text)
+        if self._norm_vocab:
+            snapped: list[Requirement] = []
+            seen: set[tuple[str, str]] = set()
+            for r in reqs:
+                sr = Requirement(
+                    entity=r.entity,
+                    attribute=snap_attribute(r.attribute, self._norm_vocab, self.snap_max_rel_dist),
+                    value=r.value,
+                )
+                if sr.key() in seen:
+                    continue
+                seen.add(sr.key())
+                snapped.append(sr)
+            reqs = snapped
         return reqs, DecomposerBenchmark(
             latency_seconds=latency, peak_cuda_memory_bytes=peak_mem
         )

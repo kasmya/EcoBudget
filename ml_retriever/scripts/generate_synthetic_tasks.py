@@ -161,9 +161,9 @@ def _requirement_shape(reqs: list[dict]):
 def generate_variants(task: dict) -> list[str]:
     """Generates up to N_VARIANTS_PER_FAMILY paraphrases per seed task.
 
-    With 41 seeds, three variants per seed keeps the generated dataset at
-    164 tasks: inside the reviewed 150-200 target without letting the new
-    answer-type coverage inflate the dataset.
+    Three variants per seed; with ~90 seeds after the Phase 1 scale-up this
+    yields ~360 tasks (see Phase-1-lever-plan.md and the raised cap in
+    tests/test_data.py).
     """
     N_VARIANTS_PER_FAMILY = 3
 

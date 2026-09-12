@@ -3,8 +3,10 @@ from pathlib import Path
 
 from ml_retriever.decomposer import (
     HeuristicDecomposer,
+    normalize_attribute,
     parse_requirements,
     serialize_requirements,
+    snap_attribute,
 )
 from ml_retriever.types import Requirement
 
@@ -144,3 +146,30 @@ class TestHeuristicBaselineOnValSplit:
         # baseline is doing real work (not 0%) and leaves clear room for
         # the ML model to beat it (not near 100%).
         assert 0.3 < accuracy < 0.95
+
+
+class TestAttributeSnapping:
+    VOCAB = {
+        normalize_attribute(v): v
+        for v in ["noise_cancellation", "first_ascent_year", "price", "battery_life", "display_refresh_rate"]
+    }
+
+    def test_exact_normalized_match_returns_canonical(self):
+        # word order / separators differ but it's the same attribute
+        assert snap_attribute("noise cancellation", self.VOCAB) == "noise_cancellation"
+
+    def test_typo_snaps_to_nearest_slug(self):
+        assert snap_attribute("noises_cancelation", self.VOCAB) == "noise_cancellation"
+
+    def test_truncation_snaps_to_full_slug(self):
+        assert snap_attribute("first_ascent", self.VOCAB) == "first_ascent_year"
+
+    def test_far_off_attribute_is_left_unchanged(self):
+        # nothing in vocab is close -> don't force-snap to a wrong slug
+        assert snap_attribute("elevation", self.VOCAB) == "elevation"
+
+    def test_empty_vocab_is_identity(self):
+        assert snap_attribute("whatever", {}) == "whatever"
+
+    def test_distinct_slugs_do_not_collapse(self):
+        assert snap_attribute("battery_life", self.VOCAB) == "battery_life"

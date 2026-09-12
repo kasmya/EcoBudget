@@ -950,5 +950,709 @@
     "topic": "travel",
     "difficulty": "easy",
     "answer_type": "single_fact"
+  },
+  {
+    "id": "T49",
+    "question": "What is the battery life of AirPods Pro 2?",
+    "decomposed_requirements": [
+      {
+        "entity": "AirPods Pro 2",
+        "attribute": "battery_life"
+      }
+    ],
+    "topic": "electronics",
+    "difficulty": "easy",
+    "answer_type": "single_fact",
+    "decomposer_only": true
+  },
+  {
+    "id": "T50",
+    "question": "What is the audio codec support of AirPods Pro 2?",
+    "decomposed_requirements": [
+      {
+        "entity": "AirPods Pro 2",
+        "attribute": "codec_support"
+      }
+    ],
+    "topic": "electronics",
+    "difficulty": "easy",
+    "answer_type": "single_fact",
+    "decomposer_only": true
+  },
+  {
+    "id": "T51",
+    "question": "What is the price of AirPods Pro 2?",
+    "decomposed_requirements": [
+      {
+        "entity": "AirPods Pro 2",
+        "attribute": "price"
+      }
+    ],
+    "topic": "electronics",
+    "difficulty": "easy",
+    "answer_type": "single_fact",
+    "decomposer_only": true
+  },
+  {
+    "id": "T52",
+    "question": "What is the typical trip length of Bali?",
+    "decomposed_requirements": [
+      {
+        "entity": "Bali",
+        "attribute": "typical_trip_length"
+      }
+    ],
+    "topic": "travel",
+    "difficulty": "easy",
+    "answer_type": "single_fact",
+    "decomposer_only": true
+  },
+  {
+    "id": "T53",
+    "question": "What is the noise cancellation of Bose QuietComfort Ultra?",
+    "decomposed_requirements": [
+      {
+        "entity": "Bose QuietComfort Ultra",
+        "attribute": "noise_cancellation"
+      }
+    ],
+    "topic": "electronics",
+    "difficulty": "easy",
+    "answer_type": "single_fact",
+    "decomposer_only": true
+  },
+  {
+    "id": "T54",
+    "question": "What is the architect of Burj Khalifa?",
+    "decomposed_requirements": [
+      {
+        "entity": "Burj Khalifa",
+        "attribute": "architect"
+      }
+    ],
+    "topic": "buildings",
+    "difficulty": "easy",
+    "answer_type": "single_fact",
+    "decomposer_only": true
+  },
+  {
+    "id": "T55",
+    "question": "Compare Burj Khalifa and Empire State Building on architect.",
+    "decomposed_requirements": [
+      {
+        "entity": "Burj Khalifa",
+        "attribute": "architect"
+      },
+      {
+        "entity": "Empire State Building",
+        "attribute": "architect"
+      }
+    ],
+    "topic": "buildings",
+    "difficulty": "medium",
+    "answer_type": "comparison",
+    "decomposer_only": true
+  },
+  {
+    "id": "T56",
+    "question": "Compare India and Japan on land area.",
+    "decomposed_requirements": [
+      {
+        "entity": "India",
+        "attribute": "area"
+      },
+      {
+        "entity": "Japan",
+        "attribute": "area"
+      }
+    ],
+    "topic": "countries",
+    "difficulty": "medium",
+    "answer_type": "comparison",
+    "decomposer_only": true
+  },
+  {
+    "id": "T57",
+    "question": "Compare Dell XPS 13 2024 and MacBook Air 13 M3 on battery capacity.",
+    "decomposed_requirements": [
+      {
+        "entity": "Dell XPS 13 2024",
+        "attribute": "battery"
+      },
+      {
+        "entity": "MacBook Air 13 M3",
+        "attribute": "battery"
+      }
+    ],
+    "topic": "laptops",
+    "difficulty": "medium",
+    "answer_type": "comparison",
+    "decomposer_only": true
+  },
+  {
+    "id": "T58",
+    "question": "Compare Nissan Leaf and Tesla Model 3 on battery capacity.",
+    "decomposed_requirements": [
+      {
+        "entity": "Nissan Leaf",
+        "attribute": "battery_capacity"
+      },
+      {
+        "entity": "Tesla Model 3",
+        "attribute": "battery_capacity"
+      }
+    ],
+    "topic": "vehicles",
+    "difficulty": "medium",
+    "answer_type": "comparison",
+    "decomposer_only": true
+  },
+  {
+    "id": "T59",
+    "question": "Is India's land area higher than Japan's?",
+    "decomposed_requirements": [
+      {
+        "entity": "India",
+        "attribute": "area"
+      },
+      {
+        "entity": "Japan",
+        "attribute": "area"
+      }
+    ],
+    "topic": "countries",
+    "difficulty": "medium",
+    "answer_type": "yes_no",
+    "decomposer_only": true
+  },
+  {
+    "id": "T60",
+    "question": "Is Dell XPS 13 2024's battery capacity higher than MacBook Air 13 M3's?",
+    "decomposed_requirements": [
+      {
+        "entity": "Dell XPS 13 2024",
+        "attribute": "battery"
+      },
+      {
+        "entity": "MacBook Air 13 M3",
+        "attribute": "battery"
+      }
+    ],
+    "topic": "laptops",
+    "difficulty": "medium",
+    "answer_type": "yes_no",
+    "decomposer_only": true
+  },
+  {
+    "id": "T61",
+    "question": "Is Dell XPS 13 2024's battery capacity higher than Samsung Galaxy S24's?",
+    "decomposed_requirements": [
+      {
+        "entity": "Dell XPS 13 2024",
+        "attribute": "battery"
+      },
+      {
+        "entity": "Samsung Galaxy S24",
+        "attribute": "battery"
+      }
+    ],
+    "topic": "laptops",
+    "difficulty": "medium",
+    "answer_type": "yes_no",
+    "decomposer_only": true
+  },
+  {
+    "id": "T62",
+    "question": "Is Dell XPS 13 2024's battery capacity higher than iPhone 15's?",
+    "decomposed_requirements": [
+      {
+        "entity": "Dell XPS 13 2024",
+        "attribute": "battery"
+      },
+      {
+        "entity": "iPhone 15",
+        "attribute": "battery"
+      }
+    ],
+    "topic": "laptops",
+    "difficulty": "medium",
+    "answer_type": "yes_no",
+    "decomposer_only": true
+  },
+  {
+    "id": "T63",
+    "question": "Is MacBook Air 13 M3's battery capacity higher than Samsung Galaxy S24's?",
+    "decomposed_requirements": [
+      {
+        "entity": "MacBook Air 13 M3",
+        "attribute": "battery"
+      },
+      {
+        "entity": "Samsung Galaxy S24",
+        "attribute": "battery"
+      }
+    ],
+    "topic": "laptops",
+    "difficulty": "medium",
+    "answer_type": "yes_no",
+    "decomposer_only": true
+  },
+  {
+    "id": "T64",
+    "question": "Is MacBook Air 13 M3's battery capacity higher than iPhone 15's?",
+    "decomposed_requirements": [
+      {
+        "entity": "MacBook Air 13 M3",
+        "attribute": "battery"
+      },
+      {
+        "entity": "iPhone 15",
+        "attribute": "battery"
+      }
+    ],
+    "topic": "laptops",
+    "difficulty": "medium",
+    "answer_type": "yes_no",
+    "decomposer_only": true
+  },
+  {
+    "id": "T65",
+    "question": "Is Samsung Galaxy S24's battery capacity higher than iPhone 15's?",
+    "decomposed_requirements": [
+      {
+        "entity": "Samsung Galaxy S24",
+        "attribute": "battery"
+      },
+      {
+        "entity": "iPhone 15",
+        "attribute": "battery"
+      }
+    ],
+    "topic": "phones",
+    "difficulty": "medium",
+    "answer_type": "yes_no",
+    "decomposer_only": true
+  },
+  {
+    "id": "T66",
+    "question": "Is Nissan Leaf's battery capacity higher than Tesla Model 3's?",
+    "decomposed_requirements": [
+      {
+        "entity": "Nissan Leaf",
+        "attribute": "battery_capacity"
+      },
+      {
+        "entity": "Tesla Model 3",
+        "attribute": "battery_capacity"
+      }
+    ],
+    "topic": "vehicles",
+    "difficulty": "medium",
+    "answer_type": "yes_no",
+    "decomposer_only": true
+  },
+  {
+    "id": "T67",
+    "question": "Is Burj Khalifa's completion year higher than Empire State Building's?",
+    "decomposed_requirements": [
+      {
+        "entity": "Burj Khalifa",
+        "attribute": "completion_year"
+      },
+      {
+        "entity": "Empire State Building",
+        "attribute": "completion_year"
+      }
+    ],
+    "topic": "buildings",
+    "difficulty": "medium",
+    "answer_type": "yes_no",
+    "decomposer_only": true
+  },
+  {
+    "id": "T68",
+    "question": "Is K2's elevation higher than Mount Everest's?",
+    "decomposed_requirements": [
+      {
+        "entity": "K2",
+        "attribute": "elevation"
+      },
+      {
+        "entity": "Mount Everest",
+        "attribute": "elevation"
+      }
+    ],
+    "topic": "geography",
+    "difficulty": "medium",
+    "answer_type": "yes_no",
+    "decomposer_only": true
+  },
+  {
+    "id": "T69",
+    "question": "Is Burj Khalifa's floor count higher than Empire State Building's?",
+    "decomposed_requirements": [
+      {
+        "entity": "Burj Khalifa",
+        "attribute": "floors"
+      },
+      {
+        "entity": "Empire State Building",
+        "attribute": "floors"
+      }
+    ],
+    "topic": "buildings",
+    "difficulty": "medium",
+    "answer_type": "yes_no",
+    "decomposer_only": true
+  },
+  {
+    "id": "T70",
+    "question": "Is AirPods Pro 2's price higher than Dell XPS 13 2024's?",
+    "decomposed_requirements": [
+      {
+        "entity": "AirPods Pro 2",
+        "attribute": "price"
+      },
+      {
+        "entity": "Dell XPS 13 2024",
+        "attribute": "price"
+      }
+    ],
+    "topic": "electronics",
+    "difficulty": "medium",
+    "answer_type": "yes_no",
+    "decomposer_only": true
+  },
+  {
+    "id": "T71",
+    "question": "Is AirPods Pro 2's price higher than Hoka Clifton 9's?",
+    "decomposed_requirements": [
+      {
+        "entity": "AirPods Pro 2",
+        "attribute": "price"
+      },
+      {
+        "entity": "Hoka Clifton 9",
+        "attribute": "price"
+      }
+    ],
+    "topic": "electronics",
+    "difficulty": "medium",
+    "answer_type": "yes_no",
+    "decomposer_only": true
+  },
+  {
+    "id": "T72",
+    "question": "What are AirPods Pro 2's battery life and audio codec support?",
+    "decomposed_requirements": [
+      {
+        "entity": "AirPods Pro 2",
+        "attribute": "battery_life"
+      },
+      {
+        "entity": "AirPods Pro 2",
+        "attribute": "codec_support"
+      }
+    ],
+    "topic": "electronics",
+    "difficulty": "medium",
+    "answer_type": "multi_part",
+    "decomposer_only": true
+  },
+  {
+    "id": "T73",
+    "question": "What are Burj Khalifa's architect and completion year?",
+    "decomposed_requirements": [
+      {
+        "entity": "Burj Khalifa",
+        "attribute": "architect"
+      },
+      {
+        "entity": "Burj Khalifa",
+        "attribute": "completion_year"
+      }
+    ],
+    "topic": "buildings",
+    "difficulty": "medium",
+    "answer_type": "multi_part",
+    "decomposer_only": true
+  },
+  {
+    "id": "T74",
+    "question": "What are Dell XPS 13 2024's battery capacity and chip?",
+    "decomposed_requirements": [
+      {
+        "entity": "Dell XPS 13 2024",
+        "attribute": "battery"
+      },
+      {
+        "entity": "Dell XPS 13 2024",
+        "attribute": "chip"
+      }
+    ],
+    "topic": "laptops",
+    "difficulty": "medium",
+    "answer_type": "multi_part",
+    "decomposer_only": true
+  },
+  {
+    "id": "T75",
+    "question": "What are Empire State Building's architect and completion year?",
+    "decomposed_requirements": [
+      {
+        "entity": "Empire State Building",
+        "attribute": "architect"
+      },
+      {
+        "entity": "Empire State Building",
+        "attribute": "completion_year"
+      }
+    ],
+    "topic": "buildings",
+    "difficulty": "medium",
+    "answer_type": "multi_part",
+    "decomposer_only": true
+  },
+  {
+    "id": "T76",
+    "question": "What are Google Pixel 8's main camera resolution and display refresh rate?",
+    "decomposed_requirements": [
+      {
+        "entity": "Google Pixel 8",
+        "attribute": "camera"
+      },
+      {
+        "entity": "Google Pixel 8",
+        "attribute": "display_refresh_rate"
+      }
+    ],
+    "topic": "phones",
+    "difficulty": "medium",
+    "answer_type": "multi_part",
+    "decomposer_only": true
+  },
+  {
+    "id": "T77",
+    "question": "What are Hoka Clifton 9's recommended use and cushioning?",
+    "decomposed_requirements": [
+      {
+        "entity": "Hoka Clifton 9",
+        "attribute": "best_for"
+      },
+      {
+        "entity": "Hoka Clifton 9",
+        "attribute": "cushioning"
+      }
+    ],
+    "topic": "running_shoes",
+    "difficulty": "medium",
+    "answer_type": "multi_part",
+    "decomposer_only": true
+  },
+  {
+    "id": "T78",
+    "question": "What are Ibis Jaipur City Centre's amenities and guest rating?",
+    "decomposed_requirements": [
+      {
+        "entity": "Ibis Jaipur City Centre",
+        "attribute": "amenities"
+      },
+      {
+        "entity": "Ibis Jaipur City Centre",
+        "attribute": "rating"
+      }
+    ],
+    "topic": "travel",
+    "difficulty": "medium",
+    "answer_type": "multi_part",
+    "decomposer_only": true
+  },
+  {
+    "id": "T79",
+    "question": "What are India's land area and capital?",
+    "decomposed_requirements": [
+      {
+        "entity": "India",
+        "attribute": "area"
+      },
+      {
+        "entity": "India",
+        "attribute": "capital"
+      }
+    ],
+    "topic": "countries",
+    "difficulty": "medium",
+    "answer_type": "multi_part",
+    "decomposer_only": true
+  },
+  {
+    "id": "T80",
+    "question": "What are Jaipur's recommended travel season and daily travel budget?",
+    "decomposed_requirements": [
+      {
+        "entity": "Jaipur",
+        "attribute": "best_time_to_visit"
+      },
+      {
+        "entity": "Jaipur",
+        "attribute": "daily_budget"
+      }
+    ],
+    "topic": "travel",
+    "difficulty": "medium",
+    "answer_type": "multi_part",
+    "decomposer_only": true
+  },
+  {
+    "id": "T81",
+    "question": "What are Japan's land area and capital?",
+    "decomposed_requirements": [
+      {
+        "entity": "Japan",
+        "attribute": "area"
+      },
+      {
+        "entity": "Japan",
+        "attribute": "capital"
+      }
+    ],
+    "topic": "countries",
+    "difficulty": "medium",
+    "answer_type": "multi_part",
+    "decomposer_only": true
+  },
+  {
+    "id": "T82",
+    "question": "What are K2's elevation and location?",
+    "decomposed_requirements": [
+      {
+        "entity": "K2",
+        "attribute": "elevation"
+      },
+      {
+        "entity": "K2",
+        "attribute": "location"
+      }
+    ],
+    "topic": "geography",
+    "difficulty": "medium",
+    "answer_type": "multi_part",
+    "decomposer_only": true
+  },
+  {
+    "id": "T83",
+    "question": "What are Kyoto's recommended travel season and daily travel budget?",
+    "decomposed_requirements": [
+      {
+        "entity": "Kyoto",
+        "attribute": "best_time_to_visit"
+      },
+      {
+        "entity": "Kyoto",
+        "attribute": "daily_budget"
+      }
+    ],
+    "topic": "travel",
+    "difficulty": "medium",
+    "answer_type": "multi_part",
+    "decomposer_only": true
+  },
+  {
+    "id": "T84",
+    "question": "List the amenities of Ibis Jaipur City Centre.",
+    "decomposed_requirements": [
+      {
+        "entity": "Ibis Jaipur City Centre",
+        "attribute": "amenities"
+      }
+    ],
+    "topic": "travel",
+    "difficulty": "medium",
+    "answer_type": "list",
+    "decomposer_only": true
+  },
+  {
+    "id": "T85",
+    "question": "List the audio codec support of AirPods Pro 2.",
+    "decomposed_requirements": [
+      {
+        "entity": "AirPods Pro 2",
+        "attribute": "codec_support"
+      }
+    ],
+    "topic": "electronics",
+    "difficulty": "medium",
+    "answer_type": "list",
+    "decomposer_only": true
+  },
+  {
+    "id": "T86",
+    "question": "List the audio codec support of Sony WF-1000XM5.",
+    "decomposed_requirements": [
+      {
+        "entity": "Sony WF-1000XM5",
+        "attribute": "codec_support"
+      }
+    ],
+    "topic": "electronics",
+    "difficulty": "medium",
+    "answer_type": "list",
+    "decomposer_only": true
+  },
+  {
+    "id": "T87",
+    "question": "Give me a brief summary of Inception.",
+    "decomposed_requirements": [
+      {
+        "entity": "Inception",
+        "attribute": "summary"
+      }
+    ],
+    "topic": "film",
+    "difficulty": "medium",
+    "answer_type": "narrative",
+    "decomposer_only": true
+  },
+  {
+    "id": "T88",
+    "question": "Give me a brief summary of The Lion King.",
+    "decomposed_requirements": [
+      {
+        "entity": "The Lion King",
+        "attribute": "summary"
+      }
+    ],
+    "topic": "film",
+    "difficulty": "medium",
+    "answer_type": "narrative",
+    "decomposer_only": true
+  },
+  {
+    "id": "T89",
+    "question": "Give me a brief summary of Finding Nemo.",
+    "decomposed_requirements": [
+      {
+        "entity": "Finding Nemo",
+        "attribute": "summary"
+      }
+    ],
+    "topic": "film",
+    "difficulty": "medium",
+    "answer_type": "narrative",
+    "decomposer_only": true
+  },
+  {
+    "id": "T90",
+    "question": "Give me a brief summary of Jurassic Park.",
+    "decomposed_requirements": [
+      {
+        "entity": "Jurassic Park",
+        "attribute": "summary"
+      }
+    ],
+    "topic": "film",
+    "difficulty": "medium",
+    "answer_type": "narrative",
+    "decomposer_only": true
   }
 ]
