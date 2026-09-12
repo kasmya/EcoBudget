@@ -38,7 +38,62 @@ SEED_SPLIT_ASSIGNMENT = {
     "T12": "test", "T15": "test", "T23": "test", "T29": "test", "T35": "test",
     # General question-type expansion
     "T37": "train", "T38": "val", "T39": "train", "T40": "test", "T41": "val",
+    # Coverage fix (2026): train seeds added so every answer type (except
+    # procedure, see below) and every attribute slug that was previously
+    # val-only now also appears in train. None of these reuse a val/test
+    # (entity, attribute) pair, so they add train coverage without leakage.
+    "T42": "train",  # top_attraction (Jaipur; val keeps Kyoto/T10)
+    "T43": "train",  # list answer type (Ibis amenities; val keeps Oberoi/T38)
+    "T44": "train",  # narrative + summary slug (Titanic; val keeps Mamma Mia/T41)
+    "T45": "train",  # noise_cancellation slug (Bose; val keeps AirPods/Sony/T20)
+    "T46": "train",  # first_ascent_year slug (Kangchenjunga; val keeps Everest/K2/T26)
+    "T47": "train",  # camera + display_refresh_rate slugs (Pixel 8; test/val keep iPhone/S24)
+    "T48": "train",  # typical_trip_length slug (Bali; test keeps Jaipur/Kyoto/T12)
 }
+
+# 'procedure' as an attribute slug is exempt for the same reason as the
+# answer type: its only seed (T40) is reserved for the frozen test split.
+_ATTRIBUTE_COVERAGE_EXEMPT = {"procedure"}
+
+# 'procedure' is intentionally exempt from the train-coverage invariant below:
+# only one procedure seed exists (T40) and it is reserved for the frozen test
+# split, and the generator's procedure templates are tire-specific, so a train
+# procedure seed can't be synthesized without either leaking into test or
+# authoring new templates. Tracked as a known gap, not silently ignored.
+_ANSWER_TYPE_COVERAGE_EXEMPT = {"procedure"}
+
+
+def assert_train_coverage(tasks, splits) -> None:
+    """Fail if any answer type or attribute slug has zero train examples.
+
+    This is the exact bug this fix addresses: seed-level splitting had left
+    whole answer types (list, narrative) and attribute slugs
+    (top_attraction, noise_cancellation, first_ascent_year, summary) with no
+    training data, making them unlearnable and tanking val exact-match. This
+    assertion stops that regression from silently returning when a future
+    seed is added. (val>=1 per slug is deliberately NOT required: a slug can
+    be trained but not measured on val without being a correctness bug, and
+    requiring it would force every train-only fact into val and blow the
+    150-200 task cap.)"""
+    train_ids = set(splits["train"])
+    by_id = {t["id"]: t for t in tasks}
+
+    train_answer_types = set()
+    train_attributes = set()
+    all_answer_types = set()
+    all_attributes = set()
+    for t in tasks:
+        all_answer_types.add(t["answer_type"])
+        attrs = {r["attribute"] for r in t["decomposed_requirements"]}
+        all_attributes |= attrs
+        if t["id"] in train_ids:
+            train_answer_types.add(t["answer_type"])
+            train_attributes |= attrs
+
+    missing_types = (all_answer_types - train_answer_types) - _ANSWER_TYPE_COVERAGE_EXEMPT
+    missing_attrs = (all_attributes - train_attributes) - _ATTRIBUTE_COVERAGE_EXEMPT
+    assert not missing_types, f"answer types with no train coverage: {sorted(missing_types)}"
+    assert not missing_attrs, f"attribute slugs with no train coverage: {sorted(missing_attrs)}"
 
 
 def main() -> None:
@@ -55,18 +110,28 @@ def main() -> None:
         t["id"] for t in tasks if not t["synthetic"]
     }, "every seed task must have a split assignment"
 
+    assert_train_coverage(tasks, splits)
+
     out_path = ROOT / "data" / "splits.json"
     out_path.write_text(json.dumps(splits, indent=2), encoding="utf-8")
 
     lock_path = ROOT / "data" / "splits.json.FROZEN"
     lock_path.write_text(
-        "This split was re-frozen on 2026-09-09 after the Phase 1 general\n"
-        "question-type expansion (41 seed groups; seven answer types). Per\n"
-        "plan.md, do not regenerate or edit data/splits.json (or the\n"
-        "seed-to-split assignment in make_splits.py) until Phase 7's final run. Phase 2\n"
-        "decomposer training uses train only; Phase 3 recall@5 evaluation\n"
-        "uses a separate held-out requirement->passage set, not these\n"
-        "task splits; Phase 5 bandit training/eval uses train/val only.\n",
+        "This split was re-cut in 2026 to fix a train-coverage bug found in\n"
+        "Phase 2: seed-level splitting had left whole answer types (list,\n"
+        "narrative) and attribute slugs (top_attraction, noise_cancellation,\n"
+        "first_ascent_year, summary) with zero training examples, making them\n"
+        "unlearnable and tanking val exact-match. Five train seeds (T42-T46)\n"
+        "were ADDED to close that; NO existing seed changed split, and the\n"
+        "test seeds (T12, T15, T23, T29, T35, T40) are untouched, so the\n"
+        "Phase-7 test-leakage guarantee still holds. assert_train_coverage()\n"
+        "in make_splits.py now enforces the invariant. (Earlier freeze:\n"
+        "2026-09-09, after the general question-type expansion.)\n\n"
+        "Per plan.md, do not regenerate or edit data/splits.json (or the\n"
+        "seed-to-split assignment in make_splits.py) until Phase 7's final\n"
+        "run. Phase 2 decomposer training uses train only; Phase 3 recall@5\n"
+        "evaluation uses a separate held-out requirement->passage set, not\n"
+        "these task splits; Phase 5 bandit training/eval uses train/val only.\n",
         encoding="utf-8",
     )
 

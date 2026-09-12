@@ -130,6 +130,28 @@ def _phrase(attribute: str) -> str:
     return ATTRIBUTE_PHRASES.get(attribute, attribute.replace("_", " "))
 
 
+def _reset_rotation() -> None:
+    # No rotation state to reset. Kept as a hook so build() stays explicit
+    # about template selection being deterministic and seed-order-independent.
+    pass
+
+
+def _rotated(templates: list[str], n: int) -> list[str]:
+    """Take the first `n` templates of a family -- the SAME `n` for every
+    seed of that family.
+
+    This is deliberately not a per-seed or rotating selection. Because every
+    seed of a given comparison family (1-attr vs 2-attr) draws from the same
+    first-`n` templates, any phrasing that appears in val also appears in
+    train, as long as train contains at least one seed of that family --
+    which the split guarantees. A rotating/hashed offset breaks that: it let
+    a phrasing land only in val's seeds and never train's, recreating the
+    exact train/val coverage gap this fix targets. Balancing phrasing beyond
+    this (so all templates, not just the first `n`, appear in both splits)
+    is a split-composition problem, not a generator one, and is left alone."""
+    return templates[:n]
+
+
 def _requirement_shape(reqs: list[dict]):
     entities = list(dict.fromkeys(r["entity"] for r in reqs))
     attributes = list(dict.fromkeys(r["attribute"] for r in reqs))
@@ -151,13 +173,13 @@ def generate_variants(task: dict) -> list[str]:
     if task["answer_type"] == "yes_no":
         return [
             t.format(e1=entities[0], e2=entities[1], attr=_phrase(attributes[0]))
-            for t in YES_NO_TEMPLATES[:N_VARIANTS_PER_FAMILY]
+            for t in _rotated(YES_NO_TEMPLATES, N_VARIANTS_PER_FAMILY)
         ]
 
     if task["answer_type"] == "list":
         return [
             t.format(e=entities[0], attr=_phrase(attributes[0]))
-            for t in LIST_TEMPLATES[:N_VARIANTS_PER_FAMILY]
+            for t in _rotated(LIST_TEMPLATES, N_VARIANTS_PER_FAMILY)
         ]
 
     if task["answer_type"] == "multi_part":
@@ -167,34 +189,31 @@ def generate_variants(task: dict) -> list[str]:
                 attr1=_phrase(attributes[0]),
                 attr2=_phrase(attributes[1]),
             )
-            for t in MULTI_PART_TEMPLATES[:N_VARIANTS_PER_FAMILY]
+            for t in _rotated(MULTI_PART_TEMPLATES, N_VARIANTS_PER_FAMILY)
         ]
 
     if task["answer_type"] == "procedure":
-        return PROCEDURE_TEMPLATES[:N_VARIANTS_PER_FAMILY]
+        return _rotated(PROCEDURE_TEMPLATES, N_VARIANTS_PER_FAMILY)
 
     if task["answer_type"] == "narrative":
-        return [t.format(e=entities[0]) for t in NARRATIVE_TEMPLATES[:N_VARIANTS_PER_FAMILY]]
+        return [t.format(e=entities[0]) for t in _rotated(NARRATIVE_TEMPLATES, N_VARIANTS_PER_FAMILY)]
 
     if len(reqs) == 1:
         e = entities[0]
         attr = _phrase(attributes[0])
-        templates = SINGLE_FACT_TEMPLATES[:N_VARIANTS_PER_FAMILY]
-        return [t.format(e=e, attr=attr) for t in templates]
+        return [t.format(e=e, attr=attr) for t in _rotated(SINGLE_FACT_TEMPLATES, N_VARIANTS_PER_FAMILY)]
 
     if len(entities) == 2 and len(attributes) == 1:
         e1, e2 = entities
         attr = _phrase(attributes[0])
-        templates = COMPARISON_1ATTR_TEMPLATES[:N_VARIANTS_PER_FAMILY]
-        return [t.format(e1=e1, e2=e2, attr=attr) for t in templates]
+        return [t.format(e1=e1, e2=e2, attr=attr) for t in _rotated(COMPARISON_1ATTR_TEMPLATES, N_VARIANTS_PER_FAMILY)]
 
     if len(entities) == 2 and len(attributes) == 2:
         e1, e2 = entities
         attr1, attr2 = (_phrase(a) for a in attributes)
-        templates = COMPARISON_2ATTR_TEMPLATES[:N_VARIANTS_PER_FAMILY]
         return [
             t.format(e1=e1, e2=e2, attr1=attr1, attr2=attr2)
-            for t in templates
+            for t in _rotated(COMPARISON_2ATTR_TEMPLATES, N_VARIANTS_PER_FAMILY)
         ]
 
     # Fallback for shapes not covered by a template family: no synthetic
@@ -203,6 +222,7 @@ def generate_variants(task: dict) -> list[str]:
 
 
 def build(seed_tasks: list[dict]) -> list[dict]:
+    _reset_rotation()
     all_tasks: list[dict] = []
     for task in seed_tasks:
         base = dict(task)

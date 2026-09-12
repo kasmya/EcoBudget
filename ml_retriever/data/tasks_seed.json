@@ -833,5 +833,122 @@
     "topic": "film",
     "difficulty": "medium",
     "answer_type": "narrative"
+  },
+  {
+    "id": "T42",
+    "question": "What is the top attraction to visit in Jaipur?",
+    "decomposed_requirements": [
+      {
+        "entity": "Jaipur",
+        "attribute": "top_attraction"
+      }
+    ],
+    "expected_answer": "Amber Fort",
+    "topic": "travel",
+    "difficulty": "easy",
+    "answer_type": "single_fact"
+  },
+  {
+    "id": "T43",
+    "question": "What amenities does the Ibis Jaipur City Centre offer?",
+    "decomposed_requirements": [
+      {
+        "entity": "Ibis Jaipur City Centre",
+        "attribute": "amenities"
+      }
+    ],
+    "ground_truth": {
+      "required_facts": [
+        "restaurant",
+        "bar",
+        "fitness center",
+        "free wifi",
+        "24-hour front desk"
+      ],
+      "match_threshold": 0.6
+    },
+    "topic": "travel",
+    "difficulty": "medium",
+    "answer_type": "list"
+  },
+  {
+    "id": "T44",
+    "question": "Summarize the premise of Titanic (1997).",
+    "decomposed_requirements": [
+      {
+        "entity": "Titanic",
+        "attribute": "summary"
+      }
+    ],
+    "ground_truth": "Aboard the doomed liner Titanic, poor artist Jack and wealthy Rose fall in love before the ship strikes an iceberg and sinks.",
+    "topic": "film",
+    "difficulty": "medium",
+    "answer_type": "narrative"
+  },
+  {
+    "id": "T45",
+    "question": "What is the noise cancellation of the Bose QuietComfort Ultra?",
+    "decomposed_requirements": [
+      {
+        "entity": "Bose QuietComfort Ultra",
+        "attribute": "noise_cancellation"
+      }
+    ],
+    "expected_answer": "Class-leading active noise cancellation",
+    "topic": "electronics",
+    "difficulty": "easy",
+    "answer_type": "single_fact"
+  },
+  {
+    "id": "T46",
+    "question": "What is the year of first ascent of Kangchenjunga?",
+    "decomposed_requirements": [
+      {
+        "entity": "Kangchenjunga",
+        "attribute": "first_ascent_year"
+      }
+    ],
+    "expected_answer": "1955",
+    "topic": "geography",
+    "difficulty": "medium",
+    "answer_type": "single_fact"
+  },
+  {
+    "id": "T47",
+    "question": "What are the main camera resolution and display refresh rate of the Google Pixel 8?",
+    "decomposed_requirements": [
+      {
+        "entity": "Google Pixel 8",
+        "attribute": "camera"
+      },
+      {
+        "entity": "Google Pixel 8",
+        "attribute": "display_refresh_rate"
+      }
+    ],
+    "ground_truth": {
+      "required_facts": [
+        "50-megapixel main camera",
+        "120 Hz refresh rate"
+      ],
+      "match_threshold": 0.6
+    },
+    "topic": "phones",
+    "difficulty": "medium",
+    "answer_type": "multi_part"
+  },
+  {
+    "id": "T48",
+    "question": "What is the typical trip length for Bali?",
+    "decomposed_requirements": [
+      {
+        "entity": "Bali",
+        "attribute": "typical_trip_length"
+      }
+    ],
+    "expected_answer": "About 7-10 days",
+    "topic": "travel",
+    "difficulty": "easy",
+    "answer_type": "single_fact"
   }
 ]

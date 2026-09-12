@@ -221,7 +221,7 @@ class TaskDecomposer:
         self,
         model_name_or_path: str,
         adapter_path: Optional[str] = None,
-        max_new_tokens: int = 128,
+        max_new_tokens: int = 64,
         device: Optional[str] = None,
     ):
         try:
@@ -270,8 +270,16 @@ class TaskDecomposer:
 
         start = time.perf_counter()
         with torch.no_grad():
+            # no_repeat_ngram_size + repetition_penalty stop the degenerate
+            # loops greedy decoding falls into on questions whose attribute
+            # the model is unsure of (e.g. "recognition recognition ...").
+            # Targets are short structured strings, so this never truncates a
+            # legitimate answer.
             output_ids = self.model.generate(
-                **inputs, max_new_tokens=self.max_new_tokens
+                **inputs,
+                max_new_tokens=self.max_new_tokens,
+                no_repeat_ngram_size=3,
+                repetition_penalty=1.3,
             )
         latency = time.perf_counter() - start
 

@@ -27,7 +27,10 @@ def splits():
 class TestCorpus:
     def test_expected_seed_size(self, corpus_rows):
         # Seed corpus; Phase 1's eventual target is 200-500 (see plan.md).
-        assert len(corpus_rows) == 86
+        # 86 original + 6 added by the 2026 train-coverage fix (Titanic
+        # summary, Bose noise_cancellation, Kangchenjunga first_ascent_year,
+        # Pixel 8 camera + display_refresh_rate, Bali typical_trip_length).
+        assert len(corpus_rows) == 92
 
     def test_every_row_is_a_valid_passage(self, corpus_rows):
         for row in corpus_rows:
@@ -60,8 +63,9 @@ class TestTasks:
         assert 150 <= len(tasks) <= 200
 
     def test_seed_task_count(self, tasks):
+        # 41 original + 7 added by the 2026 train-coverage fix (T42-T48).
         seeds = [t for t in tasks if not t["synthetic"]]
-        assert len(seeds) == 41
+        assert len(seeds) == 48
 
     def test_task_ids_are_unique(self, tasks):
         ids = [t["id"] for t in tasks]
@@ -177,3 +181,32 @@ class TestSplits:
 
     def test_test_split_is_nontrivial(self, splits):
         assert len(splits["test"]) >= 10
+
+    def test_every_answer_type_and_attribute_has_train_coverage(self, tasks, splits):
+        """Regression guard for the Phase 2 train-coverage bug: seed-level
+        splitting had left whole answer types and attribute slugs with zero
+        training data, making them unlearnable. Every answer type (except
+        procedure, whose only seed is reserved for test) and every attribute
+        slug must appear in the train split. Mirrors assert_train_coverage()
+        in make_splits.py."""
+        # procedure (both the answer type and the attribute slug) is exempt:
+        # its only seed is reserved for the frozen test split.
+        procedure_exempt = {"procedure"}
+        train_ids = set(splits["train"])
+
+        train_answer_types = set()
+        train_attributes = set()
+        all_answer_types = set()
+        all_attributes = set()
+        for t in tasks:
+            all_answer_types.add(t["answer_type"])
+            attrs = {r["attribute"] for r in t["decomposed_requirements"]}
+            all_attributes |= attrs
+            if t["id"] in train_ids:
+                train_answer_types.add(t["answer_type"])
+                train_attributes |= attrs
+
+        missing_types = (all_answer_types - train_answer_types) - procedure_exempt
+        missing_attrs = (all_attributes - train_attributes) - procedure_exempt
+        assert not missing_types, f"answer types missing from train: {sorted(missing_types)}"
+        assert not missing_attrs, f"attribute slugs missing from train: {sorted(missing_attrs)}"

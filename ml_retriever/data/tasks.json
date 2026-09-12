@@ -3625,5 +3625,522 @@
     "answer_type": "narrative",
     "synthetic": true,
     "seed_task_id": "T41"
+  },
+  {
+    "id": "T42",
+    "question": "What is the top attraction to visit in Jaipur?",
+    "decomposed_requirements": [
+      {
+        "entity": "Jaipur",
+        "attribute": "top_attraction"
+      }
+    ],
+    "expected_answer": "Amber Fort",
+    "topic": "travel",
+    "difficulty": "easy",
+    "answer_type": "single_fact",
+    "synthetic": false
+  },
+  {
+    "id": "T42-s01",
+    "question": "What is the top attraction of Jaipur?",
+    "decomposed_requirements": [
+      {
+        "entity": "Jaipur",
+        "attribute": "top_attraction"
+      }
+    ],
+    "expected_answer": "Amber Fort",
+    "topic": "travel",
+    "difficulty": "easy",
+    "answer_type": "single_fact",
+    "synthetic": true,
+    "seed_task_id": "T42"
+  },
+  {
+    "id": "T42-s02",
+    "question": "Can you tell me the top attraction of Jaipur?",
+    "decomposed_requirements": [
+      {
+        "entity": "Jaipur",
+        "attribute": "top_attraction"
+      }
+    ],
+    "expected_answer": "Amber Fort",
+    "topic": "travel",
+    "difficulty": "easy",
+    "answer_type": "single_fact",
+    "synthetic": true,
+    "seed_task_id": "T42"
+  },
+  {
+    "id": "T42-s03",
+    "question": "How would you describe the top attraction of Jaipur?",
+    "decomposed_requirements": [
+      {
+        "entity": "Jaipur",
+        "attribute": "top_attraction"
+      }
+    ],
+    "expected_answer": "Amber Fort",
+    "topic": "travel",
+    "difficulty": "easy",
+    "answer_type": "single_fact",
+    "synthetic": true,
+    "seed_task_id": "T42"
+  },
+  {
+    "id": "T43",
+    "question": "What amenities does the Ibis Jaipur City Centre offer?",
+    "decomposed_requirements": [
+      {
+        "entity": "Ibis Jaipur City Centre",
+        "attribute": "amenities"
+      }
+    ],
+    "ground_truth": {
+      "required_facts": [
+        "restaurant",
+        "bar",
+        "fitness center",
+        "free wifi",
+        "24-hour front desk"
+      ],
+      "match_threshold": 0.6
+    },
+    "topic": "travel",
+    "difficulty": "medium",
+    "answer_type": "list",
+    "synthetic": false
+  },
+  {
+    "id": "T43-s01",
+    "question": "List the amenities offered by Ibis Jaipur City Centre.",
+    "decomposed_requirements": [
+      {
+        "entity": "Ibis Jaipur City Centre",
+        "attribute": "amenities"
+      }
+    ],
+    "ground_truth": {
+      "required_facts": [
+        "restaurant",
+        "bar",
+        "fitness center",
+        "free wifi",
+        "24-hour front desk"
+      ],
+      "match_threshold": 0.6
+    },
+    "topic": "travel",
+    "difficulty": "medium",
+    "answer_type": "list",
+    "synthetic": true,
+    "seed_task_id": "T43"
+  },
+  {
+    "id": "T43-s02",
+    "question": "What amenities are available at Ibis Jaipur City Centre?",
+    "decomposed_requirements": [
+      {
+        "entity": "Ibis Jaipur City Centre",
+        "attribute": "amenities"
+      }
+    ],
+    "ground_truth": {
+      "required_facts": [
+        "restaurant",
+        "bar",
+        "fitness center",
+        "free wifi",
+        "24-hour front desk"
+      ],
+      "match_threshold": 0.6
+    },
+    "topic": "travel",
+    "difficulty": "medium",
+    "answer_type": "list",
+    "synthetic": true,
+    "seed_task_id": "T43"
+  },
+  {
+    "id": "T43-s03",
+    "question": "Name the amenities at Ibis Jaipur City Centre.",
+    "decomposed_requirements": [
+      {
+        "entity": "Ibis Jaipur City Centre",
+        "attribute": "amenities"
+      }
+    ],
+    "ground_truth": {
+      "required_facts": [
+        "restaurant",
+        "bar",
+        "fitness center",
+        "free wifi",
+        "24-hour front desk"
+      ],
+      "match_threshold": 0.6
+    },
+    "topic": "travel",
+    "difficulty": "medium",
+    "answer_type": "list",
+    "synthetic": true,
+    "seed_task_id": "T43"
+  },
+  {
+    "id": "T44",
+    "question": "Summarize the premise of Titanic (1997).",
+    "decomposed_requirements": [
+      {
+        "entity": "Titanic",
+        "attribute": "summary"
+      }
+    ],
+    "ground_truth": "Aboard the doomed liner Titanic, poor artist Jack and wealthy Rose fall in love before the ship strikes an iceberg and sinks.",
+    "topic": "film",
+    "difficulty": "medium",
+    "answer_type": "narrative",
+    "synthetic": false
+  },
+  {
+    "id": "T44-s01",
+    "question": "Give me a brief summary of Titanic.",
+    "decomposed_requirements": [
+      {
+        "entity": "Titanic",
+        "attribute": "summary"
+      }
+    ],
+    "ground_truth": "Aboard the doomed liner Titanic, poor artist Jack and wealthy Rose fall in love before the ship strikes an iceberg and sinks.",
+    "topic": "film",
+    "difficulty": "medium",
+    "answer_type": "narrative",
+    "synthetic": true,
+    "seed_task_id": "T44"
+  },
+  {
+    "id": "T44-s02",
+    "question": "What is the premise of Titanic?",
+    "decomposed_requirements": [
+      {
+        "entity": "Titanic",
+        "attribute": "summary"
+      }
+    ],
+    "ground_truth": "Aboard the doomed liner Titanic, poor artist Jack and wealthy Rose fall in love before the ship strikes an iceberg and sinks.",
+    "topic": "film",
+    "difficulty": "medium",
+    "answer_type": "narrative",
+    "synthetic": true,
+    "seed_task_id": "T44"
+  },
+  {
+    "id": "T44-s03",
+    "question": "Briefly describe the story of Titanic.",
+    "decomposed_requirements": [
+      {
+        "entity": "Titanic",
+        "attribute": "summary"
+      }
+    ],
+    "ground_truth": "Aboard the doomed liner Titanic, poor artist Jack and wealthy Rose fall in love before the ship strikes an iceberg and sinks.",
+    "topic": "film",
+    "difficulty": "medium",
+    "answer_type": "narrative",
+    "synthetic": true,
+    "seed_task_id": "T44"
+  },
+  {
+    "id": "T45",
+    "question": "What is the noise cancellation of the Bose QuietComfort Ultra?",
+    "decomposed_requirements": [
+      {
+        "entity": "Bose QuietComfort Ultra",
+        "attribute": "noise_cancellation"
+      }
+    ],
+    "expected_answer": "Class-leading active noise cancellation",
+    "topic": "electronics",
+    "difficulty": "easy",
+    "answer_type": "single_fact",
+    "synthetic": false
+  },
+  {
+    "id": "T45-s01",
+    "question": "What is the noise cancellation of Bose QuietComfort Ultra?",
+    "decomposed_requirements": [
+      {
+        "entity": "Bose QuietComfort Ultra",
+        "attribute": "noise_cancellation"
+      }
+    ],
+    "expected_answer": "Class-leading active noise cancellation",
+    "topic": "electronics",
+    "difficulty": "easy",
+    "answer_type": "single_fact",
+    "synthetic": true,
+    "seed_task_id": "T45"
+  },
+  {
+    "id": "T45-s02",
+    "question": "Can you tell me the noise cancellation of Bose QuietComfort Ultra?",
+    "decomposed_requirements": [
+      {
+        "entity": "Bose QuietComfort Ultra",
+        "attribute": "noise_cancellation"
+      }
+    ],
+    "expected_answer": "Class-leading active noise cancellation",
+    "topic": "electronics",
+    "difficulty": "easy",
+    "answer_type": "single_fact",
+    "synthetic": true,
+    "seed_task_id": "T45"
+  },
+  {
+    "id": "T45-s03",
+    "question": "How would you describe the noise cancellation of Bose QuietComfort Ultra?",
+    "decomposed_requirements": [
+      {
+        "entity": "Bose QuietComfort Ultra",
+        "attribute": "noise_cancellation"
+      }
+    ],
+    "expected_answer": "Class-leading active noise cancellation",
+    "topic": "electronics",
+    "difficulty": "easy",
+    "answer_type": "single_fact",
+    "synthetic": true,
+    "seed_task_id": "T45"
+  },
+  {
+    "id": "T46",
+    "question": "What is the year of first ascent of Kangchenjunga?",
+    "decomposed_requirements": [
+      {
+        "entity": "Kangchenjunga",
+        "attribute": "first_ascent_year"
+      }
+    ],
+    "expected_answer": "1955",
+    "topic": "geography",
+    "difficulty": "medium",
+    "answer_type": "single_fact",
+    "synthetic": false
+  },
+  {
+    "id": "T46-s01",
+    "question": "What is the year of first ascent of Kangchenjunga?",
+    "decomposed_requirements": [
+      {
+        "entity": "Kangchenjunga",
+        "attribute": "first_ascent_year"
+      }
+    ],
+    "expected_answer": "1955",
+    "topic": "geography",
+    "difficulty": "medium",
+    "answer_type": "single_fact",
+    "synthetic": true,
+    "seed_task_id": "T46"
+  },
+  {
+    "id": "T46-s02",
+    "question": "Can you tell me the year of first ascent of Kangchenjunga?",
+    "decomposed_requirements": [
+      {
+        "entity": "Kangchenjunga",
+        "attribute": "first_ascent_year"
+      }
+    ],
+    "expected_answer": "1955",
+    "topic": "geography",
+    "difficulty": "medium",
+    "answer_type": "single_fact",
+    "synthetic": true,
+    "seed_task_id": "T46"
+  },
+  {
+    "id": "T46-s03",
+    "question": "How would you describe the year of first ascent of Kangchenjunga?",
+    "decomposed_requirements": [
+      {
+        "entity": "Kangchenjunga",
+        "attribute": "first_ascent_year"
+      }
+    ],
+    "expected_answer": "1955",
+    "topic": "geography",
+    "difficulty": "medium",
+    "answer_type": "single_fact",
+    "synthetic": true,
+    "seed_task_id": "T46"
+  },
+  {
+    "id": "T47",
+    "question": "What are the main camera resolution and display refresh rate of the Google Pixel 8?",
+    "decomposed_requirements": [
+      {
+        "entity": "Google Pixel 8",
+        "attribute": "camera"
+      },
+      {
+        "entity": "Google Pixel 8",
+        "attribute": "display_refresh_rate"
+      }
+    ],
+    "ground_truth": {
+      "required_facts": [
+        "50-megapixel main camera",
+        "120 Hz refresh rate"
+      ],
+      "match_threshold": 0.6
+    },
+    "topic": "phones",
+    "difficulty": "medium",
+    "answer_type": "multi_part",
+    "synthetic": false
+  },
+  {
+    "id": "T47-s01",
+    "question": "What are Google Pixel 8's main camera resolution and display refresh rate?",
+    "decomposed_requirements": [
+      {
+        "entity": "Google Pixel 8",
+        "attribute": "camera"
+      },
+      {
+        "entity": "Google Pixel 8",
+        "attribute": "display_refresh_rate"
+      }
+    ],
+    "ground_truth": {
+      "required_facts": [
+        "50-megapixel main camera",
+        "120 Hz refresh rate"
+      ],
+      "match_threshold": 0.6
+    },
+    "topic": "phones",
+    "difficulty": "medium",
+    "answer_type": "multi_part",
+    "synthetic": true,
+    "seed_task_id": "T47"
+  },
+  {
+    "id": "T47-s02",
+    "question": "Tell me the main camera resolution and display refresh rate for Google Pixel 8.",
+    "decomposed_requirements": [
+      {
+        "entity": "Google Pixel 8",
+        "attribute": "camera"
+      },
+      {
+        "entity": "Google Pixel 8",
+        "attribute": "display_refresh_rate"
+      }
+    ],
+    "ground_truth": {
+      "required_facts": [
+        "50-megapixel main camera",
+        "120 Hz refresh rate"
+      ],
+      "match_threshold": 0.6
+    },
+    "topic": "phones",
+    "difficulty": "medium",
+    "answer_type": "multi_part",
+    "synthetic": true,
+    "seed_task_id": "T47"
+  },
+  {
+    "id": "T47-s03",
+    "question": "Provide Google Pixel 8's main camera resolution along with its display refresh rate.",
+    "decomposed_requirements": [
+      {
+        "entity": "Google Pixel 8",
+        "attribute": "camera"
+      },
+      {
+        "entity": "Google Pixel 8",
+        "attribute": "display_refresh_rate"
+      }
+    ],
+    "ground_truth": {
+      "required_facts": [
+        "50-megapixel main camera",
+        "120 Hz refresh rate"
+      ],
+      "match_threshold": 0.6
+    },
+    "topic": "phones",
+    "difficulty": "medium",
+    "answer_type": "multi_part",
+    "synthetic": true,
+    "seed_task_id": "T47"
+  },
+  {
+    "id": "T48",
+    "question": "What is the typical trip length for Bali?",
+    "decomposed_requirements": [
+      {
+        "entity": "Bali",
+        "attribute": "typical_trip_length"
+      }
+    ],
+    "expected_answer": "About 7-10 days",
+    "topic": "travel",
+    "difficulty": "easy",
+    "answer_type": "single_fact",
+    "synthetic": false
+  },
+  {
+    "id": "T48-s01",
+    "question": "What is the typical trip length of Bali?",
+    "decomposed_requirements": [
+      {
+        "entity": "Bali",
+        "attribute": "typical_trip_length"
+      }
+    ],
+    "expected_answer": "About 7-10 days",
+    "topic": "travel",
+    "difficulty": "easy",
+    "answer_type": "single_fact",
+    "synthetic": true,
+    "seed_task_id": "T48"
+  },
+  {
+    "id": "T48-s02",
+    "question": "Can you tell me the typical trip length of Bali?",
+    "decomposed_requirements": [
+      {
+        "entity": "Bali",
+        "attribute": "typical_trip_length"
+      }
+    ],
+    "expected_answer": "About 7-10 days",
+    "topic": "travel",
+    "difficulty": "easy",
+    "answer_type": "single_fact",
+    "synthetic": true,
+    "seed_task_id": "T48"
+  },
+  {
+    "id": "T48-s03",
+    "question": "How would you describe the typical trip length of Bali?",
+    "decomposed_requirements": [
+      {
+        "entity": "Bali",
+        "attribute": "typical_trip_length"
+      }
+    ],
+    "expected_answer": "About 7-10 days",
+    "topic": "travel",
+    "difficulty": "easy",
+    "answer_type": "single_fact",
+    "synthetic": true,
+    "seed_task_id": "T48"
   }
 ]

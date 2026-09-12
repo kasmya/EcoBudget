@@ -102,3 +102,31 @@
 {"task_id": "T39-s01", "question": "What are India's capital and official languages?", "target": "India|capital ## India|official_language"}
 {"task_id": "T39-s02", "question": "Tell me the capital and official languages for India.", "target": "India|capital ## India|official_language"}
 {"task_id": "T39-s03", "question": "Provide India's capital along with its official languages.", "target": "India|capital ## India|official_language"}
+{"task_id": "T42", "question": "What is the top attraction to visit in Jaipur?", "target": "Jaipur|top_attraction"}
+{"task_id": "T42-s01", "question": "What is the top attraction of Jaipur?", "target": "Jaipur|top_attraction"}
+{"task_id": "T42-s02", "question": "Can you tell me the top attraction of Jaipur?", "target": "Jaipur|top_attraction"}
+{"task_id": "T42-s03", "question": "How would you describe the top attraction of Jaipur?", "target": "Jaipur|top_attraction"}
+{"task_id": "T43", "question": "What amenities does the Ibis Jaipur City Centre offer?", "target": "Ibis Jaipur City Centre|amenities"}
+{"task_id": "T43-s01", "question": "List the amenities offered by Ibis Jaipur City Centre.", "target": "Ibis Jaipur City Centre|amenities"}
+{"task_id": "T43-s02", "question": "What amenities are available at Ibis Jaipur City Centre?", "target": "Ibis Jaipur City Centre|amenities"}
+{"task_id": "T43-s03", "question": "Name the amenities at Ibis Jaipur City Centre.", "target": "Ibis Jaipur City Centre|amenities"}
+{"task_id": "T44", "question": "Summarize the premise of Titanic (1997).", "target": "Titanic|summary"}
+{"task_id": "T44-s01", "question": "Give me a brief summary of Titanic.", "target": "Titanic|summary"}
+{"task_id": "T44-s02", "question": "What is the premise of Titanic?", "target": "Titanic|summary"}
+{"task_id": "T44-s03", "question": "Briefly describe the story of Titanic.", "target": "Titanic|summary"}
+{"task_id": "T45", "question": "What is the noise cancellation of the Bose QuietComfort Ultra?", "target": "Bose QuietComfort Ultra|noise_cancellation"}
+{"task_id": "T45-s01", "question": "What is the noise cancellation of Bose QuietComfort Ultra?", "target": "Bose QuietComfort Ultra|noise_cancellation"}
+{"task_id": "T45-s02", "question": "Can you tell me the noise cancellation of Bose QuietComfort Ultra?", "target": "Bose QuietComfort Ultra|noise_cancellation"}
+{"task_id": "T45-s03", "question": "How would you describe the noise cancellation of Bose QuietComfort Ultra?", "target": "Bose QuietComfort Ultra|noise_cancellation"}
+{"task_id": "T46", "question": "What is the year of first ascent of Kangchenjunga?", "target": "Kangchenjunga|first_ascent_year"}
+{"task_id": "T46-s01", "question": "What is the year of first ascent of Kangchenjunga?", "target": "Kangchenjunga|first_ascent_year"}
+{"task_id": "T46-s02", "question": "Can you tell me the year of first ascent of Kangchenjunga?", "target": "Kangchenjunga|first_ascent_year"}
+{"task_id": "T46-s03", "question": "How would you describe the year of first ascent of Kangchenjunga?", "target": "Kangchenjunga|first_ascent_year"}
+{"task_id": "T47", "question": "What are the main camera resolution and display refresh rate of the Google Pixel 8?", "target": "Google Pixel 8|camera ## Google Pixel 8|display_refresh_rate"}
+{"task_id": "T47-s01", "question": "What are Google Pixel 8's main camera resolution and display refresh rate?", "target": "Google Pixel 8|camera ## Google Pixel 8|display_refresh_rate"}
+{"task_id": "T47-s02", "question": "Tell me the main camera resolution and display refresh rate for Google Pixel 8.", "target": "Google Pixel 8|camera ## Google Pixel 8|display_refresh_rate"}
+{"task_id": "T47-s03", "question": "Provide Google Pixel 8's main camera resolution along with its display refresh rate.", "target": "Google Pixel 8|camera ## Google Pixel 8|display_refresh_rate"}
+{"task_id": "T48", "question": "What is the typical trip length for Bali?", "target": "Bali|typical_trip_length"}
+{"task_id": "T48-s01", "question": "What is the typical trip length of Bali?", "target": "Bali|typical_trip_length"}
+{"task_id": "T48-s02", "question": "Can you tell me the typical trip length of Bali?", "target": "Bali|typical_trip_length"}
+{"task_id": "T48-s03", "question": "How would you describe the typical trip length of Bali?", "target": "Bali|typical_trip_length"}

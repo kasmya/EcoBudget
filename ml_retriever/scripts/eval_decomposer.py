@@ -34,6 +34,7 @@ Usage:
 
 import argparse
 import json
+import re
 import statistics
 from pathlib import Path
 
@@ -41,6 +42,25 @@ from ml_retriever.decomposer import HeuristicDecomposer, parse_requirements
 from ml_retriever.types import Requirement
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+
+# Tokens dropped before canonicalizing an attribute, so semantically identical
+# slugs that differ only in glue words match -- e.g. "year of first ascent"
+# and "first_ascent_year" both become "ascent_first_year". Kept deliberately
+# tiny: only true glue words, never content words, so distinct attributes can
+# never collapse together. tests/test_eval_metric.py asserts no collision on
+# the real attribute vocabulary.
+_ATTR_STOPWORDS = {"of", "the", "a", "an"}
+
+
+def normalize_attribute(attr: str) -> str:
+    """Canonical form of an attribute slug for lenient matching.
+
+    Lowercases, splits on any non-alphanumeric run, drops glue words, and
+    token-sorts so word order and separator style don't matter.
+    """
+    tokens = [t for t in re.split(r"[^a-z0-9]+", attr.lower()) if t]
+    tokens = [t for t in tokens if t not in _ATTR_STOPWORDS]
+    return "_".join(sorted(tokens))
 
 
 def load_pairs(path: Path) -> list[dict]:
@@ -60,13 +80,38 @@ def known_entities_from(tasks_path: Path) -> list[str]:
     return sorted(entities, key=len, reverse=True)
 
 
+def _strict_key(r: Requirement) -> tuple[str, str]:
+    return r.key()
+
+
+def _norm_key(r: Requirement) -> tuple[str, str]:
+    entity, attribute = r.key()
+    return (entity, normalize_attribute(attribute))
+
+
 def exact_match(pred: list[Requirement], gold: list[Requirement]) -> bool:
     return {r.key() for r in pred} == {r.key() for r in gold}
 
 
+def _f1(tp: int, fp: int, fn: int) -> tuple[float, float, float]:
+    precision = tp / (tp + fp) if (tp + fp) else 0.0
+    recall = tp / (tp + fn) if (tp + fn) else 0.0
+    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) else 0.0
+    return precision, recall, f1
+
+
 def evaluate(decompose_fn, pairs: list[dict]) -> dict:
+    # Strict = entity AND exact attribute string. Normalized = attribute
+    # canonicalized first, so "year_of_first_ascent" == "first_ascent_year".
+    # Entity-only and attribute-only F1 separate "found the right things"
+    # from "spelled the attribute the way the key did" -- the crux of why a
+    # single strict number is misleading.
     exact_matches = 0
-    tp = fp = fn = 0
+    exact_matches_norm = 0
+    entity_exact = 0
+    strict_tp = strict_fp = strict_fn = 0
+    ent_tp = ent_fp = ent_fn = 0
+    attr_tp = attr_fp = attr_fn = 0
     latencies = []
 
     for pair in pairs:
@@ -81,23 +126,47 @@ def evaluate(decompose_fn, pairs: list[dict]) -> dict:
         if exact_match(pred, gold):
             exact_matches += 1
 
+        pred_norm = {_norm_key(r) for r in pred}
+        gold_norm = {_norm_key(r) for r in gold}
+        if pred_norm == gold_norm:
+            exact_matches_norm += 1
+
+        pred_ents = {r.key()[0] for r in pred}
+        gold_ents = {r.key()[0] for r in gold}
+        if pred_ents == gold_ents:
+            entity_exact += 1
+
         pred_keys = {r.key() for r in pred}
         gold_keys = {r.key() for r in gold}
-        tp += len(pred_keys & gold_keys)
-        fp += len(pred_keys - gold_keys)
-        fn += len(gold_keys - pred_keys)
+        strict_tp += len(pred_keys & gold_keys)
+        strict_fp += len(pred_keys - gold_keys)
+        strict_fn += len(gold_keys - pred_keys)
+
+        ent_tp += len(pred_ents & gold_ents)
+        ent_fp += len(pred_ents - gold_ents)
+        ent_fn += len(gold_ents - pred_ents)
+
+        pred_attrs = {normalize_attribute(r.key()[1]) for r in pred}
+        gold_attrs = {normalize_attribute(r.key()[1]) for r in gold}
+        attr_tp += len(pred_attrs & gold_attrs)
+        attr_fp += len(pred_attrs - gold_attrs)
+        attr_fn += len(gold_attrs - pred_attrs)
 
     n = len(pairs)
-    precision = tp / (tp + fp) if (tp + fp) else 0.0
-    recall = tp / (tp + fn) if (tp + fn) else 0.0
-    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) else 0.0
+    precision, recall, f1 = _f1(strict_tp, strict_fp, strict_fn)
+    _, _, entity_f1 = _f1(ent_tp, ent_fp, ent_fn)
+    _, _, attribute_f1 = _f1(attr_tp, attr_fp, attr_fn)
 
     result = {
         "n_examples": n,
         "exact_match_accuracy": exact_matches / n if n else 0.0,
+        "exact_match_normalized": exact_matches_norm / n if n else 0.0,
+        "entity_exact_match": entity_exact / n if n else 0.0,
         "precision": precision,
         "recall": recall,
         "f1": f1,
+        "entity_f1": entity_f1,
+        "attribute_f1": attribute_f1,
     }
     if latencies:
         result["mean_latency_seconds"] = statistics.mean(latencies)
