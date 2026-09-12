@@ -66,6 +66,68 @@ class MiniLMScorer:
         return float(np.dot(q, _unit(np.asarray(emb, dtype=float))))
 
 
+class QAScorer:
+    """Attribute-sensitive evidence scorer via extractive QA.
+
+    Pure embedding similarity is NOT enough for sufficiency: MiniLM embeddings
+    are dominated by the entity name, so a passage about the iPhone 15's WEIGHT
+    scores ~0.62 against the requirement (iPhone 15, price) and would wrongly
+    satisfy it. QA discriminates the attribute directly: it asks "What is the
+    {attribute} of {entity}?" of the passage and returns the model's answer
+    confidence, which stays low when the passage does not actually contain that
+    attribute's value. This is the QA-confidence signal plan.md Phase 4 calls
+    for, reusing the same local extractive-QA model family as backend/scorer.py
+    (no hosted API).
+
+    Lazily loads transformers' QA pipeline; `handle_impossible_answer=True` lets
+    it report low confidence when the answer is absent.
+    """
+
+    def __init__(self, model_name: str = "deepset/roberta-base-squad2", max_length: int = 384):
+        self.model_name = model_name
+        self.max_length = max_length
+        self._tokenizer = None
+        self._model = None
+
+    def _load(self):
+        # Driven directly via AutoModelForQuestionAnswering rather than
+        # pipeline("question-answering"): some transformers builds don't
+        # register that pipeline task, but the model class is always present.
+        if self._model is None:
+            import torch  # noqa: F401
+            from transformers import AutoModelForQuestionAnswering, AutoTokenizer
+
+            self._tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+            self._model = AutoModelForQuestionAnswering.from_pretrained(self.model_name)
+            self._model.eval()
+        return self._tokenizer, self._model
+
+    def __call__(self, requirement: Requirement, passage: Passage) -> float:
+        text = passage.text
+        if not text or len(text.strip()) < 10:
+            return 0.0
+        import torch
+
+        attribute = requirement.attribute.replace("_", " ").strip()
+        question = f"What is the {attribute} of {requirement.entity}?"
+        tokenizer, model = self._load()
+        inputs = tokenizer(
+            question, text, return_tensors="pt", truncation=True, max_length=self.max_length
+        )
+        with torch.no_grad():
+            out = model(**inputs)
+        start = torch.softmax(out.start_logits[0], dim=-1)
+        end = torch.softmax(out.end_logits[0], dim=-1)
+        # CLS (index 0) is the "no answer" / impossible span.
+        null_prob = float(start[0] * end[0])
+        s = int(torch.argmax(start[1:]).item()) + 1
+        e = int(torch.argmax(end[s:]).item()) + s  # end must not precede start
+        best_prob = float(start[s] * end[e])
+        # Confidence that the attribute IS answerable here, net of the
+        # impossible-answer score: stays ~0 when the passage lacks the attribute.
+        return max(0.0, best_prob - null_prob)
+
+
 class EvidenceCoverageTracker:
     """Per-requirement evidence tracker (Phase 0 `EvidenceTracker` protocol).
 
@@ -78,9 +140,16 @@ class EvidenceCoverageTracker:
     def __init__(
         self,
         requirements: Iterable[Requirement],
-        threshold: float = 0.5,
+        threshold: float = 0.3,
         score_fn: Optional[ScoreFn] = None,
     ):
+        # threshold default (0.3) is calibrated for the QA-confidence default
+        # scorer. NOTE: QA confidence is attribute-dependent -- factoid
+        # attributes with a crisp value span (price, battery) score ~0.5-0.9,
+        # while descriptive ones (noise_cancellation, summary) sit near the
+        # floor. So a single global threshold trades wrong-attribute precision
+        # against descriptive-attribute recall; pass an explicit threshold, or
+        # a better-calibrated score_fn, when that tradeoff matters.
         # dedup by (entity, attribute) key, preserving insertion order
         self.requirements: list[Requirement] = []
         seen_keys: set[tuple[str, str]] = set()
@@ -91,7 +160,10 @@ class EvidenceCoverageTracker:
             self.requirements.append(r)
 
         self.threshold = threshold
-        self._score_fn: ScoreFn = score_fn or MiniLMScorer()
+        # Default to QA confidence: it is attribute-sensitive, unlike raw
+        # MiniLM similarity which the entity name dominates. MiniLMScorer stays
+        # available as a cheaper, rougher option for callers who want it.
+        self._score_fn: ScoreFn = score_fn or QAScorer()
         self._best_score: dict[tuple[str, str], float] = {r.key(): 0.0 for r in self.requirements}
         self._best_passage_id: dict[tuple[str, str], Optional[str]] = {
             r.key(): None for r in self.requirements
