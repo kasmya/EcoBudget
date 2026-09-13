@@ -1,0 +1,36 @@
+{"task_id": "T3", "question": "Which phone has the higher display refresh rate: the iPhone 15 or the Samsung Galaxy S24?", "target": "iPhone 15|display_refresh_rate ## Samsung Galaxy S24|display_refresh_rate"}
+{"task_id": "T3-s01", "question": "Compare iPhone 15 and Samsung Galaxy S24 on display refresh rate.", "target": "iPhone 15|display_refresh_rate ## Samsung Galaxy S24|display_refresh_rate"}
+{"task_id": "T3-s02", "question": "Which is better in terms of display refresh rate: iPhone 15 or Samsung Galaxy S24?", "target": "iPhone 15|display_refresh_rate ## Samsung Galaxy S24|display_refresh_rate"}
+{"task_id": "T3-s03", "question": "How does iPhone 15's display refresh rate compare to Samsung Galaxy S24's?", "target": "iPhone 15|display_refresh_rate ## Samsung Galaxy S24|display_refresh_rate"}
+{"task_id": "T7", "question": "Which laptop is lighter: the MacBook Air 13 M3 or the Dell XPS 13 (2024)?", "target": "MacBook Air 13 M3|weight ## Dell XPS 13 2024|weight"}
+{"task_id": "T7-s01", "question": "Compare MacBook Air 13 M3 and Dell XPS 13 2024 on weight.", "target": "MacBook Air 13 M3|weight ## Dell XPS 13 2024|weight"}
+{"task_id": "T7-s02", "question": "Which is better in terms of weight: MacBook Air 13 M3 or Dell XPS 13 2024?", "target": "MacBook Air 13 M3|weight ## Dell XPS 13 2024|weight"}
+{"task_id": "T7-s03", "question": "How does MacBook Air 13 M3's weight compare to Dell XPS 13 2024's?", "target": "MacBook Air 13 M3|weight ## Dell XPS 13 2024|weight"}
+{"task_id": "T10", "question": "What is the top attraction to visit in Kyoto?", "target": "Kyoto|top_attraction"}
+{"task_id": "T10-s01", "question": "What is the top attraction of Kyoto?", "target": "Kyoto|top_attraction"}
+{"task_id": "T10-s02", "question": "Can you tell me the top attraction of Kyoto?", "target": "Kyoto|top_attraction"}
+{"task_id": "T10-s03", "question": "How would you describe the top attraction of Kyoto?", "target": "Kyoto|top_attraction"}
+{"task_id": "T17", "question": "Which Jaipur hotel is more affordable per night: The Oberoi Rajvilas Jaipur or Ibis Jaipur City Centre?", "target": "Oberoi Rajvilas Jaipur|price_per_night ## Ibis Jaipur City Centre|price_per_night"}
+{"task_id": "T17-s01", "question": "Compare Oberoi Rajvilas Jaipur and Ibis Jaipur City Centre on price per night.", "target": "Oberoi Rajvilas Jaipur|price_per_night ## Ibis Jaipur City Centre|price_per_night"}
+{"task_id": "T17-s02", "question": "Which is better in terms of price per night: Oberoi Rajvilas Jaipur or Ibis Jaipur City Centre?", "target": "Oberoi Rajvilas Jaipur|price_per_night ## Ibis Jaipur City Centre|price_per_night"}
+{"task_id": "T17-s03", "question": "How does Oberoi Rajvilas Jaipur's price per night compare to Ibis Jaipur City Centre's?", "target": "Oberoi Rajvilas Jaipur|price_per_night ## Ibis Jaipur City Centre|price_per_night"}
+{"task_id": "T20", "question": "Which earbuds have better noise cancellation: AirPods Pro 2 or Sony WF-1000XM5?", "target": "AirPods Pro 2|noise_cancellation ## Sony WF-1000XM5|noise_cancellation"}
+{"task_id": "T20-s01", "question": "Compare AirPods Pro 2 and Sony WF-1000XM5 on noise cancellation.", "target": "AirPods Pro 2|noise_cancellation ## Sony WF-1000XM5|noise_cancellation"}
+{"task_id": "T20-s02", "question": "Which is better in terms of noise cancellation: AirPods Pro 2 or Sony WF-1000XM5?", "target": "AirPods Pro 2|noise_cancellation ## Sony WF-1000XM5|noise_cancellation"}
+{"task_id": "T20-s03", "question": "How does AirPods Pro 2's noise cancellation compare to Sony WF-1000XM5's?", "target": "AirPods Pro 2|noise_cancellation ## Sony WF-1000XM5|noise_cancellation"}
+{"task_id": "T26", "question": "Which mountain was first climbed earlier: Mount Everest or K2?", "target": "Mount Everest|first_ascent_year ## K2|first_ascent_year"}
+{"task_id": "T26-s01", "question": "Compare Mount Everest and K2 on year of first ascent.", "target": "Mount Everest|first_ascent_year ## K2|first_ascent_year"}
+{"task_id": "T26-s02", "question": "Which is better in terms of year of first ascent: Mount Everest or K2?", "target": "Mount Everest|first_ascent_year ## K2|first_ascent_year"}
+{"task_id": "T26-s03", "question": "How does Mount Everest's year of first ascent compare to K2's?", "target": "Mount Everest|first_ascent_year ## K2|first_ascent_year"}
+{"task_id": "T32", "question": "Which running shoe is lighter: the Nike Pegasus 41 or the Hoka Clifton 9?", "target": "Nike Pegasus 41|weight ## Hoka Clifton 9|weight"}
+{"task_id": "T32-s01", "question": "Compare Nike Pegasus 41 and Hoka Clifton 9 on weight.", "target": "Nike Pegasus 41|weight ## Hoka Clifton 9|weight"}
+{"task_id": "T32-s02", "question": "Which is better in terms of weight: Nike Pegasus 41 or Hoka Clifton 9?", "target": "Nike Pegasus 41|weight ## Hoka Clifton 9|weight"}
+{"task_id": "T32-s03", "question": "How does Nike Pegasus 41's weight compare to Hoka Clifton 9's?", "target": "Nike Pegasus 41|weight ## Hoka Clifton 9|weight"}
+{"task_id": "T38", "question": "What amenities does The Oberoi Rajvilas Jaipur offer?", "target": "Oberoi Rajvilas Jaipur|amenities"}
+{"task_id": "T38-s01", "question": "List the amenities offered by Oberoi Rajvilas Jaipur.", "target": "Oberoi Rajvilas Jaipur|amenities"}
+{"task_id": "T38-s02", "question": "What amenities are available at Oberoi Rajvilas Jaipur?", "target": "Oberoi Rajvilas Jaipur|amenities"}
+{"task_id": "T38-s03", "question": "Name the amenities at Oberoi Rajvilas Jaipur.", "target": "Oberoi Rajvilas Jaipur|amenities"}
+{"task_id": "T41", "question": "Summarize the premise of Mamma Mia! (2008).", "target": "Mamma Mia|summary"}
+{"task_id": "T41-s01", "question": "Give me a brief summary of Mamma Mia.", "target": "Mamma Mia|summary"}
+{"task_id": "T41-s02", "question": "What is the premise of Mamma Mia?", "target": "Mamma Mia|summary"}
+{"task_id": "T41-s03", "question": "Briefly describe the story of Mamma Mia.", "target": "Mamma Mia|summary"}
