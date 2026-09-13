@@ -21,4 +21,4 @@ WRONG_STOP_PENALTY        = 15.0   # penalty for stopping before evidence is suf
                                    # stopping is never the locally optimal choice
 BYTE_COST_PER_KB          =  0.01  # cost per KB fetched
 RETRIEVAL_STEP_COST       =  0.5   # fixed cost per retrieval step
-UNNECESSARY_RETRIEVAL_PENALTY = 5.0  # extra cost for retrieving past sufficiency
+UNNECESSARY_RETRIEVAL_PENALTY = 8.0  # extra cost for retrieving past sufficiency

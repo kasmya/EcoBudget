@@ -154,10 +154,9 @@ def train():
         vr = _val_reward(bandit, builder, val_tasks)
         vs = _val_success_rate(bandit, builder, val_tasks)
 
-        # Select the highest-reward policy among checkpoints that maintain
-        # at least 80% validation task success.
-        MIN_VAL_SUCCESS = 0.80
-        if vs >= MIN_VAL_SUCCESS and vr > best_val_reward:
+        # Save best weights by val success rate first, then val reward as tiebreak.
+        # Success rate is the metric that matters for the poster claim.
+        if (vs > best_val_success) or (vs == best_val_success and vr > best_val_reward):
             best_val_reward = vr
             best_val_success = vs
             best_epoch = epoch + 1

@@ -18,7 +18,6 @@ from backend.adaptive_controller.simulator import SimulatedEpisode
 from backend.adaptive_controller.task_generator import generate_task_pool, split_tasks
 from backend.experiments.train_bandit import N_FEATURES, ALPHA, WEIGHTS_PATH
 from backend.adaptive_controller.actions import Action
-from backend.adaptive_controller.controller import Decision
 
 RESULTS_PATH = os.path.join(os.path.dirname(__file__), "results", "evaluation.json")
 
@@ -38,17 +37,7 @@ def run_bandit_episode(bandit: LinUCBBandit, builder: ContextVectorBuilder, task
     while not episode.done:
         context = episode.current_context()
         x = builder.build(context)
-        # No evidence exists before the first retrieval.
-        # Therefore STOP is not a valid action at step 0.
-        if episode.step_index == 0:
-            decision = Decision(
-                action=Action.RETRIEVE,
-                confidence=1.0,
-                reason="mandatory initial retrieval: no evidence available yet",
-            )
-        else:
-            decision = bandit.decide(x)
-
+        decision = bandit.decide(x)
         if decision.action == Action.STOP or episode.step() is None:
             break
     return {

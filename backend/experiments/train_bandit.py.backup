@@ -14,9 +14,8 @@ from backend.adaptive_controller.rewards import compute_reward
 from backend.adaptive_controller.simulator import SimulatedEpisode
 from backend.adaptive_controller.task_generator import generate_task_pool, split_tasks
 from backend.adaptive_controller.actions import Action
-from backend.adaptive_controller.controller import Decision
 
-N_FEATURES = 10
+N_FEATURES = 9
 ALPHA      = 0.8
 N_EPOCHS   = 20
 WEIGHTS_PATH = os.path.join(os.path.dirname(__file__), "results", "bandit_weights.npz")
@@ -32,17 +31,7 @@ def train_one_episode(bandit: LinUCBBandit, builder: ContextVectorBuilder, task,
     while not episode.done and episode.step_index < limit:
         context = episode.current_context()
         x = builder.build(context)
-        # No evidence exists before the first retrieval.
-        # Therefore STOP is not a valid action at step 0.
-        if episode.step_index == 0:
-            decision = Decision(
-                action=Action.RETRIEVE,
-                confidence=1.0,
-                reason="mandatory initial retrieval: no evidence available yet",
-            )
-        else:
-            decision = bandit.decide(x)
-
+        decision = bandit.decide(x)
         action_counts[decision.action] += 1
 
         bytes_of_step = 0
@@ -74,16 +63,7 @@ def _val_reward(bandit, builder, val_tasks):
         while not episode.done:
             context = episode.current_context()
             x = builder.build(context)
-            # No evidence exists before the first retrieval.
-            if episode.step_index == 0:
-                decision = Decision(
-                    action=Action.RETRIEVE,
-                    confidence=1.0,
-                    reason="mandatory initial retrieval: no evidence available yet",
-                )
-            else:
-                decision = bandit.decide(x)
-
+            decision = bandit.decide(x)
             bytes_of_step = 0
             if decision.action == Action.RETRIEVE and episode.step_index < len(task.steps):
                 bytes_of_step = task.steps[episode.step_index].bytes
@@ -105,16 +85,7 @@ def _val_success_rate(bandit, builder, val_tasks):
         while not episode.done:
             context = episode.current_context()
             x = builder.build(context)
-            # No evidence exists before the first retrieval.
-            if episode.step_index == 0:
-                decision = Decision(
-                    action=Action.RETRIEVE,
-                    confidence=1.0,
-                    reason="mandatory initial retrieval: no evidence available yet",
-                )
-            else:
-                decision = bandit.decide(x)
-
+            decision = bandit.decide(x)
             if decision.action == Action.STOP or episode.step() is None:
                 break
         if episode.step_index >= task.ground_truth_correct_at_step:
@@ -154,10 +125,9 @@ def train():
         vr = _val_reward(bandit, builder, val_tasks)
         vs = _val_success_rate(bandit, builder, val_tasks)
 
-        # Select the highest-reward policy among checkpoints that maintain
-        # at least 80% validation task success.
-        MIN_VAL_SUCCESS = 0.80
-        if vs >= MIN_VAL_SUCCESS and vr > best_val_reward:
+        # Save best weights by val success rate first, then val reward as tiebreak.
+        # Success rate is the metric that matters for the poster claim.
+        if (vs > best_val_success) or (vs == best_val_success and vr > best_val_reward):
             best_val_reward = vr
             best_val_success = vs
             best_epoch = epoch + 1

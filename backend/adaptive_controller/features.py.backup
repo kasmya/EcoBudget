@@ -1,10 +1,17 @@
 """
-Turns a Context into a fixed-length numeric feature vector for the bandit.
+Turns a Context into a fixed-length numeric feature vector for the
+bandit. Deliberately excludes anything eval-only (ground truth).
 
-Features are normalized to comparable scales and deliberately exclude
-anything eval-only (ground truth).
+Feature order is fixed and documented here because LinUCB's weight
+vector has no other way of telling you what each dimension means.
+
+Note on estimated_remaining_information: this field in Context now
+carries marginal confidence gain (how much did the last retrieval step
+improve confidence?), not a step countdown. It is computable from real
+retrieval responses without access to task internals. When it is near
+zero or negative, further retrieval is unlikely to help — that is the
+signal the bandit should learn to act on.
 """
-
 from typing import List
 
 from .context import Context
@@ -16,10 +23,9 @@ FEATURE_NAMES = [
     "answer_confidence",
     "evidence_coverage",
     "steps_taken",
-    "marginal_confidence_gain",
+    "marginal_confidence_gain",   # renamed from estimated_remaining_information
     "relevance_delta",
     "confidence_delta",
-    "retrieval_need",
 ]
 
 
@@ -39,34 +45,25 @@ class ContextVectorBuilder:
 
     def build(self, context: Context) -> List[float]:
         relevance_delta = (
-            0.0
-            if self._prev_relevance is None
+            0.0 if self._prev_relevance is None
             else context.relevance_score - self._prev_relevance
         )
-
         confidence_delta = (
-            0.0
-            if self._prev_confidence is None
+            0.0 if self._prev_confidence is None
             else context.answer_confidence - self._prev_confidence
         )
 
         self._prev_relevance = context.relevance_score
         self._prev_confidence = context.answer_confidence
 
-        retrieval_need = (
-            (1.0 - context.answer_confidence)
-            + (1.0 - context.evidence_coverage)
-        ) / 2.0
-
         return [
-            min(context.data_used / 25000.0, 1.0),
-            min(float(context.resources_seen) / 10.0, 1.0),
+            context.data_used / 1000.0,
+            float(context.resources_seen),
             context.relevance_score,
             context.answer_confidence,
             context.evidence_coverage,
-            min(float(context.steps_taken) / 10.0, 1.0),
-            context.estimated_remaining_information or 0.0,
+            float(context.steps_taken),
+            context.estimated_remaining_information or 0.0,  # marginal confidence gain
             relevance_delta,
             confidence_delta,
-            retrieval_need,
         ]
