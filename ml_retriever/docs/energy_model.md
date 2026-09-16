@@ -49,7 +49,7 @@ the same quantity, within ~4% and the same order of magnitude; the paper reports
 the IEA value and states the coefficient explicitly so it is swappable. This is
 deliberate, not a discrepancy.
 
-## Phase A finding (val, headline tasks, n=28)
+## Phase A finding (val, headline tasks, n=28 at the time; current runs use n=92 val / n=124 test)
 - **Compute dominates transfer by ~100×.** Per query: compute ≈ 5–11 J,
   transfer ≈ 0.03–0.15 J → compute is **98.6–99.4%** of total energy. At
   short-snippet payloads, *saving bytes alone saves almost nothing.* The naive
@@ -90,7 +90,7 @@ de-duplicating page fetches by `source_url`:
 | html_page | 60 KB / unique page (SUPERSEDED: now measured 506 KB, see Tier A addendum) | assumed, later measured |
 | full_page | 2 MB / unique page | HTTP-Archive-class median full page weight |
 
-## The crossover finding (val, headline, n=28) — total J/query
+## The crossover finding (val, headline, n=28 at the time; superseded by the Phase G / Tier A tables below at n=92) — total J/query
 | condition | text | resource | html_page | full_page |
 |---|---|---|---|---|
 | bandit | 6.09 | 6.35 | 25.3 | 647 |

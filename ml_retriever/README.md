@@ -314,6 +314,9 @@ model to about 100 joules under aggressive fast-dormancy release). See
 - Honesty: a strong retriever shrinks the learned policy's edge over a hand-tuned
   heuristic to zero; the value of adaptivity is a function of retrieval
   uncertainty, and I report that rather than hide it.
+- Framing: the contribution is the task-sufficient loading framework plus the 5G
+  energy and radio characterization. Among learned policies, LinUCB is the stable
+  recommended choice; the custom SGD bandit is not presented as the method.
 - Tests: 169 passing, and the no-LLM-API guard is green.
 
 ## Repository layout
@@ -514,4 +517,20 @@ payload and real-page data:
   and currently fail, and two retrieval near-synonyms miss at rank 1.
 - One methodological item raised by the multi-seed result: either stabilize the
   SGD bandit or adopt LinUCB as the reported learned policy (my recommendation).
-```
+
+## Limitations (stated plainly)
+
+- The contribution is the task-sufficient framing plus the 5G energy and radio
+  characterization, not a new learning algorithm. Among learned policies I
+  recommend LinUCB (stable across seeds); my custom SGD bandit ties it on a good
+  seed but is high-variance, so I do not present it as the method.
+- Answer quality degrades on raw live-page text (the corpus-to-web domain gap).
+  The noise-augmented answerer narrows this, but the models are still trained on
+  a structured corpus, so real-web answer quality is a known ceiling.
+- The corpus is domain-narrow (products, travel, specifications) and 90 of its
+  source URLs are synthetic, so external validity beyond these domains is
+  untested. The measured page-weight distribution comes from 19 real pages.
+- Narrative tasks have no training coverage and currently fail; they are excluded
+  from the headline metrics and reported as a gap rather than hidden.
+- Energy is a first-order FLOPs-and-per-bit model with cited coefficients and
+  reported sensitivity ranges, not a hardware power measurement.

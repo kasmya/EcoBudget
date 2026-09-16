@@ -83,35 +83,135 @@
     .menu-btn{display:block;}
   }
 
-  /* Hero */
+  /* Hero — full-screen video background with the headline over it */
   .hero{
     position:relative;overflow:hidden;
-    padding:150px 24px 0;
-    background:radial-gradient(120% 100% at 50% 0%, #fdfff2 0%, #f2f5e0 40%, var(--bg) 100%);
-    border-radius:0 0 32px 32px;
-    text-align:center;
+    min-height:100vh;min-height:100svh;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:120px 24px 40px;
+    color:#f4f6ec;                    /* light text over the video, both themes */
   }
-  @media (prefers-color-scheme: dark){
-    .hero{background:radial-gradient(120% 100% at 50% 0%, #1a1f10 0%, #12140c 40%, var(--bg) 100%);}
+  .hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden;}
+  .hero-video-stage{position:absolute;inset:0;width:100%;height:100%;background:#0b0d08;}
+  .hero-video{
+    position:absolute;inset:0;width:100%;height:100%;
+    object-fit:cover;                 /* fill the whole window, no letterboxing */
+    opacity:0;transition:opacity .6s ease;background:#0b0d08;
   }
+  .hero-video.is-active{opacity:1;}
+  /* dark scrim + soft blurred edge vignette for text legibility */
+  .hero-scrim{
+    position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:
+      linear-gradient(180deg, rgba(8,10,5,.72) 0%, rgba(8,10,5,.34) 32%, rgba(8,10,5,.44) 66%, rgba(8,10,5,.86) 100%),
+      radial-gradient(120% 90% at 50% 42%, rgba(0,0,0,0) 40%, rgba(6,8,4,.55) 100%);
+    box-shadow:inset 0 0 120px 40px rgba(6,8,4,.6);
+    backdrop-filter:blur(0.5px);
+  }
+  .hero-content{position:relative;z-index:2;max-width:760px;}
   .badge{
     display:inline-flex;align-items:center;gap:6px;
-    padding:8px 16px;border-radius:999px;border:1px solid var(--border);
-    background:var(--bg);font-size:13px;font-weight:500;margin-bottom:24px;
+    padding:8px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.22);
+    background:rgba(255,255,255,.08);backdrop-filter:blur(10px);
+    font-size:13px;font-weight:500;margin-bottom:24px;color:#eef3df;
   }
   .badge span{color:var(--accent);}
-  h1.hero-title{font-size:58px;font-weight:600;letter-spacing:-0.03em;line-height:1.1;margin:0 0 22px;}
-  h1.hero-title em{font-style:italic;font-family:Georgia,"Times New Roman",serif;color:#7a9c2e;}
-  .hero p.sub{font-size:18px;color:var(--muted);max-width:600px;margin:0 auto 32px;}
+  h1.hero-title{font-size:64px;font-weight:600;letter-spacing:-0.03em;line-height:1.08;margin:0 0 22px;
+                text-shadow:0 2px 30px rgba(0,0,0,.45);}
+  h1.hero-title em{font-style:italic;font-family:Georgia,"Times New Roman",serif;color:#bfe86a;}
+  .hero p.sub{font-size:18px;color:rgba(244,246,236,.86);max-width:620px;margin:0 auto 32px;
+              text-shadow:0 1px 16px rgba(0,0,0,.4);}
   .hero .btnrow{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
-  @media (max-width:850px){ h1.hero-title{font-size:34px;} .hero{padding-top:110px;text-align:left;} .hero .badge, .hero p.sub, .hero .btnrow{margin-left:0;justify-content:flex-start;} }
+  .btn-glass{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);
+             color:#f4f6ec;backdrop-filter:blur(10px);}
+  .btn-glass:hover{background:rgba(255,255,255,.2);}
+  /* local-models strip pinned to the bottom of the hero */
+  .hero-logos{position:relative;z-index:2;margin-top:auto;padding-top:48px;width:100%;}
+  .hero-logos .logos-label{text-align:center;font-size:12px;text-transform:uppercase;
+                           letter-spacing:.08em;color:rgba(244,246,236,.6);margin-bottom:16px;}
+  .hero-logos ul{display:flex;gap:40px;list-style:none;padding:0;margin:0;justify-content:center;
+                 flex-wrap:wrap;opacity:.82;font-weight:600;font-size:14px;color:#e7ecd6;}
+  @media (max-width:850px){ h1.hero-title{font-size:38px;} .hero{padding-top:100px;} .hero-logos ul{gap:20px;font-size:12px;} }
 
-  .hero-shot{max-width:900px;margin:56px auto 0;padding:0 24px 0;}
-  .hero-shot-frame{
-    border-radius:20px;overflow:hidden;border:1px solid var(--border);
-    box-shadow:0 30px 60px rgba(0,0,0,.12);
+  /* ===== Interactive demo: iPhone mockup + task-sufficient loading ===== */
+  .demo{padding:100px 24px;background:var(--frame);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+  .demo-grid{display:grid;grid-template-columns:1fr 360px;gap:64px;align-items:center;max-width:1000px;margin:0 auto;}
+  @media (max-width:900px){.demo-grid{grid-template-columns:1fr;gap:40px;justify-items:center;}}
+  .demo-copy h2{font-size:38px;letter-spacing:-0.02em;margin:0 0 14px;}
+  .demo-copy p{color:var(--muted);font-size:16px;max-width:420px;margin:0 0 24px;}
+  .demo-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;}
+  .demo-chip{
+    padding:9px 14px;border-radius:999px;border:1px solid var(--border);
+    background:var(--bg);font-size:13px;font-weight:500;cursor:pointer;color:var(--fg);
+    transition:all .15s ease;
   }
-  .mock-dashboard{width:100%;display:block;background:#151a0d;}
+  .demo-chip:hover{border-color:var(--accent);}
+  .demo-chip.active{background:var(--fg);color:var(--bg);border-color:var(--fg);}
+  .demo-readout{display:flex;gap:20px;flex-wrap:wrap;}
+  .demo-readout .r{min-width:120px;}
+  .demo-readout .r .n{font-size:30px;font-weight:700;letter-spacing:-0.02em;color:#5f8a1f;}
+  @media(prefers-color-scheme:dark){.demo-readout .r .n{color:var(--accent);}}
+  .demo-readout .r .l{font-size:12px;color:var(--muted);margin-top:2px;}
+
+  /* iPhone mockup (vanilla port of the shadcn component) */
+  .iphone{
+    position:relative;width:300px;height:610px;border-radius:56px;
+    padding:12px;box-sizing:border-box;
+    background:linear-gradient(135deg,#2b2d33 0%,#1c1e22 40%,#0e0f12 100%);
+    box-shadow:0 30px 70px rgba(0,0,0,.45),0 4px 12px rgba(0,0,0,.3);
+    flex:none;
+  }
+  .iphone-screen{
+    position:relative;width:100%;height:100%;border-radius:46px;overflow:hidden;
+    background:#0b0d08;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.04),inset 0 8px 18px rgba(0,0,0,.35);
+    display:flex;flex-direction:column;
+  }
+  .iphone-island{
+    position:absolute;top:12px;left:50%;transform:translateX(-50%);
+    width:110px;height:32px;background:#000;border-radius:20px;z-index:5;
+  }
+  .app{display:flex;flex-direction:column;height:100%;color:#f3f3ee;
+       font-size:13px;padding:58px 16px 20px;overflow:hidden;}
+  .app-q{font-size:14px;font-weight:600;line-height:1.35;margin-bottom:14px;min-height:38px;}
+  .app-q .qlabel{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#8a9770;display:block;margin-bottom:4px;font-weight:700;}
+  .stage-list{display:flex;flex-direction:column;gap:8px;flex:1;overflow:hidden;}
+  .stage{display:flex;align-items:flex-start;gap:10px;opacity:.28;transition:opacity .4s ease;}
+  .stage.on{opacity:1;}
+  .stage .dot{width:20px;height:20px;border-radius:50%;background:#2a2f1d;flex:none;
+              display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;
+              color:#8a9770;transition:all .3s ease;margin-top:1px;}
+  .stage.on .dot{background:var(--accent);color:#12180a;}
+  .stage .st-body{flex:1;min-width:0;}
+  .stage .st-title{font-weight:600;font-size:12px;}
+  .stage .st-sub{font-size:11px;color:#b9c39a;line-height:1.4;margin-top:2px;min-height:0;}
+  .pill{display:inline-block;background:rgba(168,217,70,.15);border:1px solid rgba(168,217,70,.35);
+        color:#cfe3a0;border-radius:8px;padding:2px 7px;font-size:10px;margin:3px 3px 0 0;}
+  .passage{background:#14180d;border:1px solid #262c15;border-radius:9px;padding:7px 9px;margin-top:5px;
+           font-size:10.5px;color:#c7d3a6;line-height:1.35;opacity:0;transform:translateY(6px);
+           transition:opacity .3s ease,transform .3s ease;}
+  .passage.show{opacity:1;transform:none;}
+  .answer{background:linear-gradient(135deg,#26361a,#1a2412);border:1px solid rgba(168,217,70,.4);
+          border-radius:11px;padding:10px 12px;margin-top:6px;opacity:0;transform:translateY(6px);
+          transition:opacity .35s ease,transform .35s ease;}
+  .answer.show{opacity:1;transform:none;}
+  .answer .albl{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#8a9770;font-weight:700;}
+  .answer .aval{font-size:14px;font-weight:700;color:#e9f5c9;margin-top:2px;}
+  /* byte race bars */
+  .bars{margin-top:12px;display:flex;flex-direction:column;gap:9px;}
+  .bar-row .bl{display:flex;justify-content:space-between;font-size:10px;color:#b9c39a;margin-bottom:3px;}
+  .bar-track{height:9px;border-radius:6px;background:#1b2010;overflow:hidden;}
+  .bar-fill{height:100%;width:0;border-radius:6px;transition:width 1.3s cubic-bezier(.4,0,.2,1);}
+  .bar-fill.full{background:linear-gradient(90deg,#e76f51,#c14f34);}
+  .bar-fill.task{background:linear-gradient(90deg,#a8d946,#8fc23e);}
+  .app-run{margin-top:14px;}
+  .app-run button{
+    width:100%;padding:13px;border-radius:14px;border:none;cursor:pointer;
+    background:var(--accent);color:#12180a;font-weight:700;font-size:14px;
+    transition:transform .12s ease,opacity .2s ease;
+  }
+  .app-run button:hover{transform:translateY(-1px);}
+  .app-run button:disabled{opacity:.5;cursor:default;transform:none;}
 
   .logos{padding:56px 24px;overflow:hidden;}
   .logos-label{text-align:center;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:20px;}
@@ -206,6 +306,7 @@
     <a href="#" class="logo"><span class="logo-dot"></span>EcoBudget</a>
     <nav class="links">
       <a href="#overview">Overview</a>
+      <a href="#try">Demo</a>
       <a href="#architecture">Architecture</a>
       <a href="#roadmap">Roadmap</a>
       <a href="#results">Results</a>
@@ -219,46 +320,30 @@
 </header>
 
 <section class="hero" id="overview">
-  <div class="badge">Targeting a 5G-green venue <span>✦</span></div>
-  <h1 class="hero-title">Task-sufficient retrieval<br/>for <em>greener</em> 5G QA</h1>
-  <p class="sub">A question answering system that decides, per question, exactly how much web evidence it needs, stops as soon as it has enough, and moves fewer bytes and spends less energy over a 5G link — without losing answer quality. Built entirely on local models, no hosted LLM API anywhere in the pipeline.</p>
-  <div class="btnrow">
-    <button class="btn btn-dark">Read the docs →</button>
-    <button class="btn btn-outline">Browse the repo</button>
+  <div class="hero-bg" aria-hidden="true">
+    <div class="hero-video-stage" id="videoStage">
+      <video class="hero-video is-active" id="heroVidA" muted playsinline preload="auto"
+             autoplay aria-label="EcoBudget concept animation">
+        <source src="public/Animate_this_exact_landscape_i.mp4" type="video/mp4" />
+      </video>
+      <video class="hero-video" id="heroVidB" muted playsinline preload="auto" aria-hidden="true">
+        <source src="public/Animate_this_exact_landscape_i.mp4" type="video/mp4" />
+      </video>
+    </div>
+    <div class="hero-scrim"></div>
   </div>
 
-  <div class="hero-shot">
-    <div class="hero-shot-frame">
-      <svg class="mock-dashboard" viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg">
-        <rect width="900" height="460" fill="#12160b"/>
-        <text x="30" y="40" fill="#8a9770" font-family="monospace" font-size="12">bytes moved per query, by condition</text>
-        <!-- bars -->
-        <rect x="60" y="330" width="90" height="60" fill="#a8d946"/>
-        <text x="70" y="410" fill="#cfe3a0" font-family="monospace" font-size="11">bandit</text>
-        <text x="70" y="320" fill="#e9f5c9" font-family="monospace" font-size="12">106B</text>
-
-        <rect x="190" y="325" width="90" height="65" fill="#8fc23e"/>
-        <text x="196" y="410" fill="#cfe3a0" font-family="monospace" font-size="11">linucb</text>
-        <text x="200" y="315" fill="#e9f5c9" font-family="monospace" font-size="12">108B</text>
-
-        <rect x="320" y="280" width="90" height="110" fill="#5c7a2b"/>
-        <text x="300" y="410" fill="#cfe3a0" font-family="monospace" font-size="11">heuristic</text>
-        <text x="330" y="270" fill="#e9f5c9" font-family="monospace" font-size="12">136B</text>
-
-        <rect x="450" y="335" width="90" height="55" fill="#3f5220"/>
-        <text x="410" y="410" fill="#cfe3a0" font-family="monospace" font-size="11">one_per_req</text>
-        <text x="460" y="325" fill="#e9f5c9" font-family="monospace" font-size="12">101B</text>
-
-        <rect x="580" y="40" width="90" height="350" fill="#2a2f1d"/>
-        <text x="600" y="410" fill="#cfe3a0" font-family="monospace" font-size="11">full</text>
-        <text x="600" y="30" fill="#e9f5c9" font-family="monospace" font-size="12">420B</text>
-
-        <line x1="40" y1="390" x2="860" y2="390" stroke="#3a4028" stroke-width="1"/>
-      </svg>
+  <div class="hero-content">
+    <div class="badge">Targeting a 5G-green venue <span>✦</span></div>
+    <h1 class="hero-title">Task-sufficient retrieval<br/>for <em>greener</em> 5G QA</h1>
+    <p class="sub">A question answering system that decides, per question, exactly how much web evidence it needs, stops as soon as it has enough, and moves fewer bytes and spends less energy over a 5G link, without losing answer quality. Built entirely on local models, no hosted LLM API anywhere in the pipeline.</p>
+    <div class="btnrow">
+      <button class="btn btn-accent">Read the docs →</button>
+      <button class="btn btn-glass">Browse the repo</button>
     </div>
   </div>
 
-  <div class="logos">
+  <div class="hero-logos">
     <div class="logos-label">Built on local, open models</div>
     <ul>
       <li>flan-t5-base + LoRA</li><li>MiniLM bi-encoder</li><li>RoBERTa QA</li>
@@ -277,6 +362,45 @@
       <li><strong>Decide.</strong> A learned stopping policy decides after each retrieval whether it already has enough evidence (STOP) or should pull one more passage (RETRIEVE).</li>
       <li><strong>Answer and measure.</strong> Generate the answer from only the evidence actually gathered, then measure the bytes moved and the energy that implies on a 5G access path.</li>
     </ol>
+  </div>
+</section>
+
+<section class="demo" id="try">
+  <div class="demo-grid">
+    <div class="demo-copy">
+      <div class="lede" style="font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:16px;">See it work</div>
+      <h2>Load only what the task needs</h2>
+      <p>Pick a question and tap load. Watch the pipeline decompose it, retrieve just enough evidence, stop early, and answer, while a full-page load hauls the entire page. The numbers are the ones measured on real pages.</p>
+      <div class="demo-chips" id="demoChips">
+        <button class="demo-chip active" data-i="0">iPhone 16 refresh rate?</button>
+        <button class="demo-chip" data-i="1">Galaxy S24 Ultra weight?</button>
+        <button class="demo-chip" data-i="2">Pixel 9 vs OnePlus 12 battery?</button>
+      </div>
+      <div class="demo-readout">
+        <div class="r"><div class="n" id="roBytes">—</div><div class="l">bytes vs full page</div></div>
+        <div class="r"><div class="n" id="roEnergy">—</div><div class="l">transfer energy saved</div></div>
+        <div class="r"><div class="n" id="roFetch">—</div><div class="l">passages loaded</div></div>
+      </div>
+    </div>
+
+    <div class="iphone" aria-label="Interactive EcoBudget demo on an iPhone">
+      <div class="iphone-island"></div>
+      <div class="iphone-screen">
+        <div class="app">
+          <div class="app-q"><span class="qlabel">Question</span><span id="appQ">What is the display refresh rate of the iPhone 16?</span></div>
+          <div class="stage-list" id="stageList">
+            <div class="stage" data-s="0"><div class="dot">1</div><div class="st-body"><div class="st-title">Decompose</div><div class="st-sub" id="s0">into (entity, attribute)</div></div></div>
+            <div class="stage" data-s="1"><div class="dot">2</div><div class="st-body"><div class="st-title">Retrieve &amp; decide</div><div class="st-sub" id="s1">gate to entity, rank by attribute</div></div></div>
+            <div class="stage" data-s="2"><div class="dot">3</div><div class="st-body"><div class="st-title">Answer</div><div class="st-sub" id="s2">from only what was loaded</div></div></div>
+          </div>
+          <div class="bars">
+            <div class="bar-row"><div class="bl"><span>Full page load</span><span id="blFull">506 KB</span></div><div class="bar-track"><div class="bar-fill full" id="barFull"></div></div></div>
+            <div class="bar-row"><div class="bl"><span>Task-sufficient</span><span id="blTask">— KB</span></div><div class="bar-track"><div class="bar-fill task" id="barTask"></div></div></div>
+          </div>
+          <div class="app-run"><button id="runBtn">Tap to load ↓</button></div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -500,6 +624,114 @@
       if(!wasOpen) item.classList.add('open');
     });
   });
+
+  /* ===== Seamless hero-video loop (crossfade two copies to hide the seam) ===== */
+  (function(){
+    var A=document.getElementById('heroVidA'), B=document.getElementById('heroVidB');
+    if(!A||!B) return;
+    var vids=[A,B], active=0, FADE=0.55, swapping=false;
+    vids.forEach(function(v){ v.muted=true; v.loop=false; v.playbackRate=1; });
+    A.play().catch(function(){});
+    function maybeSwap(v){
+      var cur=vids[active];
+      if(v!==cur || swapping || !cur.duration) return;
+      if(cur.currentTime < cur.duration - FADE) return;
+      swapping=true;
+      var nxt=vids[1-active], old=cur;
+      try{ nxt.currentTime=0; }catch(e){}
+      nxt.play().catch(function(){});
+      nxt.classList.add('is-active');
+      old.classList.remove('is-active');
+      active=1-active;
+      setTimeout(function(){ try{old.pause();}catch(e){} swapping=false; }, FADE*1000+80);
+    }
+    // timeupdate fires during playback regardless of tab visibility (unlike rAF);
+    // 'ended' is a safety net in case a browser skips the last timeupdate.
+    vids.forEach(function(v){
+      v.addEventListener('timeupdate', function(){ maybeSwap(v); });
+      v.addEventListener('ended', function(){
+        if(vids[active]===v && !swapping){ v.currentTime=Math.max(0,(v.duration||1)-FADE); maybeSwap(v); }
+      });
+    });
+  })();
+
+  /* ===== Interactive EcoBudget demo (real measured numbers) ===== */
+  var DEMO = [
+    { q:"What is the display refresh rate of the iPhone 16?",
+      pills:["iPhone 16","display refresh rate"],
+      passages:["The iPhone 16 has a display with a 60Hz refresh rate."],
+      answer:"60Hz", fullKB:54.0, taskKB:3.9, reduction:92.8, jFull:9.89, jTask:0.71, reqs:1 },
+    { q:"What is the weight of the Samsung Galaxy S24 Ultra?",
+      pills:["Samsung Galaxy S24 Ultra","weight"],
+      passages:["The Samsung Galaxy S24 Ultra weighs about 232 grams."],
+      answer:"232 g", fullKB:56.3, taskKB:1.2, reduction:97.8, jFull:10.31, jTask:0.23, reqs:1 },
+    { q:"Compare the Google Pixel 9 and OnePlus 12 on battery.",
+      pills:["Google Pixel 9","battery","OnePlus 12","battery"],
+      passages:["The Google Pixel 9 has a 4700 mAh battery.","The OnePlus 12 has a 5400 mAh battery."],
+      answer:"4700 mAh, 5400 mAh", fullKB:108.0, taskKB:0.2, reduction:99.8, jFull:19.8, jTask:0.04, reqs:2 }
+  ];
+  var cur = 0, running = false;
+  var $ = function(id){ return document.getElementById(id); };
+  function reset(){
+    document.querySelectorAll('.demo .stage').forEach(function(s){ s.classList.remove('on'); });
+    $('s0').innerHTML = "into (entity, attribute)";
+    $('s1').innerHTML = "gate to entity, rank by attribute";
+    $('s2').innerHTML = "from only what was loaded";
+    $('barFull').style.width = "0"; $('barTask').style.width = "0";
+    $('blTask').textContent = "— KB";
+    $('roBytes').textContent = "—"; $('roEnergy').textContent = "—"; $('roFetch').textContent = "—";
+  }
+  function select(i){
+    cur = i; reset();
+    document.querySelectorAll('#demoChips .demo-chip').forEach(function(c){
+      c.classList.toggle('active', +c.dataset.i === i);
+    });
+    $('appQ').textContent = DEMO[i].q;
+    $('blFull').textContent = DEMO[i].fullKB + " KB";
+    $('runBtn').textContent = "Tap to load ↓"; $('runBtn').disabled = false;
+  }
+  function run(){
+    if(running) return;
+    running = true; reset();
+    var d = DEMO[cur], b = $('runBtn');
+    b.disabled = true; b.textContent = "Loading…";
+    var pillHtml = d.pills.map(function(p){ return '<span class="pill">'+p+'</span>'; }).join('');
+    // stage 1: decompose
+    setTimeout(function(){ document.querySelector('.demo .stage[data-s="0"]').classList.add('on');
+      $('s0').innerHTML = pillHtml; }, 350);
+    // stage 2: retrieve + full-page bar starts hauling the whole page
+    setTimeout(function(){ document.querySelector('.demo .stage[data-s="1"]').classList.add('on');
+      $('barFull').style.width = "100%";
+      var html = "gate to entity, rank by attribute";
+      d.passages.forEach(function(p,k){
+        html += '<div class="passage" id="pz'+k+'">'+p+'</div>';
+      });
+      $('s1').innerHTML = html;
+      d.passages.forEach(function(p,k){
+        setTimeout(function(){ var el=$('pz'+k); if(el) el.classList.add('show'); }, 250*(k+1));
+      });
+      setTimeout(function(){
+        $('s1').innerHTML += '<div style="margin-top:6px;font-size:11px;color:#a8d946;font-weight:700;">Evidence sufficient — STOP ✓</div>';
+        $('barTask').style.width = Math.max(d.taskKB / d.fullKB * 100, 1.5) + "%";
+        $('blTask').textContent = d.taskKB + " KB";
+      }, 250*(d.passages.length+1) + 200);
+    }, 1200);
+    // stage 3: answer
+    setTimeout(function(){ document.querySelector('.demo .stage[data-s="2"]').classList.add('on');
+      $('s2').innerHTML = '<div class="answer show"><div class="albl">Answer</div><div class="aval">'+d.answer+'</div></div>'; }, 2700);
+    // readouts
+    setTimeout(function(){
+      $('roBytes').textContent = "−" + d.reduction + "%";
+      $('roEnergy').textContent = (d.jFull - d.jTask).toFixed(1) + " J";
+      $('roFetch').textContent = d.passages.length + " of " + d.reqs;
+      b.disabled = false; b.textContent = "Replay ↺"; running = false;
+    }, 3100);
+  }
+  document.querySelectorAll('#demoChips .demo-chip').forEach(function(c){
+    c.addEventListener('click', function(){ if(!running) select(+c.dataset.i); });
+  });
+  $('runBtn').addEventListener('click', run);
+  select(0);
 </script>
 </body>
 </html>
