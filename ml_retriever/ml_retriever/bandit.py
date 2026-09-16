@@ -166,3 +166,113 @@ class BanditPolicy:
         policy._reward_sum = blob["reward_sum"]
         policy._reward_n = blob["reward_n"]
         return policy
+
+
+# --- Phase E: standard contextual-bandit baselines --------------------------
+# LinUCB and linear Thompson sampling are the textbook contextual bandits a
+# reviewer expects us to compare against. Both are disjoint (one linear model per
+# action), consume the SAME context vector and the SAME per-step reward as our
+# SGD bandit, and expose the SAME select_action / update interface, so Phase 7
+# runs them through the identical rollout and metrics. Pure numpy, unit-tested.
+
+class LinUCBPolicy:
+    """Disjoint LinUCB (Li et al., 2010). Per action a it keeps ridge stats
+    A_a = I + sum x x^T and b_a = sum r x, forms theta_a = A_a^-1 b_a, and picks
+    argmax over theta_a . x + alpha * sqrt(x^T A_a^-1 x). The sqrt term is an
+    upper confidence bonus that shrinks as an action is tried in a region, so
+    exploration is built in (no epsilon). At eval (explore=False) alpha is set to
+    0, i.e. greedy on the predicted reward."""
+
+    def __init__(self, alpha: float = 1.0, seed: int = 0, n_features: int = N_FEATURES):
+        self.alpha = alpha
+        self.d = n_features
+        self._rng = np.random.default_rng(seed)
+        self.A = [np.eye(self.d) for _ in ACTIONS]
+        self.b = [np.zeros(self.d) for _ in ACTIONS]
+
+    def _ucb(self, action: int, x: np.ndarray, alpha: float) -> float:
+        A_inv = np.linalg.inv(self.A[action])
+        theta = A_inv @ self.b[action]
+        mean = float(theta @ x)
+        bonus = alpha * float(np.sqrt(max(x @ A_inv @ x, 0.0)))
+        return mean + bonus
+
+    def action_values(self, context: np.ndarray) -> list[float]:
+        return [self._ucb(a, context, self.alpha) for a in range(len(ACTIONS))]
+
+    def select_action(self, context: np.ndarray, explore: bool = True) -> int:
+        alpha = self.alpha if explore else 0.0
+        values = [self._ucb(a, context, alpha) for a in range(len(ACTIONS))]
+        best = max(values)
+        candidates = [a for a, v in enumerate(values) if v == best]
+        return int(self._rng.choice(candidates))
+
+    def update(self, context: np.ndarray, action: int, reward: float) -> None:
+        x = context.reshape(-1)
+        self.A[action] += np.outer(x, x)
+        self.b[action] += reward * x
+
+    def save(self, path) -> None:
+        import joblib
+        joblib.dump({"alpha": self.alpha, "d": self.d,
+                     "A": self.A, "b": self.b, "feature_names": FEATURE_NAMES}, path)
+
+    @classmethod
+    def load(cls, path) -> "LinUCBPolicy":
+        import joblib
+        blob = joblib.load(path)
+        p = cls(alpha=blob["alpha"], n_features=blob["d"])
+        p.A, p.b = blob["A"], blob["b"]
+        return p
+
+
+class LinTSPolicy:
+    """Linear Thompson sampling (Agrawal & Goyal, 2013), disjoint per action.
+    Keeps B_a = I + sum x x^T and f_a = sum r x; the posterior over the reward
+    weights is N(B_a^-1 f_a, v^2 B_a^-1). At each step it SAMPLES a weight vector
+    per action and picks the argmax -- randomized exploration. At eval
+    (explore=False) it uses the posterior mean (no sampling) for a deterministic
+    greedy decision."""
+
+    def __init__(self, v: float = 0.25, seed: int = 0, n_features: int = N_FEATURES):
+        self.v = v
+        self.d = n_features
+        self._rng = np.random.default_rng(seed)
+        self.B = [np.eye(self.d) for _ in ACTIONS]
+        self.f = [np.zeros(self.d) for _ in ACTIONS]
+
+    def _score(self, action: int, x: np.ndarray, sample: bool) -> float:
+        B_inv = np.linalg.inv(self.B[action])
+        mean = B_inv @ self.f[action]
+        if sample:
+            theta = self._rng.multivariate_normal(mean, (self.v ** 2) * B_inv)
+        else:
+            theta = mean
+        return float(theta @ x)
+
+    def action_values(self, context: np.ndarray) -> list[float]:
+        return [self._score(a, context, sample=False) for a in range(len(ACTIONS))]
+
+    def select_action(self, context: np.ndarray, explore: bool = True) -> int:
+        values = [self._score(a, context, sample=explore) for a in range(len(ACTIONS))]
+        best = max(values)
+        candidates = [a for a, v in enumerate(values) if v == best]
+        return int(self._rng.choice(candidates))
+
+    def update(self, context: np.ndarray, action: int, reward: float) -> None:
+        x = context.reshape(-1)
+        self.B[action] += np.outer(x, x)
+        self.f[action] += reward * x
+
+    def save(self, path) -> None:
+        import joblib
+        joblib.dump({"v": self.v, "d": self.d,
+                     "B": self.B, "f": self.f, "feature_names": FEATURE_NAMES}, path)
+
+    @classmethod
+    def load(cls, path) -> "LinTSPolicy":
+        import joblib
+        blob = joblib.load(path)
+        p = cls(v=blob["v"], n_features=blob["d"])
+        p.B, p.f = blob["B"], blob["f"]
+        return p

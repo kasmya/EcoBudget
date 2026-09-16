@@ -18,7 +18,7 @@ import joblib
 from ml_retriever.answer import EvidenceAnswerGenerator
 from ml_retriever.bandit import BanditPolicy
 from ml_retriever.evidence import CachedScorer, QAScorer
-from ml_retriever.retriever import RequirementRetriever
+from ml_retriever.retriever import EntityAwareRetriever
 from ml_retriever.rollout import (
     build_candidates,
     decide_heuristic,
@@ -55,7 +55,7 @@ def reqs_of(t):
 
 def main():
     corpus = load_corpus()
-    retriever = RequirementRetriever(corpus)
+    retriever = EntityAwareRetriever(corpus)  # Phase D/G: entity-gate + attribute-rank
     scorer = CachedScorer(QAScorer())
     answer_gen = EvidenceAnswerGenerator()
 

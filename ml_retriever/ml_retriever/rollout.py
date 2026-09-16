@@ -260,6 +260,24 @@ def make_fixed_budget_decider(max_retrieves: int) -> Decider:
     return decide
 
 
+def decide_adaptive_rag(ctx: np.ndarray, state: EpisodeState) -> int:
+    """Phase E external baseline: a faithful analog of Adaptive-RAG (Jeong et
+    al., NAACL 2024), which routes a query by predicted COMPLEXITY to a fixed
+    strategy -- simple queries get single-step retrieval, complex queries get
+    iterative multi-step retrieval. Here the complexity signal is the number of
+    requirements (single-hop vs multi-hop), which is exactly what Adaptive-RAG's
+    classifier is trained to predict:
+      - 1 requirement  -> single-step: retrieve one passage, then stop.
+      - >=2 requirements -> multi-step: retrieve iteratively until the evidence
+        tracker is sufficient (adaptive), like its multi-hop branch.
+    This is a reimplementation of the routing idea, not the original model, and
+    is labelled as such in Phase 7. It differs from `decide_heuristic` (which is
+    adaptive for ALL queries) and from `decide_one_per_req` (always one each)."""
+    if len(state.requirements) <= 1:
+        return RETRIEVE if len(state.added_ids) < 1 else STOP
+    return STOP if state.tracker.is_sufficient() else RETRIEVE
+
+
 def make_byte_budget_decider(budget_bytes: int) -> Decider:
     """Fixed-byte-budget with STRICT enforcement: only retrieve the next passage
     if it fits within the remaining budget, so the cumulative payload never

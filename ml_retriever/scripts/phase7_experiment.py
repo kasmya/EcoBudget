@@ -19,15 +19,17 @@ from pathlib import Path
 import joblib
 
 from ml_retriever.answer import GenerativeAnswerGenerator
-from ml_retriever.bandit import RETRIEVE, STOP, BanditPolicy
+from ml_retriever.bandit import RETRIEVE, STOP, BanditPolicy, LinUCBPolicy, LinTSPolicy
 from ml_retriever.decomposer import TaskDecomposer
-from ml_retriever.energy import SCENARIOS, EnergyAccountant, query_op_counts
+from ml_retriever.energy import (
+    SCENARIOS, EnergyAccountant, RadioStateModel, query_op_counts,
+)
 from ml_retriever.evidence import CachedScorer, EvidenceCoverageTracker, QAScorer
 from ml_retriever.judge import judge_task
-from ml_retriever.retriever import RequirementRetriever
+from ml_retriever.retriever import EntityAwareRetriever
 from ml_retriever.rollout import (
     EpisodeState, build_candidates, build_context, decide_heuristic,
-    decide_one_per_req, decide_full, make_byte_budget_decider,
+    decide_one_per_req, decide_full, decide_adaptive_rag, make_byte_budget_decider,
 )
 from ml_retriever.types import Passage, Requirement
 
@@ -101,21 +103,28 @@ def bootstrap_ci(diffs, iters=2000, seed=0):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=30)
+    ap.add_argument("--split", choices=["val", "test"], default="val",
+                    help="evaluation split. 'test' is the FROZEN final run -- use exactly once.")
     args = ap.parse_args()
+    if args.split == "test":
+        print("!! FROZEN TEST SPLIT: this is the single final run. Configs must be frozen. !!\n")
 
     corpus = load_corpus()
     by_id = {p.passage_id: p for p in corpus}
-    retriever = RequirementRetriever(corpus)
+    retriever = EntityAwareRetriever(corpus)  # Phase D/G: entity-gate + attribute-rank
     scorer = CachedScorer(QAScorer())
     decomposer = TaskDecomposer("models/decomposer-base-lora", adapter_path="models/decomposer-base-lora",
                                 attribute_vocab=sorted({p.metadata["attribute"] for p in corpus}))
     answerer = GenerativeAnswerGenerator("models/answer-base", adapter_path="models/answer-base")
     policy = BanditPolicy.load(MODELS / "bandit_policy.joblib")
     normalizer = joblib.load(MODELS / "bandit_normalizer.joblib")
+    # Phase E external baselines (trained by scripts/train_baselines.py)
+    linucb = LinUCBPolicy.load(MODELS / "linucb_policy.joblib")
+    lints = LinTSPolicy.load(MODELS / "lints_policy.joblib")
 
     tasks = {t["id"]: t for t in json.loads((DATA / "tasks.json").read_text())}
     splits = json.loads((DATA / "splits.json").read_text())
-    val = [tasks[i] for i in splits["val"] if "expected_answer" in tasks[i] or "ground_truth" in tasks[i]]
+    val = [tasks[i] for i in splits[args.split] if "expected_answer" in tasks[i] or "ground_truth" in tasks[i]]
     seen = set(); val = [t for t in val if not (t["question"] in seen or seen.add(t["question"]))][:args.n]
 
     # precompute decomposition + candidates once per task (shared across conditions)
@@ -133,10 +142,15 @@ def main():
         "fixed-1000B": make_byte_budget_decider(1000),
         "fixed-1500B": make_byte_budget_decider(1500),
         "heuristic": decide_heuristic,
+        "adaptive_rag": decide_adaptive_rag,  # Phase E: Adaptive-RAG complexity-routing analog
+        "linucb": lambda ctx, st: linucb.select_action(normalizer.transform(ctx), explore=False),
+        "lints": lambda ctx, st: lints.select_action(normalizer.transform(ctx), explore=False),
         "bandit": lambda ctx, st: policy.select_action(normalizer.transform(ctx), explore=False),
     }
 
     accountant = EnergyAccountant()  # Phase A: 5G transfer + compute energy
+    radio = RadioStateModel()                       # Phase F: RRC tail energy (tight loop, conservative)
+    radio_fd = RadioStateModel(demote_between_fetches=True)  # Phase F: fast-dormancy sensitivity
     ans_cache = {}
     results = {c: {} for c in conditions}  # condition -> task_id -> metrics
     for cname, decide in conditions.items():
@@ -159,10 +173,27 @@ def main():
             for sc in SCENARIOS:
                 rec[f"total_j_{sc}"] = accountant.account_passages(ops, added, sc)["total_j"]
                 rec[f"transfer_j_{sc}"] = accountant.account_passages(ops, added, sc)["transfer_j"]
+            # Phase F: radio-state / tail energy + modeled latency. Radio is
+            # driven by #fetches (actions) and the transported bytes at the
+            # realistic html_page scale (the real 5G regime, per Phase B).
+            n_fetch = len(state.added_ids)
+            html_bytes = accountant.payload.transfer_bytes(added, "html_page")
+            r = radio.account(html_bytes, n_fetch)
+            rfd = radio_fd.account(html_bytes, n_fetch)
+            rec["radio_j"] = r["radio_j"]
+            rec["radio_time"] = r["radio_active_time_s"]
+            rec["radio_tail_j"] = r["tail_j"]
+            rec["radio_j_fastdormancy"] = rfd["radio_j"]
+            # modeled end-to-end latency = compute time + transfer time (html_page)
+            rec["compute_s"] = accountant.compute.time_seconds(ops)
+            rec["transfer_s"] = radio.transfer_time_s(html_bytes)
+            rec["e2e_s"] = rec["compute_s"] + rec["transfer_s"]
             results[cname][t["id"]] = rec
 
     _AGG_KEYS = ("success", "fact_f1", "bytes", "actions", "latency",
-                 "compute_j", "transfer_j", "total_j", "gco2e") + \
+                 "compute_j", "transfer_j", "total_j", "gco2e",
+                 "radio_j", "radio_time", "radio_tail_j", "radio_j_fastdormancy",
+                 "compute_s", "transfer_s", "e2e_s") + \
                 tuple(f"total_j_{sc}" for sc in SCENARIOS) + tuple(f"transfer_j_{sc}" for sc in SCENARIOS)
 
     def agg(cname, types=None):
@@ -194,6 +225,20 @@ def main():
     print("bandit transfer share:  " + "  ".join(
         f"{sc}={100*ab['transfer_j_'+sc]/ab['total_j_'+sc]:.1f}%" for sc in SCENARIOS))
 
+    print("\nRADIO STATE / TAIL ENERGY (Phase F): per query, headline tasks")
+    print("  (radio held in RRC_CONNECTED across the retrieval loop; tail after last fetch)")
+    print(f"{'condition':<13}{'fetches':>9}{'radio_time_s':>14}{'radio_J':>10}{'tail_J':>9}{'radio_J[fastD]':>16}")
+    for c in conditions:
+        a = agg(c, HEADLINE_TYPES)
+        print(f"{c:<13}{a['actions']:>9.2f}{a['radio_time']:>14.2f}{a['radio_j']:>10.2f}"
+              f"{a['radio_tail_j']:>9.2f}{a['radio_j_fastdormancy']:>16.2f}")
+
+    print("\nLATENCY (Phase F, modeled): compute + transfer(html_page) per query, headline tasks")
+    print(f"{'condition':<13}{'compute_s':>11}{'transfer_s':>12}{'e2e_s':>9}")
+    for c in conditions:
+        a = agg(c, HEADLINE_TYPES)
+        print(f"{c:<13}{a['compute_s']:>11.3f}{a['transfer_s']:>12.4f}{a['e2e_s']:>9.3f}")
+
     print("\nper-type judge_success / avg_bytes:")
     types = sorted({m["type"] for m in results["bandit"].values()})
     print(f"{'condition':<13}" + "".join(f"{ty[:10]:>18}" for ty in types))
@@ -207,17 +252,20 @@ def main():
     # bootstrap: bandit vs baselines on headline tasks (paired)
     ids = [tid for tid, m in results["bandit"].items() if m["type"] in HEADLINE_TYPES]
     print("\nbandit vs baseline (headline tasks, paired mean diff [95% bootstrap CI]):")
-    for base in ("heuristic", "one_per_req", "full", "fixed-1000B", "fixed-1500B"):
+    for base in ("heuristic", "adaptive_rag", "linucb", "lints", "one_per_req",
+                 "full", "fixed-1000B", "fixed-1500B"):
         db = [results["bandit"][i]["bytes"] - results[base][i]["bytes"] for i in ids]
         ds = [results["bandit"][i]["success"] - results[base][i]["success"] for i in ids]
         de = [results["bandit"][i]["total_j"] - results[base][i]["total_j"] for i in ids]  # text scale
         dh = [results["bandit"][i]["total_j_html_page"] - results[base][i]["total_j_html_page"] for i in ids]
+        dr = [results["bandit"][i]["radio_j"] - results[base][i]["radio_j"] for i in ids]  # Phase F
         blo, bhi = bootstrap_ci(db); slo, shi = bootstrap_ci(ds)
-        elo, ehi = bootstrap_ci(de); hlo, hhi = bootstrap_ci(dh)
+        elo, ehi = bootstrap_ci(de); hlo, hhi = bootstrap_ci(dh); rlo, rhi = bootstrap_ci(dr)
         print(f"  vs {base:<12} bytes {sum(db)/len(db):+.0f}[{blo:+.0f},{bhi:+.0f}]  "
               f"success {sum(ds)/len(ds):+.3f}[{slo:+.3f},{shi:+.3f}]  "
               f"net_J(text) {sum(de)/len(de):+.2f}[{elo:+.2f},{ehi:+.2f}]  "
-              f"net_J(html_page) {sum(dh)/len(dh):+.1f}[{hlo:+.1f},{hhi:+.1f}]")
+              f"net_J(html_page) {sum(dh)/len(dh):+.1f}[{hlo:+.1f},{hhi:+.1f}]  "
+              f"radio_J {sum(dr)/len(dr):+.2f}[{rlo:+.2f},{rhi:+.2f}]")
 
     (DATA / "phase7_results.json").write_text(json.dumps(
         {c: agg(c) for c in conditions} | {"per_type": {c: {ty: agg(c, {ty}) for ty in types} for c in conditions}},

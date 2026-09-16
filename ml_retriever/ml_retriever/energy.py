@@ -73,6 +73,10 @@ class ComputeModel:
     (~50 GFLOPS/W = 5e10 FLOPS/J). Mobile-SoC NPUs are far more efficient
     (1-10 TOPS/W); a server GPU is different again -- swap per target device."""
     flops_per_joule: float = 5.0e10  # edge-CPU class assumption
+    # Compute THROUGHPUT (for latency, Phase F), distinct from efficiency above.
+    # ~0.2 TFLOP/s edge-CPU class; mobile NPUs reach 1-10 TFLOP/s -- swap per
+    # device. Only used for end-to-end latency, never for energy.
+    flops_per_second: float = 2.0e11
 
     def _flops(self, op: str, count: int) -> float:
         if count == 0:
@@ -83,9 +87,15 @@ class ComputeModel:
         # output tokens as additional autoregressive steps.
         return count * 2.0 * params * (tin + tout)
 
+    def _total_flops(self, ops: OpCounts) -> float:
+        return sum(self._flops(op, getattr(ops, op)) for op in OP_TOKENS)
+
     def energy_joules(self, ops: OpCounts) -> float:
-        total_flops = sum(self._flops(op, getattr(ops, op)) for op in OP_TOKENS)
-        return total_flops / self.flops_per_joule
+        return self._total_flops(ops) / self.flops_per_joule
+
+    def time_seconds(self, ops: OpCounts) -> float:
+        """Wall-clock compute time (Phase F latency): FLOPs / device throughput."""
+        return self._total_flops(ops) / self.flops_per_second
 
     def breakdown_joules(self, ops: OpCounts) -> dict:
         return {op: self._flops(op, getattr(ops, op)) / self.flops_per_joule
@@ -145,8 +155,12 @@ class PayloadModel:
     """
     resource_inflation: float = 4.0        # HTML markup + overhead vs extracted text
     resource_floor_bytes: int = 800        # min realistic resource-on-wire size
-    html_page_bytes: int = 60_000          # median content-page HTML document (assumption)
-    full_page_bytes: int = 2_000_000       # median full page weight with assets (assumption)
+    # MEASURED (Tier A): median rendered-HTML byte size of the 19 real pages the
+    # backend fetched with Playwright (backend/pages/), computed by
+    # scripts/measure_real_pages.py -> data/measured_payloads.json. Replaces the
+    # earlier assumed 60 KB, which underestimated real page weight ~8x.
+    html_page_bytes: int = 506_179         # measured median real HTML document
+    full_page_bytes: int = 2_000_000       # full page weight with assets (HTTP-Archive-class assumption)
 
     def transfer_bytes(self, passages, scenario: str = "text") -> int:
         if scenario == "text":
@@ -165,6 +179,82 @@ class PayloadModel:
 
 
 SCENARIOS = ("text", "resource", "html_page", "full_page")
+
+
+@dataclass
+class RadioStateModel:
+    """Phase F: 5G RRC radio-state / tail energy -- the networking-specific
+    lever that a byte count alone misses.
+
+    5G energy is dominated not just by bytes moved but by how long the modem is
+    held in the high-power RRC_CONNECTED state. Fetching keeps the radio awake;
+    after the last fetch an inactivity timer (`tail_seconds`) holds it CONNECTED
+    before it releases to RRC_IDLE -- the classic *tail energy* waste. A policy
+    that issues fewer, earlier retrievals keeps the radio active for a shorter
+    span and lets the tail start sooner.
+
+    First-order per-query model (all coefficients cited/assumed, swappable):
+      - One IDLE->CONNECTED promotion per query (radio wakes once).
+      - The retrieval loop serializes n_fetches: each costs a scheduling/RTT
+        setup + its transfer time, with per-step compute (QA-score + decide)
+        between fetches. Across a tight loop the inactivity timer keeps resetting,
+        so the radio stays CONNECTED for the whole span (active power).
+      - After the last fetch: `tail_seconds` at `tail_power_w`, then release.
+
+    Fast-dormancy sensitivity (`demote_between_fetches=True`): if the network
+    releases aggressively, each fetch pays its own promotion + tail -- which
+    magnifies the advantage of issuing fewer fetches. Reported as a sensitivity;
+    the default (single tail) is the CONSERVATIVE choice for our claim.
+    """
+    # Tier B: coefficients grounded in 5G/LTE measurement literature + 3GPP, not
+    # free assumptions. Sources (see docs/energy_model.md Tier B table):
+    #  [N21] Narayanan et al., "A Variegated Look at 5G in the Wild", SIGCOMM 2021
+    #  [H12] Huang et al., "A Close Examination of ... 4G LTE Networks", MobiSys 2012
+    #  [38.331] 3GPP TS 38.331 (NR RRC: IDLE / INACTIVE / CONNECTED, timers)
+    throughput_bps: float = 150e6      # 5G sub-6 median downlink ~100-250 Mbps [N21]
+    active_power_w: float = 2.5        # 5G sub-6 RRC_CONNECTED active RX, incremental [N21] (range 1.5-3.5)
+    tail_power_w: float = 1.2          # RRC_CONNECTED inactivity tail / DRX [H12] (LTE tail ~1.06-1.5 W)
+    idle_power_w: float = 0.02         # RRC_IDLE baseline (near-negligible)
+    promotion_j: float = 2.0           # IDLE->CONNECTED ramp energy [H12] (LTE ~1.2-2.5 J)
+    tail_seconds: float = 10.0         # RRC inactivity timer; LTE Ttail ~11.6 s [H12], 5G configurable/shorter via RRC_INACTIVE [38.331]
+    per_step_compute_s: float = 0.10   # QA-score + decide between fetches (measured-order)
+    setup_s_per_fetch: float = 0.04    # scheduling + RTT per fetch [N21]-class RTT
+    demote_between_fetches: bool = False  # fast-dormancy sensitivity toggle [38.331] RRC_INACTIVE
+
+    def transfer_time_s(self, num_bytes: int) -> float:
+        return (num_bytes * 8) / self.throughput_bps
+
+    def account(self, num_bytes: int, n_fetches: int) -> dict:
+        """Radio energy + active-time for a query that issued `n_fetches`
+        retrievals moving `num_bytes` total. n_fetches=0 => no radio session."""
+        if n_fetches <= 0:
+            return {"radio_active_time_s": 0.0, "promotion_j": 0.0,
+                    "active_j": 0.0, "tail_j": 0.0, "radio_j": 0.0, "n_promotions": 0}
+        tx = self.transfer_time_s(num_bytes)
+        if self.demote_between_fetches:
+            # Each fetch is its own session: promotion + its active slice + tail.
+            per_fetch_active = tx / n_fetches + self.setup_s_per_fetch
+            active_span = per_fetch_active * n_fetches
+            n_promotions = n_fetches
+            tail_total = self.tail_seconds * n_fetches
+        else:
+            # Tight loop: one promotion, radio held across the whole span, one tail.
+            active_span = tx + n_fetches * self.setup_s_per_fetch \
+                + max(n_fetches - 1, 0) * self.per_step_compute_s
+            n_promotions = 1
+            tail_total = self.tail_seconds
+        promotion_j = self.promotion_j * n_promotions
+        active_j = active_span * self.active_power_w
+        tail_j = tail_total * self.tail_power_w
+        radio_j = promotion_j + active_j + tail_j
+        return {
+            "radio_active_time_s": active_span + tail_total,
+            "promotion_j": promotion_j,
+            "active_j": active_j,
+            "tail_j": tail_j,
+            "radio_j": radio_j,
+            "n_promotions": n_promotions,
+        }
 
 
 @dataclass
