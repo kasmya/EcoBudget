@@ -263,7 +263,11 @@ class EnergyAccountant:
     compute: ComputeModel = field(default_factory=ComputeModel)
     transfer: FiveGTransferModel = field(default_factory=FiveGTransferModel)
     payload: PayloadModel = field(default_factory=PayloadModel)
-    grid_g_per_kwh: float = 475.0  # global-average grid carbon intensity (IEA-class assumption)
+    # Grid carbon intensity. 475 gCO2e/kWh = IEA global-average electricity
+    # intensity (well cited). The sibling backend/carbon.py uses 494 (the
+    # Sustainable Web Design / SWD default); both are documented, same order of
+    # magnitude, and swappable -- see docs/energy_model.md Carbon note.
+    grid_g_per_kwh: float = 475.0
 
     def account_passages(self, ops: OpCounts, passages, scenario: str = "text") -> dict:
         """Account energy with transfer bytes derived from the retrieved

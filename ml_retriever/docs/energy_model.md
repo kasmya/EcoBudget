@@ -42,7 +42,12 @@ split RAN + transport (RAN dominates 5G energy, ~70–80%).
 
 ## Carbon
 `gCO2e = (total_J / 3.6e6 J/kWh) · grid_g_per_kwh`, default grid intensity
-`475 gCO2e/kWh` (global-average, IEA-class assumption; green-host variants lower).
+`475 gCO2e/kWh` (IEA global-average electricity intensity; green-host variants
+lower). Consistency note: the sibling `backend/carbon.py` uses 494 gCO2e/kWh (the
+Sustainable Web Design default). The two are different published conventions of
+the same quantity, within ~4% and the same order of magnitude; the paper reports
+the IEA value and states the coefficient explicitly so it is swappable. This is
+deliberate, not a discrepancy.
 
 ## Phase A finding (val, headline tasks, n=28)
 - **Compute dominates transfer by ~100×.** Per query: compute ≈ 5–11 J,

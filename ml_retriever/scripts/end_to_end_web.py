@@ -99,6 +99,7 @@ def main():
     print("=" * 92)
     print("END-TO-END ON REAL WEB PAGES: full-page load vs task-sufficient load")
     print("=" * 92)
+    records = []
     for i, (q, url) in enumerate(EXAMPLES):
         full_bytes, html, src = fetch(url, i)
         passages = []
@@ -137,6 +138,14 @@ def main():
         print(f"  task-sufficient:  {task_bytes:>9,} B   transfer_J={e_task['transfer_j']:.4f}  radio_J={r_task['radio_j']:.2f}")
         print(f"  BYTE REDUCTION:   {reduction:.2f}%   ({len(reqs)} reqs, {len(selected)} passages loaded)")
         print(f"  answer: {answer!r}")
+        records.append({"question": q, "url": url, "source": src,
+                        "full_bytes": full_bytes, "task_bytes": task_bytes,
+                        "byte_reduction_pct": round(reduction, 2),
+                        "transfer_j_full": e_full["transfer_j"], "transfer_j_task": e_task["transfer_j"],
+                        "answer": answer})
+    import json as _json
+    (DATA / "e2e_results.json").write_text(_json.dumps(records, indent=2) + "\n")
+    print(f"\nWrote {DATA / 'e2e_results.json'}")
 
 
 if __name__ == "__main__":

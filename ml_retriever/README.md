@@ -475,7 +475,26 @@ python scripts/multiseed.py --seeds 0 1 2 3 4 --epochs 8 --lam 0.5
 # The single frozen test-split run (Phase G). Run this ONCE, only after every
 # config is locked. It prints a warning banner because it consumes the test set.
 python scripts/phase7_experiment.py --n 200 --split test
+
+# Generate the 4 paper figures (reads the frozen-test results + measured data)
+python scripts/make_figures.py     # writes figures/fig1..fig4 .png at 300 dpi
 ```
+
+## The four paper figures
+
+`scripts/make_figures.py` writes four 300-dpi figures to `figures/`, using the
+frozen test-split results (`data/phase7_results_test.json`) plus the measured
+payload and real-page data:
+
+- `fig1_pareto.png`: success versus energy. The adaptive methods cluster at the
+  low-energy, high-success corner while fixed budgets and full-page load spread
+  out to the right. The Pareto story in one plot.
+- `fig2_crossover.png`: compute versus 5G transfer energy across payload realism;
+  transfer overtakes compute at real page scale.
+- `fig3_radio_tail.png`: 5G RRC radio and tail energy by condition, tight-loop
+  versus fast-dormancy; the radio-state contribution.
+- `fig4_realpage_savings.png`: measured byte savings on real live web pages
+  (about 93 to 98 percent).
 
 ## Where to read the details
 
