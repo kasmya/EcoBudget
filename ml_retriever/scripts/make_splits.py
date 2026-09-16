@@ -100,6 +100,25 @@ def assert_train_coverage(tasks, splits) -> None:
     assert not missing_attrs, f"attribute slugs with no train coverage: {sorted(missing_attrs)}"
 
 
+def _phase_c_split(seed_id: str) -> str:
+    """Deterministic split for the Phase C scale-up seeds (T91+): ~70/20/10
+    train/val/test by id number. The larger val share is intentional -- it is
+    the statistical-power lever Phase C exists for. Old seeds keep their frozen
+    assignment in SEED_SPLIT_ASSIGNMENT; test seeds T12/T15/T23/T29/T35/T40 are
+    untouched."""
+    n = int(seed_id[1:])
+    r = n % 10
+    if r < 2:
+        return "val"      # 20%
+    if r == 2:
+        return "test"     # 10%
+    return "train"        # 70%
+
+
+def _split_for(seed_id: str) -> str:
+    return SEED_SPLIT_ASSIGNMENT.get(seed_id) or _phase_c_split(seed_id)
+
+
 def main() -> None:
     tasks_path = ROOT / "data" / "tasks.json"
     tasks = json.loads(tasks_path.read_text(encoding="utf-8"))
@@ -107,12 +126,7 @@ def main() -> None:
     splits: dict[str, list[str]] = {"train": [], "val": [], "test": []}
     for task in tasks:
         seed_id = task["id"] if not task["synthetic"] else task["seed_task_id"]
-        split = SEED_SPLIT_ASSIGNMENT[seed_id]
-        splits[split].append(task["id"])
-
-    assert set(SEED_SPLIT_ASSIGNMENT) == {
-        t["id"] for t in tasks if not t["synthetic"]
-    }, "every seed task must have a split assignment"
+        splits[_split_for(seed_id)].append(task["id"])
 
     assert_train_coverage(tasks, splits)
 

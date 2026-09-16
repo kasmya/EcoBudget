@@ -18,14 +18,18 @@ DATA = Path(__file__).resolve().parent.parent / "data"
 
 
 def target_answer(task) -> str:
-    if task.get("expected_answer"):
-        return str(task["expected_answer"])
+    """The training target MUST match what the judge scores against (fork A),
+    so train and eval use the same gold. That is `required_facts` for the
+    structured/realigned types, the plain string for narrative, and only then
+    `expected_answer` (single_fact's value). `expected_answer` verdict strings
+    are display-only and are NOT used as targets -- training on verdicts for
+    some comparisons and values for others was the inconsistency bug."""
     gt = task.get("ground_truth")
-    if isinstance(gt, str):
-        return gt
     if isinstance(gt, dict) and gt.get("required_facts"):
         return ", ".join(gt["required_facts"])
-    return ""
+    if isinstance(gt, str):
+        return gt
+    return str(task.get("expected_answer") or "")
 
 
 def main():
