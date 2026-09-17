@@ -274,3 +274,31 @@ Two honest takeaways:
    domain gap is the honest ceiling of the current pipeline: byte savings transfer
    to the real web immediately; answer quality needs training on real-page chunks
    (or a cleaner extraction stage) to match. Reported, not hidden.
+
+## Domain-gap fix attempt: noise-augmented answerer (honest result)
+
+To close the corpus-to-web gap we retrained the answerer on noise-augmented data
+(`build_answer_training_data.py --noise_aug 2`, 2,904 rows = 968 clean + 1,936
+with the gold passage embedded in distractor spec-dump text), saved as
+`models/answer-base-robust` (10 epochs, final train loss ~0.002). Re-running
+`end_to_end_web.py --answerer models/answer-base-robust` on the same live
+gsmarena pages:
+
+| question | old answerer | robust answerer | gold |
+| --- | --- | --- | --- |
+| iPhone 16 refresh rate | `128, 4,98.92, 604.99, ...` (dump) | `1280p` (clean, wrong) | 60Hz |
+| S24 Ultra weight | `232g ... 8.6mm ... 6.8"` (dump, right value buried) | `8.6mm` (clean, wrong) | 232 g |
+
+**Honest read.** Noise augmentation FIXED the verbose spec-dump failure mode:
+answers are now clean and concise. It did NOT fix correctness on raw live pages.
+The remaining failure is attribute mis-selection: live pages carry no
+(entity, attribute) metadata, so the entity gate falls back to a plain bi-encoder
+over coarse text chunks that mix many specs, and the answerer confidently returns
+the wrong field. This is a retrieval/segmentation problem on live content, not an
+answerer-training problem, so the right fix is per-entity live fetching with
+structured extraction (or finer chunking), not more answerer epochs.
+
+**Decision.** We keep `models/answer-base` as the reported model (all frozen-test
+numbers use it; byte/energy savings are unaffected). `answer-base-robust` is
+retained as evidence that the formatting half of the gap is closable. The
+correctness half remains a stated limitation.
