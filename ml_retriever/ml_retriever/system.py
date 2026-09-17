@@ -136,6 +136,6 @@ class EcoBudgetSystem:
             versions={
                 "decomposer": getattr(self.decomposer, "version", "?"),
                 "answer_generator": getattr(self.answer_generator, "version", "?"),
-                "policy": "bandit" if self.policy is not None else "heuristic",
+                "policy": getattr(self.policy, "version", "bandit") if self.policy is not None else "heuristic",
             },
         )

@@ -16,7 +16,7 @@ from pathlib import Path
 import joblib
 
 from ml_retriever.answer import GenerativeAnswerGenerator
-from ml_retriever.bandit import BanditPolicy
+from ml_retriever.bandit import BanditPolicy, LinUCBPolicy, LinTSPolicy
 from ml_retriever.decomposer import TaskDecomposer
 from ml_retriever.evidence import CachedScorer, QAScorer
 from ml_retriever.judge import judge_task, token_f1
@@ -53,6 +53,10 @@ def main():
                     help="path to the generative answerer checkpoint (LoRA adapter dir); "
                          "models/answer-base is the reported model")
     ap.add_argument("--answer_mode", choices=["joint", "per_requirement"], default="joint")
+    ap.add_argument("--policy", choices=["linucb", "bandit", "lints"], default="linucb",
+                    help="stopping policy. Default linucb: it is stable across seeds "
+                         "(multi-seed 0.913 +/- 0.007) unlike the SGD bandit "
+                         "(0.790 +/- 0.283); see docs/phase_g_consolidation.md.")
     args = ap.parse_args()
 
     corpus = load_corpus()
@@ -63,7 +67,13 @@ def main():
     decomposer = TaskDecomposer("models/decomposer-base-lora", adapter_path="models/decomposer-base-lora",
                                 attribute_vocab=sorted({p.metadata["attribute"] for p in corpus}))
     answerer = GenerativeAnswerGenerator(args.answerer, adapter_path=args.answerer)
-    policy = BanditPolicy.load(MODELS / "bandit_policy.joblib")
+    _POLICIES = {"linucb": (LinUCBPolicy, "linucb_policy.joblib"),
+                 "bandit": (BanditPolicy, "bandit_policy.joblib"),
+                 "lints": (LinTSPolicy, "lints_policy.joblib")}
+    _cls, _file = _POLICIES[args.policy]
+    policy = _cls.load(MODELS / _file)
+    policy.version = args.policy  # for SystemResult version reporting
+    # all three policies share the same feature normalizer (fit once on train)
     normalizer = joblib.load(MODELS / "bandit_normalizer.joblib")
 
     tasks = {t["id"]: t for t in json.loads((DATA / "tasks.json").read_text())}
@@ -78,7 +88,7 @@ def main():
         if len(picked) >= args.n:
             break
 
-    bandit_sys = EcoBudgetSystem(decomposer, retriever, answerer, policy=policy,
+    policy_sys = EcoBudgetSystem(decomposer, retriever, answerer, policy=policy,
                                  normalizer=normalizer, score_fn=scorer, answer_mode=args.answer_mode)
     heur_sys = EcoBudgetSystem(decomposer, retriever, answerer, score_fn=scorer,
                                answer_mode=args.answer_mode)
@@ -86,9 +96,9 @@ def main():
     from collections import defaultdict
     per_type = defaultdict(lambda: {"f1": 0.0, "succ": 0.0, "bytes": 0.0, "n": 0})
     f1_sum = succ = bytes_bandit = bytes_heur = 0.0
-    print(f"{'='*70}\nEnd-to-end ({len(picked)} tasks) | answerer={args.answerer} | mode={args.answer_mode}\n{'='*70}")
+    print(f"{'='*70}\nEnd-to-end ({len(picked)} tasks) | policy={args.policy} | answerer={args.answerer} | mode={args.answer_mode}\n{'='*70}")
     for t in picked:
-        res = bandit_sys.run(t["question"])
+        res = policy_sys.run(t["question"])
         hres = heur_sys.run(t["question"])
         gold = gold_answer(t)
         ans = res.answer or ""
@@ -98,7 +108,7 @@ def main():
         pt["f1"] += fact_f1; pt["succ"] += s; pt["bytes"] += res.bytes_used; pt["n"] += 1
         print(f"\n[{t['id']}/{t['answer_type']}] {t['question']}")
         print(f"  answer: {ans!r}  gold: {gold!r}")
-        print(f"  judge_success={bool(s)} fact_f1={fact_f1:.2f} | bytes bandit={res.bytes_used} heuristic={hres.bytes_used}")
+        print(f"  judge_success={bool(s)} fact_f1={fact_f1:.2f} | bytes policy={res.bytes_used} heuristic={hres.bytes_used}")
 
     n = len(picked)
     print(f"\n{'='*70}")

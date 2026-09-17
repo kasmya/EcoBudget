@@ -349,6 +349,13 @@ python scripts/retrieval_noise_sweep.py --epochs 8 --noises 0 0.1 0.2 0.4 0.6
 # Multi-seed variance: stability of each learned policy across seeds
 python scripts/multiseed.py --seeds 0 1 2 3 4 --epochs 8 --lam 0.5
 
+# Reward-mode ablation (Phase G): per-step vs terminal credit
+python scripts/ablate_reward.py --seeds 0 1 2 --epochs 8 --lam 0.5
+
+# Decomposer snap on/off ablation (Phase G)
+python scripts/eval_decomposer.py --model_path models/decomposer-base-lora \
+    --adapter_path models/decomposer-base-lora --no_attr_snap
+
 # Radio-coefficient sensitivity across the cited 5G ranges
 python scripts/radio_sensitivity.py
 
@@ -429,12 +436,36 @@ We state these plainly so nothing is oversold.
 - Energy is a first-order FLOPs-and-per-bit model with cited coefficients and
   reported sensitivity ranges, not a hardware power measurement.
 
+## Phase G consolidation (done)
+
+The rigor phase is complete. See `docs/phase_g_consolidation.md` for the
+consolidated ablation table (retriever, decomposer snap, byte-penalty lambda,
+reward mode, answer mode), the multi-seed variance, and the single frozen
+test-split run, and `docs/reproducibility.md` for the environment, seeds,
+checkpoint configurations, and the command behind every headline number. Selected
+ablation highlights, all measured:
+
+- Retriever: recall@1 0.589 (whole-question) to 0.914 (per-requirement) to 0.989
+  (entity-aware).
+- Decomposer snap-to-vocab: exact-match 0.496 (off) to 0.892 (on), attribute-only.
+- Byte-penalty lambda: a sharp cliff, stable at 0.5 and below, collapses at 1.0.
+- Reward mode and multi-seed both confirm the SGD bandit is high-variance, so we
+  report LinUCB as the recommended learned policy.
+
+## Deployed default policy: LinUCB
+
+Given the multi-seed stability finding, the deployed path (`run_pipeline.py`) now
+defaults to LinUCB (`--policy linucb`), with `--policy bandit` and `--policy
+lints` still available. LinUCB is stable across seeds (val 0.913 +/- 0.007) and on
+the frozen test set matches the bandit and heuristic at 0.895 success / 108 bytes.
+Its metrics live in `docs/phase_g_consolidation.md` (Sections 2 and 3).
+
+```bash
+python scripts/run_pipeline.py --n 20 --policy linucb \
+    --answerer models/answer-base --answer_mode per_requirement
+```
+
 ## What is left
 
-- The rest of the consolidation phase: a single consolidated ablation table and a
-  reproducibility appendix. Multi-seed variance and the final test-split run are
-  done.
 - The paper writeup itself: related work, the figures, and the limitations
   section.
-- Optionally, adopting LinUCB as the default policy in the deployed path, given
-  the stability finding.

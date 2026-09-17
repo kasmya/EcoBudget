@@ -196,6 +196,15 @@ stopping's advantage beyond raw bytes.
 **Acceptance gate.** Multi-seed variance reported; test-split run done once;
 reproducibility doc complete.
 
+**STATUS: DONE.** Multi-seed variance reported (policy, 5 seeds); ablations
+consolidated (retriever, snap, lambda, reward mode, answer mode) in
+`docs/phase_g_consolidation.md`; single frozen test-split run completed once;
+reproducibility appendix at `docs/reproducibility.md`. Answerer multi-seed was
+not run (about 3.5 h per fine-tune on our laptop makes 5 seeds prohibitive);
+stated as a resource limitation. Ablation scripts: `scripts/ablate_reward.py`,
+`scripts/sweep_lambda.py`, `scripts/multiseed.py`, `scripts/eval_decomposer.py
+--no_attr_snap`.
+
 ---
 
 ## Phase H — Paper assembly
