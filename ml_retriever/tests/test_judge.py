@@ -70,3 +70,37 @@ def test_procedure_step_f1_boundary_is_pinned():
     assert judge_task(just_above, task) == (True, 1.0)
     assert token_f1(just_below, step) < PROCEDURE_STEP_F1_THRESHOLD
     assert judge_task(just_below, task) == (False, 0.0)
+
+
+class TestFormattingNormalizer:
+    """Judge normalizer covers ONLY formatting variations (symmetric), not synonyms."""
+
+    def _task(self, facts):
+        return {"answer_type": "comparison",
+                "ground_truth": {"required_facts": facts, "match_threshold": 1.0}}
+
+    def test_unit_spacing_and_case(self):
+        ok, frac = judge_task("Samsung 120 Hz, iPhone 60 hz", self._task(["120Hz", "60Hz"]))
+        assert ok and frac == 1.0
+
+    def test_currency_and_commas(self):
+        ok, _ = judge_task("it costs 1099 dollars", self._task(["$1,099"]))
+        assert ok
+
+    def test_trailing_decimal(self):
+        ok, _ = judge_task("weighs 10 ounces", self._task(["10.0 ounces"]))
+        assert ok
+
+    def test_article_dropping(self):
+        ok, _ = judge_task("iPhone 15", self._task(["the iPhone 15"]))
+        assert ok
+
+    def test_fact_fraction_is_continuous(self):
+        # one of two facts present -> 0.5, and (threshold 1.0) not a success
+        ok, frac = judge_task("only 120Hz here", self._task(["120Hz", "60Hz"]))
+        assert not ok and frac == 0.5
+
+    def test_no_synonym_matching(self):
+        # "oz" is a synonym of "ounces", NOT a formatting variant -> must NOT match
+        ok, _ = judge_task("10 oz", self._task(["10 ounces"]))
+        assert not ok

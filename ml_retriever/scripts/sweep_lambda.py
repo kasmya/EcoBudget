@@ -19,7 +19,7 @@ from pathlib import Path
 from ml_retriever.answer import EvidenceAnswerGenerator
 from ml_retriever.bandit import BanditPolicy, FeatureNormalizer
 from ml_retriever.evidence import CachedScorer, QAScorer
-from ml_retriever.retriever import RequirementRetriever
+from ml_retriever.retriever import EntityAwareRetriever
 from ml_retriever.rollout import (
     build_candidates, decide_heuristic, decide_normal,
     make_fixed_budget_decider, run_episode,
@@ -64,7 +64,7 @@ def main():
     args = ap.parse_args()
 
     corpus = load_corpus()
-    retriever = RequirementRetriever(corpus)
+    retriever = EntityAwareRetriever(corpus)  # Phase G: match production retriever
     scorer = CachedScorer(QAScorer())
     ag = EvidenceAnswerGenerator()
     tasks = {t["id"]: t for t in json.loads((DATA / "tasks.json").read_text())}

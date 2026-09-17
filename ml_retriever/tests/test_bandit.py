@@ -88,3 +88,77 @@ class TestBanditPolicy:
         loaded = BanditPolicy.load(path)
         assert loaded.action_values(ctx) == p.action_values(ctx)
         assert loaded.select_action(ctx, explore=False) == RETRIEVE
+
+
+from ml_retriever.bandit import LinUCBPolicy, LinTSPolicy, STOP, RETRIEVE
+
+
+def _sep_data(n=60):
+    """A linearly separable toy: high feature[0] => RETRIEVE was rewarding,
+    low => STOP was rewarding. Returns (context, action, reward) triples."""
+    rng = np.random.default_rng(0)
+    data = []
+    for _ in range(n):
+        x = np.zeros(N_FEATURES); x[0] = rng.uniform(-1, 1)
+        good = RETRIEVE if x[0] > 0 else STOP
+        for a in (STOP, RETRIEVE):
+            data.append((x, a, 1.0 if a == good else 0.0))
+    return data
+
+
+class TestLinUCBPolicy:
+    def test_learns_reward_separated_actions(self):
+        p = LinUCBPolicy(alpha=1.0, seed=0)
+        for x, a, r in _sep_data():
+            p.update(x, a, r)
+        hi = np.zeros(N_FEATURES); hi[0] = 1.0
+        lo = np.zeros(N_FEATURES); lo[0] = -1.0
+        assert p.select_action(hi, explore=False) == RETRIEVE
+        assert p.select_action(lo, explore=False) == STOP
+
+    def test_confidence_bonus_present_in_explore_absent_at_eval(self):
+        p = LinUCBPolicy(alpha=5.0, seed=0)
+        x = np.zeros(N_FEATURES); x[0] = 0.5
+        # No data: mean is 0 for both actions. action_values() uses the explore
+        # alpha, so it shows a positive, symmetric UCB bonus...
+        vals = p.action_values(x)
+        assert vals[0] == vals[1] > 0.0
+        # ...while the internal eval score (alpha=0) is the pure mean, i.e. 0.
+        assert p._ucb(RETRIEVE, x, alpha=0.0) == 0.0
+
+    def test_save_load_roundtrip(self, tmp_path):
+        p = LinUCBPolicy(alpha=1.0, seed=0)
+        for x, a, r in _sep_data():
+            p.update(x, a, r)
+        f = tmp_path / "linucb.joblib"; p.save(f)
+        q = LinUCBPolicy.load(f)
+        hi = np.zeros(N_FEATURES); hi[0] = 1.0
+        assert q.select_action(hi, explore=False) == p.select_action(hi, explore=False)
+
+
+class TestLinTSPolicy:
+    def test_learns_reward_separated_actions(self):
+        p = LinTSPolicy(v=0.1, seed=0)
+        for x, a, r in _sep_data():
+            p.update(x, a, r)
+        hi = np.zeros(N_FEATURES); hi[0] = 1.0
+        lo = np.zeros(N_FEATURES); lo[0] = -1.0
+        assert p.select_action(hi, explore=False) == RETRIEVE
+        assert p.select_action(lo, explore=False) == STOP
+
+    def test_eval_is_deterministic(self):
+        p = LinTSPolicy(v=1.0, seed=0)
+        for x, a, r in _sep_data():
+            p.update(x, a, r)
+        x = np.zeros(N_FEATURES); x[0] = 0.3
+        # explore=False uses the posterior mean, so repeated calls agree
+        assert len({p.select_action(x, explore=False) for _ in range(10)}) == 1
+
+    def test_save_load_roundtrip(self, tmp_path):
+        p = LinTSPolicy(v=0.25, seed=0)
+        for x, a, r in _sep_data():
+            p.update(x, a, r)
+        f = tmp_path / "lints.joblib"; p.save(f)
+        q = LinTSPolicy.load(f)
+        x = np.zeros(N_FEATURES); x[0] = 0.3
+        assert q.select_action(x, explore=False) == p.select_action(x, explore=False)

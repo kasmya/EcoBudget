@@ -29,7 +29,7 @@ class TestCorpus:
         # Seed corpus; Phase 1's eventual target is 200-500 (see plan.md).
         # 86 original + 6 (train-coverage fix) + 4 (Phase 1 scale-up film
         # summary passages: Inception, Lion King, Finding Nemo, Jurassic Park).
-        assert len(corpus_rows) == 96
+        assert len(corpus_rows) == 186  # +90 Phase C entities
 
     def test_every_row_is_a_valid_passage(self, corpus_rows):
         for row in corpus_rows:
@@ -62,13 +62,13 @@ class TestTasks:
         # (Phase-1-lever-plan.md): ~90 balanced seeds x synthetic variants to
         # push the decomposer past its 44% plateau toward the >90% Phase 2
         # target. Upper bound guards against runaway generation.
-        assert 150 <= len(tasks) <= 450
+        assert 300 <= len(tasks) <= 1800  # Phase C scale-up
 
     def test_seed_task_count(self, tasks):
         # 41 original + 7 (train-coverage fix, T42-T48) + 42 (Phase 1
         # scale-up, T49-T90).
         seeds = [t for t in tasks if not t["synthetic"]]
-        assert len(seeds) == 90
+        assert len(seeds) == 344  # Phase C scale-up (T91+)
 
     def test_task_ids_are_unique(self, tasks):
         ids = [t["id"] for t in tasks]

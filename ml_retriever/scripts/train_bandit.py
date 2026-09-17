@@ -24,7 +24,7 @@ from pathlib import Path
 from ml_retriever.answer import EvidenceAnswerGenerator
 from ml_retriever.bandit import BanditPolicy, FeatureNormalizer
 from ml_retriever.evidence import CachedScorer, QAScorer
-from ml_retriever.retriever import RequirementRetriever
+from ml_retriever.retriever import EntityAwareRetriever
 from ml_retriever.rollout import build_candidates, run_episode
 from ml_retriever.types import Passage, Requirement
 
@@ -73,7 +73,7 @@ def main():
     corpus = load_corpus()
     if any(p.embedding is None for p in corpus):
         raise SystemExit("Corpus not embedded -- run scripts/embed_corpus.py first.")
-    retriever = RequirementRetriever(corpus)
+    retriever = EntityAwareRetriever(corpus)  # Phase D/G: entity-gate + attribute-rank
     scorer = CachedScorer(QAScorer())  # shared cache across all episodes/epochs
     answer_gen = EvidenceAnswerGenerator()
 

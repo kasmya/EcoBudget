@@ -6,10 +6,28 @@ with a local NLI judge later changes ``JUDGES``, not the call sites.
 
 from __future__ import annotations
 
+import re
 from collections.abc import Callable
 from typing import Any
 
 Judge = Callable[[str, dict[str, Any]], tuple[bool, float]]
+
+# Formatting-only normalizer (applied symmetrically to gold and prediction).
+# Covers ONLY surface variations the answerer should be allowed to produce:
+# case/whitespace, currency/thousands separators, number-unit spacing, trailing
+# .0 decimals, and leading articles. It does NOT do synonym or semantic
+# matching, and the match threshold stays 1.0. See docs/eval_notes.md.
+_ARTICLES = {"the", "a", "an"}
+
+
+def _normalize(text: str) -> str:
+    s = text.lower().strip()
+    s = re.sub(r"[$,]", "", s)                 # "$1,099" -> "1099"
+    s = re.sub(r"(\d)\.0+\b", r"\1", s)        # "799.00" -> "799", "10.0" -> "10" (before unit merge)
+    s = re.sub(r"(\d)\s+([a-z])", r"\1\2", s)  # "120 hz" -> "120hz"
+    s = re.sub(r"\s+", " ", s)
+    tokens = [t for t in s.split() if t not in _ARTICLES]
+    return " ".join(tokens)
 
 STRUCTURED_ANSWER_TYPES = {
     "single_fact",
@@ -29,15 +47,17 @@ def _ground_truth(task: dict[str, Any]) -> str | dict[str, Any]:
 
 
 def _string_set_match(answer: str, expected: str) -> bool:
-    """Preserve the existing structured-answer substring/set-match behavior."""
+    """Substring/token-subset match after symmetric formatting normalization."""
     if not answer:
         return False
-    normalized_answer = answer.lower().strip()
-    normalized_expected = expected.lower().strip()
-    if normalized_expected in normalized_answer or normalized_answer in normalized_expected:
+    na = _normalize(answer)
+    ne = _normalize(expected)
+    if not ne:
+        return False
+    if ne in na or na in ne:
         return True
-    answer_tokens = set(normalized_answer.replace(",", "").split())
-    expected_tokens = set(normalized_expected.replace(",", "").split())
+    answer_tokens = set(na.split())
+    expected_tokens = set(ne.split())
     return bool(expected_tokens) and expected_tokens.issubset(answer_tokens)
 
 
@@ -66,8 +86,8 @@ def judge_structured(answer: str, task: dict[str, Any]) -> tuple[bool, float]:
     if not facts:
         return False, 0.0
     matched = sum(_string_set_match(answer, fact) for fact in facts)
-    success = matched / len(facts) >= gold.get("match_threshold", 1.0)
-    return success, 1.0 if success else 0.0
+    frac = matched / len(facts)  # fact-level hit rate (continuous), for fact_f1
+    return frac >= gold.get("match_threshold", 1.0), frac
 
 
 def judge_procedure(answer: str, task: dict[str, Any]) -> tuple[bool, float]:

@@ -31,7 +31,11 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
-from ml_retriever.retriever import RequirementRetriever, rank_passages
+from ml_retriever.retriever import (
+    EntityAwareRetriever,
+    RequirementRetriever,
+    rank_passages,
+)
 from ml_retriever.types import Passage, Requirement
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
@@ -82,11 +86,21 @@ def main():
     retriever = RequirementRetriever(
         passages, value_per_byte=args.value_per_byte, use_cross_encoder=args.cross_encoder
     )
+    # Phase D: entity-aware two-stage retriever (gate to the requirement's
+    # entity, then rank by the attribute phrase). Same protocol, drop-in.
+    entity_aware = EntityAwareRetriever(
+        passages, value_per_byte=args.value_per_byte, rank_on="attribute"
+    )
 
-    # accumulators: (all units) and (multi-requirement tasks only)
+    # accumulators: (all units) and (multi-requirement tasks only). Three
+    # systems: whole-question baseline, per-requirement bi-encoder, and the
+    # Phase D entity-aware retriever.
     def acc():
-        return {"per_req": 0.0, "baseline": 0.0, "n": 0}
+        return {"per_req": 0.0, "baseline": 0.0, "entity_aware": 0.0, "n": 0}
     overall, multi = acc(), acc()
+    # de-dupe requirements so a frequent (entity, attribute) is not counted
+    # once per task -- one honest measurement per distinct requirement.
+    seen_reqs: set = set()
 
     for t in seed_tasks:
         reqs = [Requirement(entity=r["entity"], attribute=r["attribute"])
@@ -102,22 +116,30 @@ def main():
             g = gold.get(req.key(), set())
             if not g:
                 continue  # no corpus passage for this requirement (shouldn't happen)
+            if req.key() in seen_reqs:
+                continue
+            seen_reqs.add(req.key())
             per_req_ids = [s.passage.passage_id for s in retriever.retrieve(req, k=args.k)]
+            ea_ids = [s.passage.passage_id for s in entity_aware.retrieve(req, k=args.k)]
             r_per = recall_at_k(per_req_ids, g, args.k)
             r_base = recall_at_k(baseline_ids, g, args.k)
+            r_ea = recall_at_k(ea_ids, g, args.k)
             for bucket in (overall, *( (multi,) if is_multi else () )):
                 bucket["per_req"] += r_per
                 bucket["baseline"] += r_base
+                bucket["entity_aware"] += r_ea
                 bucket["n"] += 1
 
     def summarize(b, label):
         n = b["n"] or 1
-        pr, bl = b["per_req"] / n, b["baseline"] / n
+        pr, bl, ea = b["per_req"] / n, b["baseline"] / n, b["entity_aware"] / n
         return {
             "bucket": label, "n_requirements": b["n"],
-            f"recall@{args.k}_per_requirement": round(pr, 4),
             f"recall@{args.k}_whole_question_baseline": round(bl, 4),
-            "absolute_gain": round(pr - bl, 4),
+            f"recall@{args.k}_per_requirement": round(pr, 4),
+            f"recall@{args.k}_entity_aware": round(ea, 4),
+            "gain_per_req_vs_baseline": round(pr - bl, 4),
+            "gain_entity_aware_vs_per_req": round(ea - pr, 4),
         }
 
     result = {
