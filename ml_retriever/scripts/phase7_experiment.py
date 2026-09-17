@@ -202,7 +202,8 @@ def main():
         return {k: sum(m[k] for m in rows) / n for k in _AGG_KEYS} | {"n": n}
 
     print("=" * 78)
-    print("PHASE 7 — headline (comparison + single_fact, n=%d)" % agg("bandit", HEADLINE_TYPES)["n"])
+    print("PHASE 7 — headline (comparison, single_fact, multi_part, yes_no; "
+          "procedure excluded, n>=3; n=%d)" % agg("bandit", HEADLINE_TYPES)["n"])
     print(f"{'condition':<13}{'success':>9}{'fact_f1':>9}{'avg_bytes':>11}{'actions':>9}{'latency_s':>10}")
     for c in conditions:
         a = agg(c, HEADLINE_TYPES)

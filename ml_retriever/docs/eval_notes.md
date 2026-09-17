@@ -33,12 +33,24 @@ outlier). Verification that snap does not rescue wrong intent:
   These are legitimate constrained-decoding fixes. **No wrong-intent false
   rescue was found.**
 
-**Metrics (val, base+LoRA, config: flan-t5-base, LoRA r=32 α=64 q,v,k,o,
-20 epochs, 300 train pairs).**
+**Metrics (Phase 2, val, base+LoRA, config: flan-t5-base, LoRA r=32 α=64 q,v,k,o,
+20 epochs, 300 train pairs).** HISTORICAL — this is the Phase 2 model on the old
+36-example val split.
 - exact-match, un-snapped: **0.472**
 - exact-match, snapped: **0.75**
 - per-requirement accuracy (intent), un-snapped: **0.63**
 - entity_f1 ≈ 0.89, attribute_f1 ≈ 0.87 (snapped)
+
+**CURRENT metrics (re-measured 2026-09-17 after the Phase C retrain on 1008 train
+pairs, evaluated on the current 240-example val split, snapped).** The Phase C
+retrain improved the decomposer substantially over the Phase 2 numbers above:
+- exact-match accuracy: **0.892**
+- entity exact-match: **0.946**
+- per-requirement precision/recall/F1: **0.936**
+- entity_f1 **0.979**, attribute_f1 **0.969**
+- mean latency 0.23 s/query
+Command: `python scripts/eval_decomposer.py --model_path models/decomposer-base-lora
+--adapter_path models/decomposer-base-lora`.
 
 ## Phase 3 retrieval — known issue: entity dominance / attribute collision
 
@@ -130,11 +142,11 @@ noise. recall@5 = 1.000 means every list/amenities gold passage is now retrieved
 near-synonyms with gold at rank 2: Empire State `completion_year` and Kyoto
 `best_time_to_visit`. Not hacked around — a genuine attribute-embedding ceiling.
 
-**Scope.** Wired into the deployed path (`run_pipeline.py`). Training/Phase-7
-scripts still build `RequirementRetriever`; adopting the entity-aware retriever
-there changes candidate lists and requires retraining the bandit + a full
-Phase-7 re-run — deferred to Phase G consolidation (and gated on the Phase C
-answerer/bandit retrain).
+**Scope.** UPDATE: as of Phase G this is fully adopted. `run_pipeline.py`,
+`train_bandit.py`, `train_baselines.py`, `phase7_experiment.py`, `eval_bandit.py`,
+and `sweep_lambda.py` all build `EntityAwareRetriever`, the bandit was retrained
+on entity-aware candidates, and Phase 7 was re-run. (This note previously said
+adoption was deferred; that is no longer true.)
 
 ## Phase 7 re-run under the entity-aware retriever (Phase G consolidation)
 
@@ -146,7 +158,7 @@ the pre-registered λ sweep under the new retriever showed a sharp cliff between
 λ=0.5 (success 0.917, 105 B) and λ=1.0 (collapse). Selected **λ=0.5** by the
 same rule as before (strongest stable byte incentive). VAL ONLY — test frozen.
 
-**Corrected Phase 7 (val, n=92 headline comparison+single_fact, generative
+**Corrected Phase 7 (val, n=92 headline: comparison, single_fact, multi_part, yes_no (procedure excluded), generative
 answerer `models/answer-base`, λ=0.5 bandit):**
 
 | condition | success | fact_f1 | avg_bytes | net_J text | net_J html_page |

@@ -49,8 +49,9 @@ def gold_answer(t):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=10)
-    ap.add_argument("--answerer", default="models/answer-small",
-                    help="path to the generative answerer checkpoint (LoRA adapter dir)")
+    ap.add_argument("--answerer", default="models/answer-base",
+                    help="path to the generative answerer checkpoint (LoRA adapter dir); "
+                         "models/answer-base is the reported model")
     ap.add_argument("--answer_mode", choices=["joint", "per_requirement"], default="joint")
     args = ap.parse_args()
 

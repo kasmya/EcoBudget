@@ -40,12 +40,41 @@ plt.rcParams.update({
 ADAPTIVE = {"bandit", "heuristic", "adaptive_rag", "linucb", "lints", "one_per_req"}
 
 
+# The reported headline set (matches phase7_experiment.py HEADLINE_TYPES):
+# comparison, single_fact, multi_part, yes_no; procedure excluded (n<3, always fails).
+HEADLINE_TYPES = {"comparison", "single_fact", "multi_part", "yes_no"}
+
+
 def load():
     f = DATA / "phase7_results_test.json"
     split = "test"
     if not f.exists():
         f = DATA / "phase7_results.json"; split = "val"
-    return json.loads(f.read_text()), split
+    res = json.loads(f.read_text())
+    # Replace each condition's top-level (all-types) aggregate with the HEADLINE
+    # aggregate, so the figures show the SAME numbers as the reported tables
+    # (the top-level includes the failing procedure tasks and would understate
+    # success). Weighted by per-type n.
+    pt = res.get("per_type", {})
+    for cond in list(res.keys()):
+        if cond == "per_type" or cond not in pt:
+            continue
+        types = pt[cond]
+        keys = set()
+        for ty in HEADLINE_TYPES:
+            if ty in types:
+                keys |= {k for k, v in types[ty].items() if isinstance(v, (int, float))}
+        agg = {}
+        den = sum(types[ty]["n"] for ty in HEADLINE_TYPES if ty in types)
+        for k in keys:
+            if k == "n":
+                continue
+            num = sum(types[ty][k] * types[ty]["n"] for ty in HEADLINE_TYPES
+                      if ty in types and k in types[ty])
+            agg[k] = num / den if den else res[cond].get(k, 0.0)
+        agg["n"] = den
+        res[cond] = agg
+    return res, split
 
 
 def kfmt(x, _=None):
