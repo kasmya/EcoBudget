@@ -230,24 +230,26 @@ This is the one and only test run.
 | fixed-500B | 0.927 | 0.944 | 353 | 6.93 |
 | full | 0.903 | 0.919 | 420 | 7.56 |
 
-Paired bootstrap (bandit vs baseline, 95% CI), test:
-- vs heuristic: bytes -30 [-51,-13], success +0.000, radio_J -0.11 [-0.19,-0.05].
-  On TEST the learned policies DO save bytes vs the heuristic (~22%) at identical
-  success, CI excluding 0 (on val they had exactly tied). A small, real win.
+Paired bootstrap (bandit vs baseline, 95% CI), test. Energy uses the MEASURED
+506 KB html_page payload (Tier A), re-run 2026-09-17 on the free machine:
+- vs heuristic: bytes -30 [-51,-13], success +0.000, net_J(html_page) -10.9
+  [-23.0,-1.9], radio_J -0.17 [-0.27,-0.07]. On TEST the learned policies DO save
+  bytes vs the heuristic (~22%) at identical success, CI excluding 0 (on val they
+  had exactly tied). A small, real win.
 - vs linucb / lints: bytes within noise (CI includes 0), success identical -- the
   learned policies are interchangeable on test.
 - vs one_per_req: success +0.065 [+0.024,+0.113] -- adaptive stopping beats naive
   top-1-per-requirement (which under-retrieves) at trivial byte cost.
-- vs full / fixed-1000B / fixed-1500B: bytes -305 to -314, net_J(html_page)
-  -12.1 to -12.9 [CIs exclude 0], radio_J -1.42 to -1.45 -- dominates decisively.
+- vs full: bytes -314 [-350,-282], net_J(html_page) -66.3 [-95.1,-40.8], radio_J
+  -2.05 [-2.17,-1.92] -- dominates decisively (all CIs exclude 0).
 
 ### Honest headline for the paper (test-set, defensible)
 Task-sufficient adaptive stopping reaches 0.895 success / 0.944 fact_f1 at ~106
 bytes, saves ~22% bytes versus a strong adaptive heuristic at equal success,
 beats naive per-requirement retrieval on success, and dominates fixed budgets and
-full-load by ~300 bytes and ~12-13 J/query at realistic page scale (all CIs
-exclude 0). Among learned policies, LinUCB is the stable recommended choice; our
-custom SGD bandit matches it on a good seed but is high-variance across seeds.
+full-load by ~314 bytes and ~66 J/query at the measured realistic page scale (all
+CIs exclude 0). Among learned policies, LinUCB is the stable recommended choice;
+our custom SGD bandit matches it on a good seed but is high-variance across seeds.
 
 ## Tier A/B capstone: end-to-end on REAL live web pages
 
