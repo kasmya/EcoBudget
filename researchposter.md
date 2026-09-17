@@ -101,8 +101,9 @@ retrieval: it first restricts candidates to the requirement's entity, then ranks
 by attribute similarity. An evidence tracker built on a RoBERTa QA model evaluates
 whether each requirement is satisfied, giving a per-requirement
 sufficiency/confidence assessment that raw cosine similarity cannot. An adaptive
-stopping mechanism (a contextual bandit or a coverage heuristic) halts retrieval
-once evidence is sufficient. A flan-t5-base answerer then generates the final
+stopping mechanism (a LinUCB contextual bandit, with a coverage heuristic as a
+strong reference) halts retrieval once evidence is sufficient. A flan-t5-base
+answerer then generates the final
 answer from only the gathered evidence. Experimental evaluation uses a frozen
 train/validation/test split, bootstrap confidence intervals, pre-registration, and
 a single final test-set run; energy is charged with a compute + 5G-per-bit + RRC
@@ -144,8 +145,9 @@ on data-intensive mobile and edge applications.
 - **Retrieval accuracy:** entity-aware retrieval raised recall@1 from **0.914 to 0.989** and recall@5 from **0.983 to 1.000** on 175 unique requirements.
 - **Answer success held while bytes fell:** on the frozen test set adaptive stopping reached **0.895 success / 0.944 fact-F1** using **106 bytes/query** versus **420 bytes** for full-page loading (**~75% fewer bytes**) at statistically equal success.
 - **Real live web pages:** end-to-end on live pages, task-sufficient loading cut transferred bytes by **92.8% and 97.8%** (≈14× less transfer energy).
-- **Energy at realistic page scale:** with the measured median page (**506 KB**), adaptive stopping saved **≈109 J/query versus full-page loading** (95% CI [74.7, 148.3]); transfer was **95%** of total energy.
-- **5G radio energy:** under aggressive radio release, adaptive stopping used **≈14–20 J** of radio energy per query versus **≈106 J** for full-page loading, robust across all 18 tested coefficient settings.
+- **Energy at realistic page scale:** with the measured median page (**506 KB**), on the frozen test set adaptive stopping saved **≈66 J/query versus full-page loading** (95% CI [40.8, 95.1]); transfer was about **95%** of total energy at this scale.
+- **5G radio energy:** under aggressive fast-dormancy release, adaptive stopping used **≈26 J** of radio energy per query versus **≈107 J** for full-page loading (about **4× less**); the direction holds across all 18 tested coefficient settings.
+- **Stable learned policy:** LinUCB is the reported and deployed stopping policy (val multi-seed **0.913 ± 0.007**); the custom SGD bandit is seed-unstable (**0.790 ± 0.283**) and retained only as an ablation.
 
 ---
 
@@ -166,8 +168,8 @@ fewer bytes precisely where deployments actually operate.
 **Graph 3 — 5G RRC radio / tail energy.**
 Measures per-query radio energy by condition under tight-loop and fast-dormancy
 release. *Interpretation:* fewer fetches sharply cut radio energy, with the gap
-widening to ~5× under aggressive release. *Why it matters:* it captures a 5G cost
-that pure byte counts miss.
+widening to about 4× under aggressive release. *Why it matters:* it captures a 5G
+cost that pure byte counts miss.
 
 **Graph 4 — Measured byte savings on real pages.**
 Measures full-page bytes versus task-sufficient bytes on live fetched pages.
@@ -189,7 +191,9 @@ sufficiency signal is met, which is why byte and energy savings are large while
 success is unchanged. *(Interpretation)* Notably, once the entity-aware retriever
 made the first result almost always correct, the learned policy converged to a
 strong hand-tuned heuristic; the advantage of learning grows with retrieval
-uncertainty. *(Limitation)* Answer quality degrades on raw, messy live-page text
+uncertainty. Across seeds the custom SGD bandit proved unstable, so the reported
+learned policy is LinUCB, which is stable and matches the heuristic while
+dominating fixed budgets. *(Limitation)* Answer quality degrades on raw, messy live-page text
 because models were trained on a structured corpus, and the corpus spans limited
 domains. Relative to the research question, the efficiency gains are confirmed and
 measured; the learning-specific gain is conditional on uncertainty.
@@ -197,9 +201,9 @@ measured; the learning-specific gain is conditional on uncertainty.
 **Key Findings** (5, 15–25 words each)
 - Task-sufficient stopping cut bytes ~75% versus full-page loading at equal test success (0.895).
 - Entity-aware retrieval lifted recall@1 to 0.989 and recall@5 to a perfect 1.000.
-- At realistic 506 KB pages, transfer dominates energy; stopping early saved ~109 J/query versus full load.
-- Fewer fetches reduced 5G radio and tail energy, with the largest gap under fast-dormancy release.
-- A learned policy's edge over a strong heuristic depends on retrieval uncertainty, not the algorithm alone.
+- At realistic 506 KB pages, transfer dominates energy; on test, stopping early saved ~66 J/query versus full load.
+- Fewer fetches reduced 5G radio and tail energy, with the largest gap (about 4×) under fast-dormancy release.
+- A learned policy's edge over a strong heuristic depends on retrieval uncertainty; LinUCB (stable) is the reported policy.
 
 ---
 
@@ -211,7 +215,7 @@ and on 5G that waste costs radio energy and carbon. EcoBudget addresses this wit
 task-sufficient retrieval: decompose into information requirements, retrieve per
 requirement, and stop once evidence is sufficient. Measured on a frozen test set
 and on real web pages, it maintained answer success (0.895) while transferring
-about 75% fewer bytes than full-page loading, saving roughly 109 J/query at
+about 75% fewer bytes than full-page loading, saving roughly 66 J/query at
 realistic page scale. The contribution is the task-sufficiency framework plus a
 5G-grounded energy and radio-state characterisation of when loading less pays off.
 

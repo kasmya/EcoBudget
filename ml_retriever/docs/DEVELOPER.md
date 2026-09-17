@@ -252,6 +252,12 @@ conditions (same features, reward, normalizer, candidates).
 python scripts/train_baselines.py --epochs 8 --lam 0.5
 ```
 
+**Deployed policy (Phase G): LinUCB is the default.** As of Phase G, the deployed
+path (`run_pipeline.py`) defaults to `--policy linucb` because it is stable across
+seeds (multi-seed 0.913 +/- 0.007) whereas the SGD bandit is not (0.790 +/- 0.283);
+on the frozen test set they tie within noise. `--policy bandit` and `--policy lints`
+remain selectable. See `docs/phase_g_consolidation.md`.
+
 **Frozen pretrained (not trained):** `sentence-transformers/all-MiniLM-L6-v2`
 (query and corpus embeddings) and `deepset/roberta-base-squad2` (evidence
 sufficiency scorer in `evidence.py`).
@@ -274,6 +280,8 @@ does not cover synonyms or unit conversion.
 | `phase7_experiment.py` | the main experiment: success, fact_f1, bytes, actions, latency, compute/transfer/radio energy, payload sensitivity, per-type breakdown, and paired bootstrap CIs, for all 11 conditions | `python scripts/phase7_experiment.py --n 100 --split val` |
 | `retrieval_noise_sweep.py` | pre-registered: when adaptivity beats the heuristic as retrieval noise rises | `python scripts/retrieval_noise_sweep.py --epochs 8 --noises 0 0.1 0.2 0.4 0.6` |
 | `multiseed.py` | policy-training variance across seeds (bandit, LinUCB, LinTS) | `python scripts/multiseed.py --seeds 0 1 2 3 4 --epochs 8 --lam 0.5` |
+| `ablate_reward.py` | Phase G ablation: per-step vs terminal reward mode (val, multi-seed) | `python scripts/ablate_reward.py --seeds 0 1 2 --lam 0.5` |
+| `eval_decomposer.py` | decomposer exact-match / entity-EM / F1 on val (add `--no_attr_snap` for the snap ablation) | `python scripts/eval_decomposer.py --model_path models/decomposer-base-lora --adapter_path models/decomposer-base-lora` |
 | `radio_sensitivity.py` | robustness of the radio-energy finding across cited coefficient ranges | `python scripts/radio_sensitivity.py` |
 | `end_to_end_web.py` | full pipeline on real live pages: measured byte and energy savings | `python scripts/end_to_end_web.py` |
 | `make_figures.py` | the four paper figures from the frozen-test results | `python scripts/make_figures.py` |
@@ -369,7 +377,15 @@ python scripts/multiseed.py --seeds 0 1 2 3 4 --epochs 8 --lam 0.5
 # 4. the single frozen test run (run ONCE, after configs are locked)
 python scripts/phase7_experiment.py --n 200 --split test
 python scripts/make_figures.py
+# 5. Phase G ablations (optional, consolidated in docs/phase_g_consolidation.md)
+python scripts/ablate_reward.py --seeds 0 1 2 --lam 0.5
+python scripts/eval_decomposer.py --model_path models/decomposer-base-lora \
+    --adapter_path models/decomposer-base-lora --no_attr_snap   # snap ablation
 ```
+
+The full reproducibility appendix (exact commands, seeds, versions, checkpoint
+locations) is `docs/reproducibility.md`; the consolidated ablation table,
+multi-seed variance, and frozen test run are in `docs/phase_g_consolidation.md`.
 
 Seeds: bandit / baselines / multiseed default to seed 0; multiseed sweeps 0-4.
 Note the training-time caveat: on the shared laptop, running a heavy training job
@@ -391,18 +407,42 @@ Phases are defined in `docs/roadmap_5g_green.md` (`## Phase A` ... `## Phase H`)
 | D | Entity-aware retriever | done (recall@1 0.914 -> 0.989, recall@5 -> 1.000) |
 | E | External and standard baselines | done (LinUCB, LinTS, Adaptive-RAG analog) |
 | F | Radio-state / latency energy | done (RRC model + cited coefficients + sensitivity) |
-| G | Rigor, reproducibility, final test run | PARTIAL: multi-seed and the single frozen test run are done; a consolidated ablation table and a reproducibility appendix are pending |
+| G | Rigor, reproducibility, final test run | done: multi-seed variance, consolidated ablation table, frozen test run, and the reproducibility appendix are all written (`docs/phase_g_consolidation.md`, `docs/reproducibility.md`). LinUCB is now the deployed default policy. Answerer multi-seed was skipped as a stated resource limitation (~3.5 h per fine-tune). |
 | H | Paper assembly | not started |
+
+### Phase G consolidation summary (`docs/phase_g_consolidation.md`)
+
+The consolidated ablations, each isolating one design choice on val:
+
+| ablation | result |
+|---|---|
+| retriever | recall@1 0.589 (whole-question) -> 0.914 (per-req) -> 0.989 (entity-aware) |
+| decomposer snap | exact-match 0.496 (off) -> 0.892 (on); entity-EM unchanged 0.946 (snap is attribute-only) |
+| byte-penalty lambda | 0.917 success at lambda<=0.5, collapses to 0.283 at lambda>=1.0 (cliff between 0.5 and 1.0) |
+| reward mode | per-step 0.706 +/- 0.366 @ 90 B vs terminal 0.989 +/- 0.019 @ 256 B (terminal over-retrieves ~3x; per-step lean but high-variance) |
+| answer mode (Phase 6) | joint 0.375 vs per-requirement 0.750 comparison success |
+
+Multi-seed (5 seeds): SGD bandit 0.790 +/- 0.283, LinUCB 0.913 +/- 0.007, LinTS
+0.897 +/- 0.014, heuristic 0.917. LinUCB is the reported and deployed policy.
 
 ### Known issues and limitations (candid)
 
 - **The SGD bandit is not the contribution and is seed-unstable.** Across five
   seeds it is 0.790 +/- 0.283 (it collapses on some seeds), while LinUCB
   (0.913 +/- 0.007) and the heuristic (0.917) are stable. The saved
-  `bandit_policy.joblib` is a good seed. Recommendation: report LinUCB as the
-  headline learned policy. The contribution is the task-sufficiency framework plus
+  `bandit_policy.joblib` is a good seed. RESOLVED in Phase G: LinUCB is now the
+  deployed default policy (`run_pipeline.py --policy linucb`), and it is the
+  reported learned policy; the SGD bandit is retained as an ablation, selectable
+  via `--policy bandit`. The contribution is the task-sufficiency framework plus
   the 5G energy/radio characterization, not a new bandit algorithm. See the
-  `bandit-retriever-tension` memory and `docs/eval_notes.md`.
+  `bandit-retriever-tension` memory, `docs/phase_g_consolidation.md`, and
+  `docs/eval_notes.md`.
+- **Reward-mode tradeoff (Phase G ablation).** Under the entity-aware retriever
+  the two reward modes trade off: terminal credit reaches high success
+  (0.989 +/- 0.019) but over-retrieves (about 3x the bytes, 256 vs 90) because
+  coarse episode credit does not penalize a wasteful RETRIEVE, while per-step is
+  byte-lean but high-variance (0.706 +/- 0.366) - the same SGD instability. This
+  is a further reason the reported policy is LinUCB, not the per-step SGD bandit.
 - **Lambda recalibration after Phase D.** The entity-aware retriever shrank the
   per-query byte scale, so the old lambda 4.0 (tuned against the old retriever)
   over-penalized retrieval and the policy collapsed to always-STOP. A
