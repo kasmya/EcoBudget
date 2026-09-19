@@ -2,7 +2,7 @@
 
 ## Important: this project is a static site, not a shadcn / React / TypeScript app
 
-The EcoBudget frontend (`frontend/landing.html`) is plain static HTML, CSS, and
+The EcoBudget frontend (`index.html` at the repo root) is plain static HTML, CSS, and
 vanilla JavaScript. It has no bundler, no `package.json`, no Tailwind, and no
 TypeScript. The shadcn `IPhoneMockup` React component cannot render in that page
 as-is (a `.tsx` file needs a React build step).
@@ -16,7 +16,7 @@ So there are two things in this folder, and it is deliberate:
    component and any future shadcn additions resolve without editing imports.
 
 2. **A faithful vanilla port** of the same iPhone mockup is what the live
-   `landing.html` actually renders (the `.iphone`, `.iphone-screen`,
+   `index.html` actually renders (the `.iphone`, `.iphone-screen`,
    `.iphone-island` styles and the interactive "See it work" demo). It shows the
    real research idea end to end: pick a question, tap load, watch decompose →
    retrieve → stop → answer while a byte/energy meter compares task-sufficient

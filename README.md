@@ -28,9 +28,11 @@ EcoBudget has three workstreams:
   Playwright, extracts passages, and estimates transfer CO2e. We reuse its real
   fetched pages (`backend/pages/`) to ground the energy model in measured page
   sizes, and we drive the end-to-end demo against live pages the same way.
-- **`frontend/`** is the project landing page (`frontend/landing.html`), a
-  premium single page with a full-screen hero video and an interactive iPhone
-  demo that animates the task-sufficient loading idea using our measured numbers.
+- **`index.html`** (repo root) is the project landing page, a premium single
+  page with a full-screen hero video and an interactive iPhone demo that animates
+  the task-sufficient loading idea using our measured numbers. Its assets live in
+  **`frontend/`** (`frontend/public/`, reachable from root via the `public`
+  symlink) alongside the reusable UI components.
 
 ## The idea in plain terms
 
@@ -140,9 +142,8 @@ the exact environment, seeds, and per-number provenance in
 ### The landing page
 
 ```bash
-cd frontend
 python3 -m http.server 8000
-# then open http://localhost:8000/landing.html
+# then open http://localhost:8000/  (index.html is served by default)
 ```
 
 ### The backend prototype (optional)

@@ -66,9 +66,9 @@ EcoBudget has three workstreams that the team built together:
   Playwright, extracts passages, and estimates transfer CO2e. We reuse its real
   fetched pages (`backend/pages/`) to ground our energy model in measured page
   sizes, and we drive our end-to-end demo against live pages the same way.
-- `frontend/`: the project landing page (`frontend/landing.html`), including a
-  full-screen hero video and an interactive iPhone demo that animates the
-  task-sufficient loading idea using our measured numbers.
+- `index.html` (repo root): the project landing page, including a full-screen
+  hero video and an interactive iPhone demo that animates the task-sufficient
+  loading idea using our measured numbers. Its assets live in `frontend/`.
 
 ## Architecture: what the pipeline is made of
 
