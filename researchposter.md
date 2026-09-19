@@ -15,7 +15,7 @@ energy without losing answer quality.
 
 ## Author(s) and Affiliation
 
-**Kasmya Bhatia, Amisha Singh, Ashwarya Singh**
+**Kasmya Bhatia, Ashwarya Pradhan, Amisha Singh**
 Department of Artificial Intelligence and Machine Learning, Manipal University Jaipur, Rajasthan, India
 Contact: amificent21@gmail.com
 
@@ -249,7 +249,7 @@ Narayanan, A., et al. (2021). A variegated look at 5G in the wild: Performance, 
 ## Requirements checklist
 
 - Title ✓
-- Authors & Affiliation ✓ *(Kasmya Bhatia, Amisha Singh, Ashwarya Singh; Manipal University Jaipur)*
+- Authors & Affiliation ✓ *(Kasmya Bhatia, Ashwarya Pradhan, Amisha Singh; Manipal University Jaipur)*
 - Introduction ✓
 - Objectives ✓
 - Methodology ✓

@@ -6,7 +6,7 @@
 
 ## Author(s) and Affiliation(s)
 
-Kasmya Bhatia, Amisha Singh, Ashwarya Singh
+Kasmya Bhatia, Ashwarya Pradhan, Amisha Singh
 Department of Artificial Intelligence and Machine Learning, Manipal University Jaipur, Rajasthan, India
 Contact: amificent21@gmail.com
 
