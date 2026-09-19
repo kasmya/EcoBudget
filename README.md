@@ -2,7 +2,7 @@
 
 **Task-sufficient web retrieval for greener 5G question answering.**
 
-EcoBudget is a research project that asks a simple question: when a system answers
+EcoBudget is a research project that asks a simple question when a system answers
 a question from the web, how little does it actually need to load? Most
 retrieval-augmented systems either pull a fixed amount of context or grab whole
 pages and let the model sort it out. Both move far more data than the answer
