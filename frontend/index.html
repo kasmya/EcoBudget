@@ -193,7 +193,8 @@
   .app-screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:2px 15px 12px;
     transition:transform .44s cubic-bezier(.32,.72,0,1),opacity .32s ease;}
   #screenRun{transform:translateX(100%);}
-  .phone-app.run #screenHome{transform:translateX(-26%);opacity:.5;pointer-events:none;}
+  .phone-app.run #screenHome{transform:translateX(-18%);opacity:0;pointer-events:none;}
+  #screenRun{background:#f2f2f7;}
   .phone-app.run #screenRun{transform:translateX(0);}
 
   .app-nav{padding:6px 2px 2px;}
@@ -269,12 +270,6 @@
   .sv-fill.full{background:linear-gradient(90deg,#f2896c,var(--coral));}
   .sv-fill.task{background:linear-gradient(90deg,var(--green-2),var(--green));}
 
-  .pa-run{margin-top:12px;}
-  .pa-run button{width:100%;padding:13px;border-radius:16px;border:none;cursor:pointer;position:relative;overflow:hidden;
-    background:linear-gradient(180deg,var(--green-2),var(--green));color:#1c2b06;font-weight:800;font-size:14px;
-    box-shadow:0 8px 18px rgba(120,180,40,.35);transition:transform .12s ease,opacity .2s ease;}
-  .pa-run button:active{transform:scale(.98);}
-  .pa-run button:disabled{opacity:.55;cursor:default;}
   .phone-home{position:absolute;bottom:9px;left:50%;transform:translateX(-50%);width:112px;height:5px;border-radius:3px;background:#0c0d10;opacity:.85;z-index:20;}
 
   /* Architecture: bento + pipeline flow diagram */
@@ -282,7 +277,17 @@
   .bento-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
   @media (max-width:900px){.bento-grid{grid-template-columns:1fr 1fr;}}
   @media (max-width:560px){.bento-grid{grid-template-columns:1fr;}}
-  .card{border-radius:20px;padding:22px;background:var(--panel);border:1px solid var(--border);box-shadow:var(--shadow);}
+  .card{position:relative;border-radius:20px;padding:22px 20px;background:var(--panel);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;transition:transform .2s ease,box-shadow .2s ease;}
+  .card:hover{transform:translateY(-3px);box-shadow:0 24px 50px rgba(30,34,18,.12);}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--acc,var(--green-2));}
+  .card.a-green{--acc:linear-gradient(90deg,var(--green-2),var(--green));}
+  .card.a-teal{--acc:linear-gradient(90deg,#3fc0b4,var(--teal));}
+  .card.a-blue{--acc:linear-gradient(90deg,#5b93f5,var(--blue));}
+  .card.a-amber{--acc:linear-gradient(90deg,#f0bf4d,var(--amber));}
+  .card.a-lilac{--acc:linear-gradient(90deg,#9a8df6,var(--lilac));}
+  .card.a-coral{--acc:linear-gradient(90deg,#f4886b,var(--coral));}
+  .card .file{display:inline-block;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;color:#5c6b2e;
+    background:#f2f5ea;border:1px solid #e6ecd6;border-radius:6px;padding:2px 7px;margin-top:12px;}
   .card .c-ico{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
   .card h3{font-size:16px;margin:0 0 6px;}
   .card p{font-size:13px;color:var(--muted);margin:0;line-height:1.55;}
@@ -550,14 +555,14 @@
       <p>A chain of small, independent, dependency-injected components, each unit tested without downloading a model.</p>
     </div>
     <div class="bento-grid stag">
-      <div class="card"><div class="c-ico tint-green"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16M4 12h10M4 19h7"/></svg></div><h3>Decomposer</h3><p><code>decomposer.py</code> - fine-tuned flan-t5-base + LoRA, turns a question into requirements snapped to a closed 35-attribute vocabulary.</p></div>
-      <div class="card"><div class="c-ico tint-teal"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div><h3>Retriever</h3><p><code>retriever.py</code> - MiniLM bi-encoder, entity-aware two-stage: gate to the entity, then rank by the attribute.</p></div>
-      <div class="card"><div class="c-ico tint-blue"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><h3>Evidence tracker</h3><p><code>evidence.py</code> - scores coverage with a RoBERTa QA confidence signal, since similarity alone is fooled by entity-only matches.</p></div>
-      <div class="card"><div class="c-ico tint-amber"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2Z"/><path d="M9 21h6"/></svg></div><h3>Stopping policy</h3><p><code>bandit.py</code> - contextual bandits (LinUCB is the deployed default; Thompson and an SGD bandit too) trading coverage against byte cost.</p></div>
-      <div class="card"><div class="c-ico tint-lilac"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10h8M8 14h5"/><path d="M21 12a9 9 0 1 1-4-7.5L21 3v6h-6"/></svg></div><h3>Answer generator</h3><p><code>answer.py</code> - fine-tuned flan-t5-base + LoRA, called once per requirement, with an abstain path.</p></div>
-      <div class="card"><div class="c-ico tint-green"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></div><h3>Judge</h3><p><code>judge.py</code> - answer-type-aware checker with a symmetric normalizer, reporting judge_success and fact_f1 separately.</p></div>
-      <div class="card"><div class="c-ico tint-coral"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg></div><h3>Energy model</h3><p><code>energy.py</code> - model FLOPs, a 5G per-bit transfer model, measured payloads, and an RRC radio-state and tail-energy model.</p></div>
-      <div class="card"><div class="c-ico tint-teal"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg></div><h3>Orchestrator</h3><p><code>system.py</code> - the end-to-end deployed path that wires every component above together.</p></div>
+      <div class="card a-green"><div class="c-ico tint-green"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16M4 12h10M4 19h7"/></svg></div><h3>Decomposer</h3><p>Turns a question into (entity, attribute) requirements, snapped to a closed 35-attribute vocabulary.</p><span class="file">decomposer.py</span></div>
+      <div class="card a-teal"><div class="c-ico tint-teal"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div><h3>Retriever</h3><p>MiniLM bi-encoder, entity-aware two-stage: gate to the entity, then rank by the attribute.</p><span class="file">retriever.py</span></div>
+      <div class="card a-blue"><div class="c-ico tint-blue"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><h3>Evidence tracker</h3><p>Scores coverage with a RoBERTa QA confidence signal, since similarity is fooled by entity-only matches.</p><span class="file">evidence.py</span></div>
+      <div class="card a-amber"><div class="c-ico tint-amber"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2Z"/><path d="M9 21h6"/></svg></div><h3>Stopping policy</h3><p>Contextual bandits, LinUCB by default, trading evidence coverage against byte cost.</p><span class="file">bandit.py</span></div>
+      <div class="card a-lilac"><div class="c-ico tint-lilac"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10h8M8 14h5"/><path d="M21 12a9 9 0 1 1-4-7.5L21 3v6h-6"/></svg></div><h3>Answer generator</h3><p>Fine-tuned flan-t5-base + LoRA, called once per requirement, with an abstain path.</p><span class="file">answer.py</span></div>
+      <div class="card a-green"><div class="c-ico tint-green"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></div><h3>Judge</h3><p>Answer-type-aware checker with a symmetric normalizer, reporting success and fact-F1 separately.</p><span class="file">judge.py</span></div>
+      <div class="card a-coral"><div class="c-ico tint-coral"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg></div><h3>Energy model</h3><p>Model FLOPs, a 5G per-bit transfer model, measured payloads, and an RRC radio-state and tail-energy model.</p><span class="file">energy.py</span></div>
+      <div class="card a-teal"><div class="c-ico tint-teal"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg></div><h3>Orchestrator</h3><p>The end-to-end deployed path that wires every component above together.</p><span class="file">system.py</span></div>
     </div>
 
     <!-- Pipeline flow diagram (verified: loop returns through Evidence Check) -->
@@ -699,6 +704,7 @@
 </div>
 
 <section class="faq">
+  <div class="faq-inner">
   <div class="section-head">
     <div class="eyebrow">Honesty, by design</div>
     <h2>What we report plainly, not just the wins</h2>
@@ -723,6 +729,7 @@
   <div class="faq-item">
     <div class="faq-q">What is still open?<span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></span></div>
     <div class="faq-a"><p>The paper writeup itself in Phase H. Two known ceilings: narrative tasks have no training coverage and currently fail, and answer quality degrades on raw live-page text (a corpus-to-web domain gap) even though the byte and energy savings hold.</p></div>
+  </div>
   </div>
 </section>
 
