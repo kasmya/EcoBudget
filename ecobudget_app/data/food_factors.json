@@ -1,0 +1,174 @@
+{
+  "source": "Poore, J. & Nemecek, T. (2018), Science, via Our World in Data 'Food: greenhouse gas emissions across the supply chain' (CC-BY 4.0)",
+  "metric": "kg CO2e per kg of food product, summed across supply-chain stages",
+  "factors": [
+    {
+      "activity": "Beef",
+      "owid_entity": "Beef (beef herd)",
+      "unit": "kg",
+      "kg_co2e_per_unit": 99.477,
+      "year": 2018
+    },
+    {
+      "activity": "Dark chocolate",
+      "owid_entity": "Dark Chocolate",
+      "unit": "kg",
+      "kg_co2e_per_unit": 46.647,
+      "year": 2018
+    },
+    {
+      "activity": "Lamb",
+      "owid_entity": "Lamb & Mutton",
+      "unit": "kg",
+      "kg_co2e_per_unit": 39.722,
+      "year": 2018
+    },
+    {
+      "activity": "Beef (from dairy cows)",
+      "owid_entity": "Beef (dairy herd)",
+      "unit": "kg",
+      "kg_co2e_per_unit": 33.301,
+      "year": 2018
+    },
+    {
+      "activity": "Coffee (per kg beans)",
+      "owid_entity": "Coffee",
+      "unit": "kg",
+      "kg_co2e_per_unit": 28.528,
+      "year": 2018
+    },
+    {
+      "activity": "Cheese",
+      "owid_entity": "Cheese",
+      "unit": "kg",
+      "kg_co2e_per_unit": 23.878,
+      "year": 2018
+    },
+    {
+      "activity": "Fish (farmed)",
+      "owid_entity": "Fish (farmed)",
+      "unit": "kg",
+      "kg_co2e_per_unit": 13.632,
+      "year": 2018
+    },
+    {
+      "activity": "Pork",
+      "owid_entity": "Pig Meat",
+      "unit": "kg",
+      "kg_co2e_per_unit": 12.306,
+      "year": 2018
+    },
+    {
+      "activity": "Chicken",
+      "owid_entity": "Poultry Meat",
+      "unit": "kg",
+      "kg_co2e_per_unit": 9.866,
+      "year": 2018
+    },
+    {
+      "activity": "Eggs",
+      "owid_entity": "Eggs",
+      "unit": "kg",
+      "kg_co2e_per_unit": 4.669,
+      "year": 2018
+    },
+    {
+      "activity": "Rice",
+      "owid_entity": "Rice",
+      "unit": "kg",
+      "kg_co2e_per_unit": 4.452,
+      "year": 2018
+    },
+    {
+      "activity": "Sugar",
+      "owid_entity": "Cane Sugar",
+      "unit": "kg",
+      "kg_co2e_per_unit": 3.199,
+      "year": 2018
+    },
+    {
+      "activity": "Tofu",
+      "owid_entity": "Tofu",
+      "unit": "kg",
+      "kg_co2e_per_unit": 3.162,
+      "year": 2018
+    },
+    {
+      "activity": "Milk",
+      "owid_entity": "Milk",
+      "unit": "kg",
+      "kg_co2e_per_unit": 3.152,
+      "year": 2018
+    },
+    {
+      "activity": "Tomatoes",
+      "owid_entity": "Tomatoes",
+      "unit": "kg",
+      "kg_co2e_per_unit": 2.089,
+      "year": 2018
+    },
+    {
+      "activity": "Maize",
+      "owid_entity": "Maize",
+      "unit": "kg",
+      "kg_co2e_per_unit": 1.702,
+      "year": 2018
+    },
+    {
+      "activity": "Bread / wheat",
+      "owid_entity": "Wheat & Rye",
+      "unit": "kg",
+      "kg_co2e_per_unit": 1.574,
+      "year": 2018
+    },
+    {
+      "activity": "Peas",
+      "owid_entity": "Peas",
+      "unit": "kg",
+      "kg_co2e_per_unit": 0.975,
+      "year": 2018
+    },
+    {
+      "activity": "Bananas",
+      "owid_entity": "Bananas",
+      "unit": "kg",
+      "kg_co2e_per_unit": 0.862,
+      "year": 2018
+    },
+    {
+      "activity": "Vegetables (other)",
+      "owid_entity": "Other Vegetables",
+      "unit": "kg",
+      "kg_co2e_per_unit": 0.532,
+      "year": 2018
+    },
+    {
+      "activity": "Potatoes",
+      "owid_entity": "Potatoes",
+      "unit": "kg",
+      "kg_co2e_per_unit": 0.46,
+      "year": 2018
+    },
+    {
+      "activity": "Nuts",
+      "owid_entity": "Nuts",
+      "unit": "kg",
+      "kg_co2e_per_unit": 0.433,
+      "year": 2018
+    },
+    {
+      "activity": "Apples",
+      "owid_entity": "Apples",
+      "unit": "kg",
+      "kg_co2e_per_unit": 0.428,
+      "year": 2018
+    },
+    {
+      "activity": "Root vegetables",
+      "owid_entity": "Root Vegetables",
+      "unit": "kg",
+      "kg_co2e_per_unit": 0.426,
+      "year": 2018
+    }
+  ]
+}

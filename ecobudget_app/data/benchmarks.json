@@ -1,0 +1,78 @@
+{
+  "source": "Our World in Data - CO2 and Greenhouse Gas Emissions (CC-BY 4.0), https://github.com/owid/co2-data",
+  "metric": "Annual CO2 emissions per capita (tonnes). Production-based; consumption-based shown where available.",
+  "benchmarks": [
+    {
+      "country": "Australia",
+      "year": 2023,
+      "co2_per_capita_tonnes": 14.478,
+      "consumption_co2_per_capita_tonnes": null
+    },
+    {
+      "country": "United States",
+      "year": 2023,
+      "co2_per_capita_tonnes": 14.299,
+      "consumption_co2_per_capita_tonnes": null
+    },
+    {
+      "country": "Canada",
+      "year": 2023,
+      "co2_per_capita_tonnes": 13.977,
+      "consumption_co2_per_capita_tonnes": null
+    },
+    {
+      "country": "China",
+      "year": 2023,
+      "co2_per_capita_tonnes": 8.367,
+      "consumption_co2_per_capita_tonnes": null
+    },
+    {
+      "country": "Japan",
+      "year": 2023,
+      "co2_per_capita_tonnes": 7.95,
+      "consumption_co2_per_capita_tonnes": null
+    },
+    {
+      "country": "Germany",
+      "year": 2023,
+      "co2_per_capita_tonnes": 7.051,
+      "consumption_co2_per_capita_tonnes": null
+    },
+    {
+      "country": "World",
+      "year": 2023,
+      "co2_per_capita_tonnes": 4.67,
+      "consumption_co2_per_capita_tonnes": 4.67
+    },
+    {
+      "country": "United Kingdom",
+      "year": 2023,
+      "co2_per_capita_tonnes": 4.443,
+      "consumption_co2_per_capita_tonnes": null
+    },
+    {
+      "country": "France",
+      "year": 2023,
+      "co2_per_capita_tonnes": 4.101,
+      "consumption_co2_per_capita_tonnes": null
+    },
+    {
+      "country": "Brazil",
+      "year": 2023,
+      "co2_per_capita_tonnes": 2.304,
+      "consumption_co2_per_capita_tonnes": null
+    },
+    {
+      "country": "India",
+      "year": 2023,
+      "co2_per_capita_tonnes": 2.129,
+      "consumption_co2_per_capita_tonnes": null
+    },
+    {
+      "country": "Kenya",
+      "year": 2023,
+      "co2_per_capita_tonnes": 0.389,
+      "consumption_co2_per_capita_tonnes": null
+    }
+  ]
+}

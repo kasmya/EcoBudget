@@ -1,0 +1,4 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+# Standard library only otherwise: sqlite3, csv, urllib, json, datetime.
+# Frontend loads Chart.js 4.4 from a CDN (needs internet the first time).

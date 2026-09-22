@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EcoBudget - Personal Carbon Budget</title>
+<link rel="stylesheet" href="/styles.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="leaf">🌱</span>
+      <div>EcoBudget<small>Personal carbon budget tracker</small></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="control">
+      <label for="month">Month</label>
+      <input type="month" id="month" />
+    </div>
+    <div class="control">
+      <label for="budgetInput">Budget kg/mo</label>
+      <input type="number" id="budgetInput" min="1" step="1" style="width:100px" />
+      <button class="ghost" id="saveBudget">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- KPI row -->
+  <div class="grid cols-4" id="kpis">
+    <div class="card stat"><div class="label">This month</div>
+      <div class="num"><span id="kTotal">—</span> <span class="unit">kg CO₂e</span></div>
+      <div class="foot" id="kEntries">—</div></div>
+    <div class="card stat"><div class="label">Monthly budget</div>
+      <div class="num"><span id="kBudget">—</span> <span class="unit">kg CO₂e</span></div>
+      <div class="foot" id="kBasis">science-based target</div></div>
+    <div class="card stat"><div class="label">Remaining</div>
+      <div class="num"><span id="kRemain">—</span> <span class="unit">kg</span></div>
+      <div class="foot" id="kStatus">—</div></div>
+    <div class="card stat"><div class="label">Projected annual</div>
+      <div class="num"><span id="kAnnual">—</span> <span class="unit">t/yr</span></div>
+      <div class="foot">vs 2.0 t/yr sustainable</div></div>
+  </div>
+
+  <!-- Budget progress -->
+  <div class="grid" style="margin-top:18px">
+    <div class="card">
+      <div class="card-head"><h2>Budget used this month</h2>
+        <span class="pill" id="pctPill">—</span></div>
+      <div class="progress"><div class="fill" id="progFill" style="width:0%"></div></div>
+      <div class="legend-row"><span id="legLeft">0 kg logged</span><span id="legRight">budget —</span></div>
+    </div>
+  </div>
+
+  <!-- Log + category chart -->
+  <div class="grid cols-2">
+    <div class="card">
+      <h2>Log an activity</h2>
+      <p class="sub">Pick what you did; emissions are computed from published factors.</p>
+      <div class="form-row">
+        <div class="field"><label>Category</label>
+          <select id="fCategory"></select></div>
+        <div class="field"><label>Activity</label>
+          <select id="fActivity"></select></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Amount</label>
+          <input type="number" id="fQuantity" min="0" step="any" placeholder="e.g. 24" />
+          <div class="hint" id="fHint"></div></div>
+        <div class="field"><label>Date</label>
+          <input type="date" id="fDate" /></div>
+      </div>
+      <div class="form-row one">
+        <div class="field"><label>Note (optional)</label>
+          <input type="text" id="fNote" placeholder="e.g. commute to office" /></div>
+      </div>
+      <div class="form-actions">
+        <button id="addBtn">Add entry</button>
+        <span class="est" id="estimate"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>By category</h2><span class="sub" id="catSub"></span></div>
+      <div class="chart-box"><canvas id="catChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Daily trend -->
+  <div class="grid">
+    <div class="card">
+      <div class="card-head"><h2>Daily emissions</h2>
+        <span class="sub">kg CO₂e logged per day this month</span></div>
+      <div class="chart-box" style="height:230px"><canvas id="dayChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Breakdown table + top activities -->
+  <div class="grid cols-2b">
+    <div class="card">
+      <h2>Category breakdown</h2><p class="sub">Totals vs share of your footprint.</p>
+      <table><thead><tr><th>Category</th><th class="num">kg CO₂e</th><th class="num">Share</th><th class="num">Entries</th></tr></thead>
+        <tbody id="catTable"></tbody></table>
+    </div>
+    <div class="card">
+      <h2>Top activities</h2><p class="sub">Where your emissions concentrate.</p>
+      <table><thead><tr><th>Activity</th><th>Category</th><th class="num">kg CO₂e</th></tr></thead>
+        <tbody id="topTable"></tbody></table>
+    </div>
+  </div>
+
+  <!-- Entries -->
+  <div class="grid">
+    <div class="card">
+      <div class="card-head"><h2>Logged entries</h2><span class="sub" id="entriesSub"></span></div>
+      <div style="overflow-x:auto">
+      <table><thead><tr><th>Date</th><th>Activity</th><th>Category</th><th class="num">Amount</th>
+        <th class="num">kg CO₂e</th><th>Note</th><th></th></tr></thead>
+        <tbody id="entriesTable"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- Benchmarks -->
+  <div class="grid">
+    <div class="card">
+      <div class="card-head"><h2>How you compare</h2>
+        <span class="sub">Projected annual footprint vs national per-capita averages (OWID, 2023)</span></div>
+      <div id="benchList"></div>
+    </div>
+  </div>
+
+  <footer>
+    <b>Data sources.</b> Emission factors: DEFRA/BEIS UK Government GHG Conversion Factors 2023 (Open Government Licence).
+    Food factors: Poore &amp; Nemecek (2018), Science, via Our World in Data (CC-BY 4.0).
+    Country per-capita CO₂: Our World in Data - CO₂ and Greenhouse Gas Emissions (CC-BY 4.0).
+    Budget basis: IPCC 1.5°C-aligned ~2 tonnes CO₂e per person per year.
+    All figures are computed live from the seeded SQLite database.
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="/app.js"></script>
+</body>
+</html>
