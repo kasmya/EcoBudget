@@ -219,10 +219,10 @@
 
   <div class="content"><span class="tag addp">add an objective</span><b>OBJECTIVES</b>
     <ul>
-      <li>Decompose questions into (entity, attribute) requirements and retrieve per requirement.</li>
-      <li>Learn an adaptive STOP/RETRIEVE controller that trades task success against transfer cost.</li>
-      <li>Quantify the 5G energy and <b>carbon</b> impact with a measured transfer + RRC radio-state model.</li>
-      <li class="win"><b>(new)</b> Optimize the controller for measured energy, and schedule flexible retrieval into low-carbon grid windows.</li>
+      <li>Decompose questions into (entity, attribute) requirements; retrieve per requirement.</li>
+      <li>Learn a STOP/RETRIEVE controller trading success against transfer cost.</li>
+      <li>Measure 5G energy and carbon (transfer + RRC radio-state model).</li>
+      <li class="win"><b>(new)</b> Optimize the controller for energy; schedule flexible retrieval into greener grid hours.</li>
     </ul></div>
 
   <div class="content"><span class="tag keepp">keep</span><b>02 RESEARCH GAP</b><br>
@@ -262,13 +262,13 @@
 
   <div class="content"><span class="tag rep">replace all numbers</span><b>06 MAIN RESULTS</b>
     <ul>
-      <li>Requirement-aware retrieval: entity-aware retrieval raises Recall@1 from <b>0.914 to 0.989</b> (Recall@5 0.983&rarr;1.000) over 175 unique requirements; whole-question baseline 0.589.</li>
-      <li>Task decomposition: fine-tuned decomposer reaches <b>0.892</b> exact-match; snap-to-vocab lifts it from <b>0.496</b> (entity EM 0.946).</li>
-      <li>Adaptive stopping: on the frozen test set it holds <b>0.895</b> task success (0.859 under a stricter verdict-aware judge; yes/no 64/64) using ~106 bytes/query vs 420 for full-page loading - <b>~75% fewer bytes</b> at statistically equal success.</li>
-      <li>Energy at realistic page scale (506 KB median): adaptive stopping saves <b>~66 J/query</b> vs full-page loading (95% CI 41-95); 5G radio energy ~4&times; lower under fast-dormancy.</li>
-      <li>Live web pages: task-sufficient loading cut transferred bytes by <b>92.8% and 97.8%</b> end-to-end.</li>
-      <li class="win"><b>(new)</b> Energy-aware controller: same 0.895 success at ~26 J radio/query, 4.1&times; below full retrieval.</li>
-      <li class="win"><b>(new)</b> Carbon-aware scheduling: <b>14-28%</b> lower gCO2e (4-12 h slack); 35.5% ceiling.</li>
+      <li><b>Retrieval:</b> right fact on the first try <b>98.9%</b> (vs 58.9% for whole-question); top-5 perfect.</li>
+      <li><b>Decomposition:</b> correct (entity, attribute) split <b>89.2%</b> (49.6% without snap-to-vocab).</li>
+      <li><b>When to stop:</b> full-retrieval quality (<b>0.895</b>; yes/no 64/64) at <b>~75% fewer bytes</b>.</li>
+      <li><b>Energy:</b> <b>~66 J/query</b> saved (95% CI 41-95); ~4&times; less 5G radio.</li>
+      <li><b>Live web:</b> <b>92.8% &amp; 97.8%</b> fewer bytes.</li>
+      <li class="win"><b>(new) Greener stopping:</b> same 0.895 at <b>4.1&times;</b> lower radio energy.</li>
+      <li class="win"><b>(new) Greener timing:</b> <b>14-28%</b> less carbon in cleaner-grid hours.</li>
     </ul></div>
 
   <div class="content"><span class="tag rep">replace + add</span><b>07 SUPPORTING RESULTS</b>
@@ -282,11 +282,11 @@
 
   <div class="content"><span class="tag newp">replace #1-3, add #4-5</span><b>08 KEY FINDINGS</b>
     <ol>
-      <li><b>Requirement-Aware Retrieval:</b> targeting individual (entity, attribute) requirements raises Recall@1 from 0.914 to 0.989 and Recall@5 to 1.000.</li>
-      <li><b>Task Decomposition:</b> a fine-tuned decomposer reaches 0.892 exact-match, with snap-to-vocabulary adding ~0.40 over the un-snapped model.</li>
-      <li><b>Adaptive Stopping:</b> balancing evidence sufficiency against retrieval cost holds full-page task success (0.895) at ~75% fewer bytes and ~66 J/query less energy, dominating fixed-budget baselines.</li>
-      <li class="win"><b>Energy-Aware Stopping (new):</b> rewarding the controller with measured 5G radio-wake joules yields 0.895 success at ~26 J radio/query - 4.1&times; below full retrieval - confirming early stopping is the dominant energy lever.</li>
-      <li class="win"><b>Carbon-Aware Scheduling (new):</b> grid carbon varies ~2.3&times; daily; shifting latency-tolerant retrieval into greener hours cuts operational CO2e a further 14-28% (4-12 h slack), stacking on stopping.</li>
+      <li><b>Requirement-aware retrieval wins:</b> targeting each (entity, attribute) lifts first-try accuracy 0.914 &rarr; 0.989 (top-5 to 1.000).</li>
+      <li><b>Decomposition is learnable:</b> the fine-tuned model splits questions correctly 89.2%; snap-to-vocab adds ~0.40.</li>
+      <li><b>Stopping early is nearly free:</b> full-retrieval quality (0.895) at ~75% fewer bytes and ~66 J/query less, beating fixed budgets.</li>
+      <li class="win"><b>(new) Energy is the stopping lever:</b> a measured-joule reward holds 0.895 at 4.1&times; lower 5G radio energy than full retrieval.</li>
+      <li class="win"><b>(new) Timing cuts carbon:</b> grid intensity varies ~2.3&times;/day, so running flexible queries in greener hours saves a further 14-28%.</li>
     </ol></div>
 
   <div class="content"><span class="tag addp">add two sentences</span><b>DISCUSSION</b><br>
@@ -338,11 +338,10 @@
   </div>
 
   <div class="content"><h4>Introduction</h4>
-    Web-scale question-answering agents retrieve broadly and load far more of the web than a task actually needs,
-    wasting application-layer data transfer, energy, and carbon. EcoBudget reframes retrieval as a task-level
-    resource-allocation problem: it decomposes a question into the specific information requirements needed to answer
-    it, retrieves only for those requirements, and stops as soon as the gathered evidence is sufficient. The result is
-    the same task success as full retrieval while transferring far fewer bytes and joules over the 5G access path.</div>
+    QA agents retrieve broadly and load far more of the web than a task needs, wasting data transfer, energy, and
+    carbon. EcoBudget treats retrieval as task-level resource allocation: it decomposes a question into its information
+    requirements, retrieves only for those, and stops once the evidence is sufficient - matching full-retrieval task
+    success while transferring far fewer bytes and joules over 5G.</div>
 
   <div class="content"><h4>Research Gap &amp; Questions (Objectives)</h4>
     <b>Research gap.</b> Retrieval research optimizes relevance ranking - <i>what</i> to load - but not task-sufficiency,
@@ -354,10 +353,10 @@
     transferring substantially fewer bytes and joules.<br>
     <b>Objectives.</b>
     <ul>
-      <li>Decompose questions into (entity, attribute) requirements and retrieve per requirement.</li>
-      <li>Learn an adaptive STOP/RETRIEVE controller that trades task success against transfer cost.</li>
-      <li>Quantify the 5G energy and carbon impact with a measured transfer + RRC radio-state model.</li>
-      <li>Optimize the controller directly for measured 5G energy, and schedule latency-tolerant retrieval into low-carbon grid windows.</li>
+      <li>Decompose questions into (entity, attribute) requirements; retrieve per requirement.</li>
+      <li>Learn a STOP/RETRIEVE controller trading success against transfer cost.</li>
+      <li>Measure 5G energy and carbon (transfer + RRC radio-state model).</li>
+      <li>Optimize the controller for energy; schedule flexible retrieval into greener grid hours.</li>
     </ul></div>
 
   <div class="content"><h4>EcoBudget Approach</h4>
@@ -392,13 +391,13 @@
 
   <div class="content"><h4>Main Results</h4>
     <ul>
-      <li>Requirement-aware retrieval: entity-aware retrieval raises Recall@1 from 0.914 to 0.989 (Recall@5 0.983&rarr;1.000) over 175 unique requirements; the whole-question baseline is 0.589.</li>
-      <li>Task decomposition: the fine-tuned decomposer reaches 0.892 exact-match on the validation split; constrained snap-to-vocabulary lifts it from 0.496 (entity exact-match 0.946).</li>
-      <li>Adaptive stopping: on the frozen test set it holds 0.895 task success (0.859 under a stricter verdict-aware judge; yes/no answered correctly 64/64) using about 106 bytes per query versus 420 for full-page loading - about 75% fewer bytes at statistically equal success.</li>
-      <li>Energy at realistic page scale: with the measured 506 KB median page, adaptive stopping saves about 66 J per query versus full-page loading (95% CI 41-95); 5G RRC radio energy is about 4&times; lower under fast-dormancy.</li>
-      <li>Live web pages: end-to-end on live pages, task-sufficient loading cut transferred bytes by 92.8% and 97.8%.</li>
-      <li>Energy-aware controller (new): a stopping policy trained on measured 5G energy holds the same 0.895 success at about 26 J radio per query - 4.1&times; below full retrieval.</li>
-      <li>Carbon-aware scheduling (new): shifting latency-tolerant retrieval into greener grid hours cuts operational CO2e by 14-28% (4-12 h slack), with a 35.5% ceiling.</li>
+      <li><b>Retrieval:</b> right fact on the first try 98.9% (vs 58.9% for whole-question); top-5 perfect.</li>
+      <li><b>Decomposition:</b> correct (entity, attribute) split 89.2% (49.6% without snap-to-vocab).</li>
+      <li><b>When to stop:</b> full-retrieval quality (0.895; yes/no 64/64) at ~75% fewer bytes.</li>
+      <li><b>Energy:</b> ~66 J/query saved (95% CI 41-95); ~4&times; less 5G radio.</li>
+      <li><b>Live web:</b> 92.8% and 97.8% fewer bytes.</li>
+      <li>(new) <b>Greener stopping:</b> same 0.895 at 4.1&times; lower radio energy.</li>
+      <li>(new) <b>Greener timing:</b> 14-28% less carbon in cleaner-grid hours.</li>
     </ul></div>
 
   <div class="content"><h4>Supporting Results</h4>
@@ -412,11 +411,11 @@
 
   <div class="content"><h4>Key Findings</h4>
     <ol>
-      <li>Requirement-Aware Retrieval: targeting individual (entity, attribute) requirements rather than the whole query improves retrieved-evidence quality, raising Recall@1 from 0.914 to 0.989 and Recall@5 to 1.000.</li>
-      <li>Task Decomposition: a fine-tuned (entity, attribute) decomposer reaches 0.892 exact-match, with constrained snap-to-vocabulary adding about 0.40 over the un-snapped model.</li>
-      <li>Adaptive Stopping: balancing evidence sufficiency against retrieval cost holds full-page task success (0.895) at about 75% fewer bytes and about 66 J per query less energy, dominating fixed-budget baselines.</li>
-      <li>Energy-Aware Stopping (new): rewarding the controller with measured 5G radio-wake joules rather than byte-count yields a policy that holds 0.895 task success at about 26 J radio energy per query - 4.1&times; below full retrieval - confirming that early stopping is the dominant energy lever.</li>
-      <li>Carbon-Aware Scheduling (new): because grid carbon intensity varies about 2.3&times; within a day, shifting latency-tolerant retrieval into greener hours cuts operational CO2e a further 14-28% (4-12 h slack), a lever that stacks on top of task-sufficient stopping.</li>
+      <li><b>Requirement-aware retrieval wins:</b> targeting each (entity, attribute) lifts first-try accuracy 0.914 &rarr; 0.989 (top-5 to 1.000).</li>
+      <li><b>Decomposition is learnable:</b> the fine-tuned model splits questions correctly 89.2%; snap-to-vocab adds ~0.40.</li>
+      <li><b>Stopping early is nearly free:</b> full-retrieval quality (0.895) at ~75% fewer bytes and ~66 J/query less, beating fixed budgets.</li>
+      <li>(new) <b>Energy is the stopping lever:</b> a measured-joule reward holds 0.895 at 4.1&times; lower 5G radio energy than full retrieval.</li>
+      <li>(new) <b>Timing cuts carbon:</b> grid intensity varies ~2.3&times;/day, so running flexible queries in greener hours saves a further 14-28%.</li>
     </ol></div>
 
   <div class="content"><h4>Discussion</h4>
