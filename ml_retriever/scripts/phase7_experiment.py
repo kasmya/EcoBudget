@@ -121,6 +121,9 @@ def main():
     # Phase E external baselines (trained by scripts/train_baselines.py)
     linucb = LinUCBPolicy.load(MODELS / "linucb_policy.joblib")
     lints = LinTSPolicy.load(MODELS / "lints_policy.joblib")
+    # Idea 1: energy-aware LinUCB (reward charges each fetch its 5G radio-wake
+    # joules, not snippet bytes). Trained by train_baselines.py --reward energy.
+    linucb_energy = LinUCBPolicy.load(MODELS / "linucb_policy_energy.joblib")
 
     tasks = {t["id"]: t for t in json.loads((DATA / "tasks.json").read_text())}
     splits = json.loads((DATA / "splits.json").read_text())
@@ -146,6 +149,7 @@ def main():
         "linucb": lambda ctx, st: linucb.select_action(normalizer.transform(ctx), explore=False),
         "lints": lambda ctx, st: lints.select_action(normalizer.transform(ctx), explore=False),
         "bandit": lambda ctx, st: policy.select_action(normalizer.transform(ctx), explore=False),
+        "linucb_energy": lambda ctx, st: linucb_energy.select_action(normalizer.transform(ctx), explore=False),
     }
 
     accountant = EnergyAccountant()  # Phase A: 5G transfer + compute energy
@@ -253,8 +257,8 @@ def main():
     # bootstrap: bandit vs baselines on headline tasks (paired)
     ids = [tid for tid, m in results["bandit"].items() if m["type"] in HEADLINE_TYPES]
     print("\nbandit vs baseline (headline tasks, paired mean diff [95% bootstrap CI]):")
-    for base in ("heuristic", "adaptive_rag", "linucb", "lints", "one_per_req",
-                 "full", "fixed-1000B", "fixed-1500B"):
+    for base in ("heuristic", "adaptive_rag", "linucb", "lints", "linucb_energy",
+                 "one_per_req", "full", "fixed-1000B", "fixed-1500B"):
         db = [results["bandit"][i]["bytes"] - results[base][i]["bytes"] for i in ids]
         ds = [results["bandit"][i]["success"] - results[base][i]["success"] for i in ids]
         de = [results["bandit"][i]["total_j"] - results[base][i]["total_j"] for i in ids]  # text scale

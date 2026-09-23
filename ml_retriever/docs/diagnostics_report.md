@@ -10,24 +10,24 @@ for the overfitting check. All numbers are measured, not estimated.
 ### 1a. By answer type
 | type | n | success | fact_f1 | avg_bytes | avg_latency_s |
 |---|---|---|---|---|---|
-| comparison | 28 | 0.821 | 0.893 | 179 | 0.988 |
-| multi_part | 16 | 0.5 | 0.75 | 70 | 0.43 |
-| procedure | 4 | 0.0 | 0.0 | 325 | 0.272 |
-| single_fact | 16 | 1.0 | 1.0 | 48 | 0.227 |
-| yes_no | 64 | 1.0 | 1.0 | 102 | 0.435 |
+| comparison | 28 | 0.821 | 0.893 | 179 | 1.084 |
+| multi_part | 16 | 0.5 | 0.75 | 70 | 0.633 |
+| procedure | 4 | 0.0 | 0.0 | 325 | 0.405 |
+| single_fact | 16 | 1.0 | 1.0 | 48 | 0.336 |
+| yes_no | 64 | 1.0 | 1.0 | 102 | 0.643 |
 
 ### 1b. By domain
 | domain | n | success | fact_f1 | avg_bytes | avg_latency_s |
 |---|---|---|---|---|---|
-| building | 16 | 1.0 | 1.0 | 168 | 0.472 |
-| country | 4 | 1.0 | 1.0 | 199 | 0.453 |
-| ev | 16 | 0.75 | 0.875 | 112 | 0.387 |
-| laptop | 24 | 1.0 | 1.0 | 89 | 0.459 |
-| mountain | 4 | 1.0 | 1.0 | 70 | 0.371 |
-| other | 4 | 0.0 | 0.0 | 325 | 0.272 |
-| phone | 44 | 0.909 | 0.955 | 92 | 0.374 |
-| running_shoe | 12 | 0.667 | 0.833 | 62 | 0.392 |
-| travel | 4 | 0.75 | 0.75 | 239 | 4.199 |
+| building | 16 | 1.0 | 1.0 | 168 | 0.7 |
+| country | 4 | 1.0 | 1.0 | 199 | 0.665 |
+| ev | 16 | 0.75 | 0.875 | 112 | 0.569 |
+| laptop | 24 | 1.0 | 1.0 | 89 | 0.674 |
+| mountain | 4 | 1.0 | 1.0 | 70 | 0.548 |
+| other | 4 | 0.0 | 0.0 | 325 | 0.405 |
+| phone | 44 | 0.909 | 0.955 | 92 | 0.555 |
+| running_shoe | 12 | 0.667 | 0.833 | 62 | 0.578 |
+| travel | 4 | 0.75 | 0.75 | 239 | 3.578 |
 
 Read honestly: subgroups with small n (list, narrative, procedure; and thin
 domains) have noisy estimates and are the weakest slices. procedure/narrative
@@ -83,8 +83,8 @@ under-represented (and procedure/narrative fail). External validity beyond these
 domains is untested.
 
 ## 5. Latency (measured end-to-end wall-clock, frozen test, this machine)
-- p50: 0.406 s | p90: 0.552 s | p95: 0.579 s | max: 15.341 s
-- mean: 0.524 s over 128 tasks
+- p50: 0.606 s | p90: 0.825 s | p95: 0.858 s | max: 12.097 s
+- mean: 0.692 s over 128 tasks
 
 Latency is CPU/MPS wall-clock on a laptop and is dominated by flan-t5 generation;
 it is not a tuned production latency. It is reported as-is.
@@ -98,35 +98,35 @@ it is not a tuned production latency. It is reported as-is.
       "success": 0.821,
       "fact_f1": 0.893,
       "avg_bytes": 179.0,
-      "avg_latency_s": 0.988
+      "avg_latency_s": 1.084
     },
     "multi_part": {
       "n": 16,
       "success": 0.5,
       "fact_f1": 0.75,
       "avg_bytes": 70.0,
-      "avg_latency_s": 0.43
+      "avg_latency_s": 0.633
     },
     "procedure": {
       "n": 4,
       "success": 0.0,
       "fact_f1": 0.0,
       "avg_bytes": 325.0,
-      "avg_latency_s": 0.272
+      "avg_latency_s": 0.405
     },
     "single_fact": {
       "n": 16,
       "success": 1.0,
       "fact_f1": 1.0,
       "avg_bytes": 48.0,
-      "avg_latency_s": 0.227
+      "avg_latency_s": 0.336
     },
     "yes_no": {
       "n": 64,
       "success": 1.0,
       "fact_f1": 1.0,
       "avg_bytes": 102.0,
-      "avg_latency_s": 0.435
+      "avg_latency_s": 0.643
     }
   },
   "by_domain": {
@@ -135,63 +135,63 @@ it is not a tuned production latency. It is reported as-is.
       "success": 1.0,
       "fact_f1": 1.0,
       "avg_bytes": 168.0,
-      "avg_latency_s": 0.472
+      "avg_latency_s": 0.7
     },
     "country": {
       "n": 4,
       "success": 1.0,
       "fact_f1": 1.0,
       "avg_bytes": 199.0,
-      "avg_latency_s": 0.453
+      "avg_latency_s": 0.665
     },
     "ev": {
       "n": 16,
       "success": 0.75,
       "fact_f1": 0.875,
       "avg_bytes": 112.0,
-      "avg_latency_s": 0.387
+      "avg_latency_s": 0.569
     },
     "laptop": {
       "n": 24,
       "success": 1.0,
       "fact_f1": 1.0,
       "avg_bytes": 89.0,
-      "avg_latency_s": 0.459
+      "avg_latency_s": 0.674
     },
     "mountain": {
       "n": 4,
       "success": 1.0,
       "fact_f1": 1.0,
       "avg_bytes": 70.0,
-      "avg_latency_s": 0.371
+      "avg_latency_s": 0.548
     },
     "other": {
       "n": 4,
       "success": 0.0,
       "fact_f1": 0.0,
       "avg_bytes": 325.0,
-      "avg_latency_s": 0.272
+      "avg_latency_s": 0.405
     },
     "phone": {
       "n": 44,
       "success": 0.909,
       "fact_f1": 0.955,
       "avg_bytes": 92.0,
-      "avg_latency_s": 0.374
+      "avg_latency_s": 0.555
     },
     "running_shoe": {
       "n": 12,
       "success": 0.667,
       "fact_f1": 0.833,
       "avg_bytes": 62.0,
-      "avg_latency_s": 0.392
+      "avg_latency_s": 0.578
     },
     "travel": {
       "n": 4,
       "success": 0.75,
       "fact_f1": 0.75,
       "avg_bytes": 239.0,
-      "avg_latency_s": 4.199
+      "avg_latency_s": 3.578
     }
   },
   "overfitting": {
@@ -214,8 +214,8 @@ it is not a tuned production latency. It is reported as-is.
     "byte_mismatch": 0
   },
   "latency_s": {
-    "p50": 0.406,
-    "p95": 0.579
+    "p50": 0.606,
+    "p95": 0.858
   }
 }
 ```

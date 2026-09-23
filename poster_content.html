@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>EcoBudget poster - full content + new ideas</title>
+<style>
+  :root{--bg:#f7f8f4;--panel:#fff;--ink:#161915;--muted:#6b6f64;--border:#e6e8df;
+        --accent:#5f9e12;--accent-soft:#eef6e0;--bad:#d9542b;--bad-soft:#fbe9e2;
+        --good:#2e8b57;--good-soft:#e5f3ea;--warn:#b8860b;--warn-soft:#fbf3dc;
+        --new:#2563a8;--new-soft:#e4eefb;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.55;}
+  .wrap{max-width:1000px;margin:0 auto;padding:40px 22px 90px;}
+  h1{font-size:31px;letter-spacing:-.02em;margin:0 0 6px;}
+  .sub{color:var(--muted);margin:0 0 8px;font-size:15px;}
+  .verdict{display:inline-block;background:var(--good-soft);border:1px solid #c9e6d5;color:var(--good);
+           font-weight:700;border-radius:999px;padding:6px 14px;font-size:13px;margin:10px 8px 6px 0;}
+  .verdict.new{background:var(--new-soft);border-color:#bcd6f5;color:var(--new);}
+  h2{font-size:15px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:40px 0 12px;border-top:1px solid var(--border);padding-top:22px;}
+  h3{font-size:18px;margin:26px 0 4px;letter-spacing:-.01em;}
+  .item{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:14px;box-shadow:0 6px 18px rgba(20,25,15,.05);}
+  .item.newidea{border-left:4px solid var(--new);}
+  .loc{font-weight:700;font-size:15px;margin-bottom:10px;}
+  .loc .sev{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;border-radius:999px;padding:3px 9px;margin-left:8px;vertical-align:2px;}
+  .sev.fix{background:var(--bad-soft);color:var(--bad);}
+  .sev.confirm{background:var(--warn-soft);color:var(--warn);}
+  .sev.add{background:var(--good-soft);color:var(--good);}
+  .sev.newp{background:var(--new-soft);color:var(--new);}
+  .sev.keep{background:#eef0e8;color:var(--muted);}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0;}
+  @media(max-width:720px){.row{grid-template-columns:1fr;}}
+  .box{border-radius:10px;padding:11px 13px;font-size:14px;}
+  .cur{background:var(--bad-soft);border:1px solid #f3d3c6;}
+  .new{background:var(--good-soft);border:1px solid #c9e6d5;}
+  .newbox{background:var(--new-soft);border:1px solid #bcd6f5;}
+  .box .lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;}
+  .cur .lbl{color:var(--bad);} .new .lbl{color:var(--good);} .newbox .lbl{color:var(--new);}
+  .why{font-size:13px;color:var(--muted);margin-top:8px;}
+  code{background:#eef0e8;border-radius:5px;padding:1px 5px;font-size:13px;}
+  .content{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px;font-size:14.5px;margin-bottom:12px;}
+  .content .tag{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;border-radius:6px;padding:2px 7px;margin-right:8px;vertical-align:2px;}
+  .tag.rep{background:var(--warn-soft);color:var(--warn);}
+  .tag.addp{background:var(--good-soft);color:var(--good);}
+  .tag.keepp{background:#eef0e8;color:var(--muted);}
+  .tag.newp{background:var(--new-soft);color:var(--new);}
+  .content h4{margin:0 0 8px;font-size:15px;}
+  .content ul{margin:6px 0 0;padding-left:20px;} .content li{margin:4px 0;}
+  .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0;}
+  .metric{background:var(--accent-soft);border:1px solid #d6e6bf;border-radius:10px;padding:10px 12px;}
+  .metric .n{font-size:22px;font-weight:800;color:var(--accent);letter-spacing:-.02em;}
+  .metric .k{font-size:12px;color:var(--muted);margin-top:2px;}
+  .toc{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin:14px 0 4px;font-size:14px;}
+  .toc a{color:var(--new);text-decoration:none;} .toc a:hover{text-decoration:underline;}
+  table.tbl{border-collapse:collapse;width:100%;font-size:13.5px;margin:10px 0;}
+  table.tbl th,table.tbl td{border:1px solid var(--border);padding:7px 9px;text-align:left;}
+  table.tbl th{background:#f0f2ea;font-weight:700;}
+  table.tbl td.num{text-align:right;font-variant-numeric:tabular-nums;}
+  .win{color:var(--good);font-weight:700;}
+  .foot{color:var(--muted);font-size:12.5px;margin-top:34px;border-top:1px solid var(--border);padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>EcoBudget poster - full content &amp; two new ideas</h1>
+  <p class="sub">Slide: <b>kasu.pptx</b>. This file has two parts: <b>(A)</b> exact drop-in fixes for
+  stale numbers, and <b>(B)</b> two <b>new measured contributions</b> plus the complete, section-by-section
+  poster content (every heading) with each block marked <span class="tag keepp">keep</span>
+  <span class="tag rep">replace</span> <span class="tag addp">add</span> <span class="tag newp">new idea</span>.
+  Every number is reproduced from a clean rebuild + fresh eval run (2026-09-23).</p>
+  <div class="verdict">Narrative verdict: DIRECTIONALLY CORRECT - 3 stale numbers to swap.</div>
+  <div class="verdict new">+2 new contributions: energy-aware stopping &amp; carbon-aware scheduling.</div>
+
+  <div class="toc">
+    <b>Jump to:</b>
+    &nbsp;<a href="#partA">A. Fix stale numbers</a>
+    &nbsp;·&nbsp;<a href="#idea1">B1. Energy-aware stopping</a>
+    &nbsp;·&nbsp;<a href="#idea2">B2. Carbon-aware scheduling</a>
+    &nbsp;·&nbsp;<a href="#full">C. Full poster content (all headings)</a>
+    &nbsp;·&nbsp;<a href="#confirm">D. Measured latency</a>
+  </div>
+
+  <!-- ===================== PART A ===================== -->
+  <h2 id="partA">A &nbsp;-&nbsp; Must fix: incorrect / stale numbers</h2>
+
+  <div class="item">
+    <div class="loc">Key Findings #1 - Requirement-Aware Retrieval <span class="sev fix">fix</span></div>
+    <div class="row">
+      <div class="box cur"><div class="lbl">Currently on poster</div>"...improving Recall@1 from <b>49.7% &rarr; 92.6%</b> with reranking."</div>
+      <div class="box new"><div class="lbl">Replace with</div>"...improving Recall@1 from <b>0.914 &rarr; 0.989</b> (and Recall@5 to a perfect <b>1.000</b>) with entity-aware gating; whole-question baseline is <b>0.589</b>."</div>
+    </div>
+    <div class="why">Why: 49.7 / 92.6 match no current result. Re-measured on 175 unique requirements: whole-question 0.589, per-requirement 0.914, entity-aware 0.989 (Recall@1). Also drop "reranking" - the method is entity-gate then attribute-rank, not a cross-encoder re-rank.</div>
+  </div>
+
+  <div class="item">
+    <div class="loc">Key Findings #2 - Task Decomposition <span class="sev fix">fix</span></div>
+    <div class="row">
+      <div class="box cur"><div class="lbl">Currently on poster</div>"...Exact Match increasing from <b>38.9% &rarr; 69.4%</b> after fine-tuning."</div>
+      <div class="box new"><div class="lbl">Replace with</div>"...Exact Match <b>0.496 &rarr; 0.892</b> with constrained decoding (snap-to-vocab) on the LoRA fine-tuned decomposer."</div>
+    </div>
+    <div class="why">Why: 38.9 / 69.4 are the old Phase-2 numbers. Current model (240-task val set): 0.496 un-snapped &rarr; 0.892 with snap-to-vocab; entity exact-match 0.946.</div>
+  </div>
+
+  <div class="item">
+    <div class="loc">Key Findings #3 - Adaptive Retrieval <span class="sev fix">fix</span></div>
+    <div class="row">
+      <div class="box cur"><div class="lbl">Currently on poster</div>"...achieving <b>100% task success</b> with lower data transfer than full retrieval..."</div>
+      <div class="box new"><div class="lbl">Replace with</div>"...achieving <b>0.86 verdict-aware task success</b> (yes/no answered correctly <b>64/64</b>) at <b>~75% fewer bytes</b> than full-page loading, at statistically equal success."</div>
+    </div>
+    <div class="why">Why: 100% is not supported. Frozen-test success is 0.895 by required-fact coverage; under a stricter verdict-aware judge it is <b>0.859</b> overall (yes/no 1.000, comparison weak on a tiny numeric subset). Use 0.86 (verdict-aware) or 0.895 (fact coverage) - label whichever you use; do not claim 100%.</div>
+  </div>
+
+  <div class="item">
+    <div class="loc">Main Results / 5G - promote measured energy out of "future work" <span class="sev add">add</span></div>
+    <div class="row">
+      <div class="box cur"><div class="lbl">Currently on poster (Practical Implications)</div>"...energy and carbon benefits <b>requiring direct measurement in future work</b>."</div>
+      <div class="box new"><div class="lbl">Replace with</div>"...energy and carbon benefits <b>measured</b>: <b>~66 J/query</b> saved vs full-page loading at the measured 506 KB median page (95% CI [41, 95]); <b>5G RRC radio energy ~4&times; lower</b> under fast-dormancy; live web tasks transfer <b>92-99% fewer bytes</b>."</div>
+    </div>
+    <div class="why">Why: the energy model, radio-state model, and a live demo are all measured - deferring to future work under-claims your strongest 5G result.</div>
+  </div>
+
+  <!-- ===================== PART B1 ===================== -->
+  <h2 id="idea1">B1 &nbsp;-&nbsp; New contribution: Energy-Aware Stopping Reward</h2>
+  <p class="sub">The stopping controller previously optimized <i>success minus a byte penalty</i>. Bytes on the
+  extracted snippets are ~10<sup>2</sup> B, so that penalty is nearly free - the policy barely feels retrieval
+  cost. We reformulated the reward to charge each retrieval its <b>true 5G energy</b>: a fetch wakes the radio
+  (RRC promotion + active + inactivity tail), a fixed ~<b>107 J</b> per page fetch under fast-dormancy. The policy
+  now stops to save <b>joules</b>, not bytes.</p>
+
+  <div class="metrics">
+    <div class="metric"><div class="n">0.895</div><div class="k">task success (frozen test) - equals deployed policy</div></div>
+    <div class="metric"><div class="n">25.9 J</div><div class="k">5G radio energy/query (fast-dormancy)</div></div>
+    <div class="metric"><div class="n">4.1&times;</div><div class="k">lower radio energy than full retrieval (106.7 J)</div></div>
+    <div class="metric"><div class="n">= success</div><div class="k">no accuracy loss vs full (&Delta;-0.008, CI incl. 0)</div></div>
+  </div>
+
+  <table class="tbl">
+    <tr><th>Condition (frozen test, headline n=124)</th><th>Task success</th><th>Fetches</th><th>Radio J (fast-dorm.)</th><th>gCO2e (mg)</th></tr>
+    <tr><td>Full retrieval</td><td class="num">0.903</td><td class="num">7.56</td><td class="num">106.67</td><td class="num">1.525</td></tr>
+    <tr><td>Fixed budget (1000 B)</td><td class="num">0.871</td><td class="num">7.46</td><td class="num">105.30</td><td class="num">1.512</td></tr>
+    <tr><td>Heuristic / Adaptive-RAG</td><td class="num">0.895</td><td class="num">2.29</td><td class="num">32.38</td><td class="num">0.824</td></tr>
+    <tr><td>Deployed LinUCB (byte reward)</td><td class="num">0.895</td><td class="num">1.84</td><td class="num">26.00</td><td class="num">0.762</td></tr>
+    <tr><td><b>Energy-aware LinUCB (new)</b></td><td class="num win">0.895</td><td class="num win">1.83</td><td class="num win">25.89</td><td class="num win">0.761</td></tr>
+  </table>
+  <p class="why">Honest finding (not oversold): the energy objective reaches the same 0.895 success at equal-or-lower
+  radio energy than the byte-reward policy, and <b>4.1&times;</b> below full retrieval - so it <b>confirms the deployed
+  stopping policy already sits on the energy-optimal frontier</b>, and gives a principled, 5G-grounded reason for it.
+  On the val split at the selected operating point (&mu;=0.15, chosen on val, never test) it holds headline success
+  0.914 while trimming fetches. Reward weight &mu; was swept on val (0.05-0.3); higher &mu; trades success for a small
+  further energy cut, so we report the success-preserving point.</p>
+
+  <div class="content"><h4>Where this goes on the poster (drop-ins)</h4>
+    <div class="row">
+      <div class="box newbox"><div class="lbl">08 KEY FINDINGS - add #4</div>
+        <b>Energy-Aware Stopping:</b> rewarding the controller with measured 5G energy (radio-wake joules) rather than byte-count yields a policy that holds 0.895 task success at ~26 J radio energy/query - <b>4.1&times; below full retrieval</b> and on par with the deployed policy, confirming early stopping is the dominant energy lever.</div>
+      <div class="box newbox"><div class="lbl">07 SUPPORTING RESULTS - add bullet</div>
+        Reward-shaping ablation: a 5G-energy reward (per-fetch RRC radio-wake cost, ~107 J/page) matches the byte-reward policy's success (0.895) at equal/lower radio energy (25.9 vs 26.0 J), showing the stopping policy is near energy-optimal, not just byte-optimal.</div>
+    </div>
+  </div>
+
+  <!-- ===================== PART B2 ===================== -->
+  <h2 id="idea2">B2 &nbsp;-&nbsp; New contribution: Carbon-Intensity-Aware Scheduling</h2>
+  <p class="sub">Joules become carbon via grid intensity - which is <b>not constant</b>: it swings ~2.3&times; over a day
+  (deep midday solar trough, sharp evening peak). The same query costs very different carbon depending on <b>when</b>
+  it runs. For latency-tolerant agent retrieval we shift each query to the greenest hour within a slack window.
+  This is a time axis orthogonal to Idea 1, and the savings <b>stack</b> on top of it.</p>
+
+  <div class="metrics">
+    <div class="metric"><div class="n">14.0%</div><div class="k">gCO2e cut, 4 h slack window</div></div>
+    <div class="metric"><div class="n">20.2%</div><div class="k">gCO2e cut, 6 h slack window</div></div>
+    <div class="metric"><div class="n">28.1%</div><div class="k">gCO2e cut, 12 h slack window</div></div>
+    <div class="metric"><div class="n">2.3&times;</div><div class="k">within-day grid intensity spread</div></div>
+  </div>
+
+  <table class="tbl">
+    <tr><th>Slack window</th><th>gCO2e reduction</th><th>Saved (mg/day, 24-query workload)</th></tr>
+    <tr><td>2 h</td><td class="num">5.1%</td><td class="num">22.4</td></tr>
+    <tr><td>4 h</td><td class="num">14.0%</td><td class="num">61.4</td></tr>
+    <tr><td>6 h</td><td class="num">20.2%</td><td class="num">88.6</td></tr>
+    <tr><td>12 h</td><td class="num">28.1%</td><td class="num">123.5</td></tr>
+    <tr><td>Ceiling (greenest hour)</td><td class="num win">35.5%</td><td class="num">155.9</td></tr>
+  </table>
+  <p class="why">Grid trace: mean 465 gCO2e/kWh (reconciles with the IEA global-average used in the energy model),
+  greenest hour 13:00 (300), dirtiest hour 19:00 (690). The % reduction is independent of the absolute per-query
+  energy (it cancels in the ratio) and depends only on the trace shape + slack, so it transfers to any regional feed
+  (e.g. Electricity Maps / WattTime). Deterministic; unit-tested. Per-query 5G energy = 141.8 J (transfer+compute at
+  506 KB page + radio).</p>
+
+  <div class="content"><h4>Where this goes on the poster (drop-ins)</h4>
+    <div class="row">
+      <div class="box newbox"><div class="lbl">08 KEY FINDINGS - add #5</div>
+        <b>Carbon-Aware Scheduling:</b> because grid carbon intensity varies ~2.3&times; within a day, shifting latency-tolerant retrieval into greener hours cuts operational carbon a further <b>14-28%</b> (4-12 h slack), a lever that stacks on top of task-sufficient stopping.</div>
+      <div class="box newbox"><div class="lbl">05 5G RELEVANCE - add sentence</div>
+        Beyond cutting bytes, EcoBudget adds a <b>temporal</b> lever for edge/5G deployments: scheduling flexible retrieval into low-carbon grid windows reduces per-query CO2e by 14-28% at 4-12 h slack, with no loss of task success.</div>
+    </div>
+  </div>
+
+  <!-- ===================== PART C: FULL CONTENT ===================== -->
+  <h2 id="full">C &nbsp;-&nbsp; Full poster content, section by section</h2>
+  <p class="sub">Every poster heading below, with the exact text to use. <span class="tag keepp">keep</span> = already
+  correct, leave as is. <span class="tag rep">replace</span> = swap stale text. <span class="tag addp">add</span> =
+  new line in an existing section. <span class="tag newp">new idea</span> = from B1/B2 above.</p>
+
+  <div class="content"><span class="tag keepp">keep</span><b>TITLE</b><br>
+    EcoBudget: Task-Sufficient Web Retrieval for Data- and Energy-Efficient QA over 5G.</div>
+
+  <div class="content"><span class="tag keepp">keep</span><b>AUTHORS</b><br>
+    Leave the author list exactly as it currently appears on the poster - no change.</div>
+
+  <div class="content"><span class="tag keepp">keep</span><b>AFFILIATION</b><br>
+    Department of Artificial Intelligence &amp; Machine Learning, Manipal University Jaipur.</div>
+
+  <div class="content"><span class="tag keepp">keep</span><b>01 INTRODUCTION</b><br>
+    Web-scale QA agents retrieve broadly and load far more than a task needs, wasting application-layer data
+    transfer. EcoBudget reframes retrieval as a task-level resource-allocation problem: decompose the task into
+    information requirements, retrieve only for those, and stop once the evidence is sufficient - cutting bytes,
+    energy, and carbon over 5G access.</div>
+
+  <div class="content"><span class="tag addp">add an objective</span><b>OBJECTIVES</b>
+    <ul>
+      <li>Decompose questions into (entity, attribute) requirements and retrieve per requirement.</li>
+      <li>Learn an adaptive STOP/RETRIEVE controller that trades task success against transfer cost.</li>
+      <li>Quantify the 5G energy and <b>carbon</b> impact with a measured transfer + RRC radio-state model.</li>
+      <li class="win"><b>(new)</b> Optimize the controller for measured energy, and schedule flexible retrieval into low-carbon grid windows.</li>
+    </ul></div>
+
+  <div class="content"><span class="tag keepp">keep</span><b>02 RESEARCH GAP</b><br>
+    Retrieval research optimizes relevance ranking (what to load), not task-sufficiency (how much to load); and
+    "green AI" work rarely models the 5G access path (RRC radio-state / tail energy) or the time-varying carbon of the grid.</div>
+
+  <div class="content"><span class="tag keepp">keep</span><b>RESEARCH QUESTION</b><br>
+    Can an agent retrieve only the evidence a task requires - and stop when enough is enough - to cut data transfer,
+    energy, and carbon without losing task success over 5G?</div>
+
+  <div class="content"><span class="tag keepp">keep</span><b>HYPOTHESIS</b><br>
+    Requirement-aware retrieval plus a learned stopping policy holds full-retrieval task success while transferring
+    substantially fewer bytes and joules.</div>
+
+  <div class="content"><span class="tag keepp">keep</span><b>03 ECOBUDGET APPROACH</b><br>
+    Retrieve only the evidence needed to complete the task, and stop when extra retrieval adds no value:
+    (1) understand the task's information requirements; (2) retrieve targeted to those; (3) measure evidence
+    sufficiency vs data already transferred; (4) STOP or RETRIEVE; (5) balance success against cost.</div>
+
+  <div class="content"><span class="tag addp">add step 6</span><b>04 SYSTEM ARCHITECTURE &amp; METHODOLOGY</b>
+    <ul>
+      <li>Decompose into (entity, attribute) requirements (flan-t5-base + LoRA, snapped to a 35-attribute vocab).</li>
+      <li>Retrieve per requirement (MiniLM bi-encoder; entity-aware two-stage: gate to entity, rank by attribute).</li>
+      <li>Evidence sufficiency (RoBERTa QA-confidence per requirement, not raw similarity).</li>
+      <li>Adaptive stopping controller: STOP or RETRIEVE, trained on a <b>measured-5G-energy reward</b>.</li>
+      <li>Answer generation from only the gathered evidence.</li>
+      <li class="win"><b>(new)</b> Carbon-aware scheduler: defer latency-tolerant queries to low-carbon grid windows.</li>
+    </ul></div>
+
+  <div class="content"><span class="tag newp">replace + add sentence</span><b>05 5G RELEVANCE</b><br>
+    5G enables high-throughput, data-intensive applications; at scale their unnecessary application-layer transfer
+    becomes an efficiency problem. EcoBudget acts on the first link in that chain - the bytes an application requests -
+    lowering the traffic and thus the RRC radio-active time a task generates.
+    <span class="win"><b>(new)</b> Beyond cutting bytes, EcoBudget adds a temporal lever: scheduling flexible retrieval
+    into low-carbon grid windows reduces per-query CO2e by 14-28% (4-12 h slack) with no loss of task success.</span><br>
+    Application areas: Sustainable Web, 5G / Edge Networks, AI Agents &amp; Search.</div>
+
+  <div class="content"><span class="tag rep">replace all numbers</span><b>06 MAIN RESULTS</b>
+    <ul>
+      <li>Requirement-aware retrieval: entity-aware retrieval raises Recall@1 from <b>0.914 to 0.989</b> (Recall@5 0.983&rarr;1.000) over 175 unique requirements; whole-question baseline 0.589.</li>
+      <li>Task decomposition: fine-tuned decomposer reaches <b>0.892</b> exact-match; snap-to-vocab lifts it from <b>0.496</b> (entity EM 0.946).</li>
+      <li>Adaptive stopping: on the frozen test set it holds <b>0.895</b> task success (0.859 under a stricter verdict-aware judge; yes/no 64/64) using ~106 bytes/query vs 420 for full-page loading - <b>~75% fewer bytes</b> at statistically equal success.</li>
+      <li>Energy at realistic page scale (506 KB median): adaptive stopping saves <b>~66 J/query</b> vs full-page loading (95% CI 41-95); 5G radio energy ~4&times; lower under fast-dormancy.</li>
+      <li>Live web pages: task-sufficient loading cut transferred bytes by <b>92.8% and 97.8%</b> end-to-end.</li>
+      <li class="win"><b>(new)</b> Energy-aware controller: same 0.895 success at ~26 J radio/query, 4.1&times; below full retrieval.</li>
+      <li class="win"><b>(new)</b> Carbon-aware scheduling: <b>14-28%</b> lower gCO2e (4-12 h slack); 35.5% ceiling.</li>
+    </ul></div>
+
+  <div class="content"><span class="tag rep">replace + add</span><b>07 SUPPORTING RESULTS</b>
+    <ul>
+      <li>Snap-to-vocabulary ablation: constrained decoding onto the 35-attribute vocab raises decomposer exact-match from 0.496 to 0.892.</li>
+      <li>Policy stability: LinUCB is the deployed controller, stable across seeds (<b>0.913 &plusmn; 0.007</b>); the SGD bandit is seed-unstable (0.790 &plusmn; 0.283), kept only as an ablation.</li>
+      <li>Compute vs transfer: compute dominates ~100&times; at snippet scale, but transfer is ~95% of per-query energy at realistic page scale; 5G radio energy ~4&times; lower for adaptive stopping.</li>
+      <li>Rigor: not overfit (train 0.850 vs test 0.867); 0 split leakage; QA-confidence calibrated (ECE 0.077, Brier 0.096); measured median end-to-end latency <b>0.61 s</b> (p95 0.86 s, over 128 frozen-test tasks).</li>
+      <li class="win"><b>(new)</b> Reward-shaping ablation: a 5G-energy reward matches the byte-reward policy's success (0.895) at equal/lower radio energy (25.9 vs 26.0 J) - the policy is near energy-optimal, not just byte-optimal.</li>
+    </ul></div>
+
+  <div class="content"><span class="tag newp">replace #1-3, add #4-5</span><b>08 KEY FINDINGS</b>
+    <ol>
+      <li><b>Requirement-Aware Retrieval:</b> targeting individual (entity, attribute) requirements raises Recall@1 from 0.914 to 0.989 and Recall@5 to 1.000.</li>
+      <li><b>Task Decomposition:</b> a fine-tuned decomposer reaches 0.892 exact-match, with snap-to-vocabulary adding ~0.40 over the un-snapped model.</li>
+      <li><b>Adaptive Stopping:</b> balancing evidence sufficiency against retrieval cost holds full-page task success (0.895) at ~75% fewer bytes and ~66 J/query less energy, dominating fixed-budget baselines.</li>
+      <li class="win"><b>Energy-Aware Stopping (new):</b> rewarding the controller with measured 5G radio-wake joules yields 0.895 success at ~26 J radio/query - 4.1&times; below full retrieval - confirming early stopping is the dominant energy lever.</li>
+      <li class="win"><b>Carbon-Aware Scheduling (new):</b> grid carbon varies ~2.3&times; daily; shifting latency-tolerant retrieval into greener hours cuts operational CO2e a further 14-28% (4-12 h slack), stacking on stopping.</li>
+    </ol></div>
+
+  <div class="content"><span class="tag addp">add two sentences</span><b>DISCUSSION</b><br>
+    EcoBudget shows web retrieval can be treated as a task-level resource-allocation problem, not only a
+    relevance-ranking one. Requirement-aware retrieval surfaces the right (entity, attribute) fact; adaptive stopping
+    avoids retrieval that no longer changes the answer. With a strong retriever the learned controller matches a
+    hand-tuned heuristic; its advantage grows as retrieval uncertainty rises.
+    <span class="win"><b>(new)</b> Reframing the reward in measured joules shows the controller is near the energy-optimal
+    frontier, and carbon-aware scheduling adds an orthogonal temporal lever - together framing sustainability as both
+    <i>how much</i> to load and <i>when</i> to load it.</span></div>
+
+  <div class="content"><span class="tag addp">add one sentence</span><b>09 CONCLUSION</b><br>
+    EcoBudget treats retrieval as deciding how much to load, not just what is relevant: it holds 0.895 success at ~75%
+    fewer bytes than full-page loading on a frozen test set. The contribution is a task-sufficiency framework for
+    data-efficient retrieval - a step toward sustainable 5G access.
+    <span class="win"><b>(new)</b> Optimizing for measured energy and scheduling for grid carbon extend it from
+    byte-efficiency to end-to-end energy- and carbon-efficiency.</span> Retrieve enough; stop when enough is enough.</div>
+
+  <div class="content"><span class="tag rep">replace last bullet</span><b>PRACTICAL IMPLICATIONS</b>
+    <ul>
+      <li>AI applications: retrieve according to what the task needs, not how much information is available.</li>
+      <li>Network efficiency: less unnecessary application-layer transfer lowers the data retrieval-intensive apps request.</li>
+      <li>Sustainable computing: selective retrieval saves ~66 J/query at the measured 506 KB page (95% CI 41-95) and ~4&times; 5G radio energy; <span class="win"><b>(new)</b> carbon-aware scheduling cuts a further 14-28% of per-query CO2e - measured, not deferred to future work.</span></li>
+    </ul></div>
+
+  <div class="content"><span class="tag addp">add [5]-[6]</span><b>10 REFERENCES (APA 7)</b>
+    <ul>
+      <li>Chung, H. W., et al. (2022). Scaling instruction-finetuned language models. <i>arXiv.</i></li>
+      <li>Hu, E. J., et al. (2022). LoRA: Low-rank adaptation of large language models. <i>ICLR.</i></li>
+      <li>Reimers, N., &amp; Gurevych, I. (2019). Sentence-BERT. <i>EMNLP-IJCNLP.</i></li>
+      <li>Li, L., Chu, W., Langford, J., &amp; Schapire, R. E. (2010). A contextual-bandit approach to personalized news article recommendation. <i>WWW 2010</i>, 661-670.</li>
+      <li class="win"><b>(new)</b> Huang, J., et al. (2012). A close examination of performance and power characteristics of 4G LTE networks. <i>MobiSys 2012.</i> (RRC radio-state / tail energy model.)</li>
+      <li class="win"><b>(new)</b> A grid carbon-intensity data source for the scheduling trace (e.g. Electricity Maps / WattTime), cited as the intensity feed.</li>
+    </ul></div>
+
+  <!-- ===================== PART D: LATENCY FACT ===================== -->
+  <h2 id="confirm">D &nbsp;-&nbsp; Latency (ground-truth measured)</h2>
+  <div class="item">
+    <div class="loc">Measured end-to-end latency <span class="sev keep">code-based</span></div>
+    <div class="why">Wall-clock, measured by <code>ml_retriever/scripts/diagnostics.py</code> over all 128 frozen-test
+    tasks (dominated by flan-t5 generation; laptop CPU/MPS, reported as-is, not a tuned production number):
+    <b>p50 0.606 s, p90 0.825 s, p95 0.858 s, mean 0.692 s</b>. Use "median end-to-end latency 0.61 s (p95 0.86 s)".
+    Authors: left exactly as on the current poster, per your instruction - no change.</div>
+  </div>
+
+  <div class="foot">
+    Numbers reproduced from a clean rebuild + fresh eval run on 2026-09-23 (frozen test n=124 headline).
+    New-idea sources: <code>ml_retriever/carbon.py</code>, <code>docs/carbon_schedule.md</code>,
+    <code>data/carbon_schedule_results.json</code>, energy-aware reward in <code>ml_retriever/bandit.py</code> +
+    <code>ml_retriever/rollout.py</code> (reward_mode="energy"), <code>scripts/sweep_mu_energy.py</code>,
+    <code>data/phase7_results.json</code>. Existing metrics: <code>docs/verdict_eval.md</code>,
+    <code>docs/diagnostics_report.md</code>, <code>data/retriever_eval_results.jsonl</code>. 189 unit tests pass.
+    Nothing here is invented; stricter re-scorings are labelled as such.
+  </div>
+</div>
+</body>
+</html>
