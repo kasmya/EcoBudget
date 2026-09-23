@@ -77,6 +77,7 @@
     &nbsp;·&nbsp;<a href="#idea1">B1. Energy-aware stopping</a>
     &nbsp;·&nbsp;<a href="#idea2">B2. Carbon-aware scheduling</a>
     &nbsp;·&nbsp;<a href="#full">C. Full poster content (all headings)</a>
+    &nbsp;·&nbsp;<a href="#final">C2. Final copy-paste text (12 headings)</a>
     &nbsp;·&nbsp;<a href="#confirm">D. Measured latency</a>
   </div>
 
@@ -201,8 +202,8 @@
   correct, leave as is. <span class="tag rep">replace</span> = swap stale text. <span class="tag addp">add</span> =
   new line in an existing section. <span class="tag newp">new idea</span> = from B1/B2 above.</p>
 
-  <div class="content"><span class="tag keepp">keep</span><b>TITLE</b><br>
-    EcoBudget: Task-Sufficient Web Retrieval for Data- and Energy-Efficient QA over 5G.</div>
+  <div class="content"><span class="tag rep">replace</span><b>TITLE</b><br>
+    EcoBudget: Task-Sufficient Web Retrieval with Adaptive Stopping for Energy-Efficient 5G Access.</div>
 
   <div class="content"><span class="tag keepp">keep</span><b>AUTHORS</b><br>
     Leave the author list exactly as it currently appears on the poster - no change.</div>
@@ -320,6 +321,141 @@
       <li class="win"><b>(new)</b> Huang, J., et al. (2012). A close examination of performance and power characteristics of 4G LTE networks. <i>MobiSys 2012.</i> (RRC radio-state / tail energy model.)</li>
       <li class="win"><b>(new)</b> A grid carbon-intensity data source for the scheduling trace (e.g. Electricity Maps / WattTime), cited as the intensity feed.</li>
     </ul></div>
+
+  <!-- ===================== PART C2: FINAL COPY-PASTE ===================== -->
+  <h2 id="final">C2 &nbsp;-&nbsp; Final copy-paste content (every heading, exact)</h2>
+  <p class="sub">The finished text for each poster heading, integrating the corrected numbers and both new
+  contributions. No mark-up tags - copy each block straight onto the poster.</p>
+
+  <div class="content newidea" style="border-left:4px solid var(--new);background:var(--new-soft);">
+    <h4 style="color:var(--new);">Novel Contributions (optional callout box for the poster)</h4>
+    Beyond task-sufficient retrieval, EcoBudget introduces two 5G-specific sustainability levers:
+    <ul>
+      <li><b>Energy-aware stopping</b> - a controller trained on measured 5G radio-wake joules (not byte-count), holding 0.895 task success at ~26 J radio/query, 4.1&times; below full retrieval.</li>
+      <li><b>Carbon-aware scheduling</b> - shifting latency-tolerant retrieval into greener grid hours to cut per-query CO2e a further 14-28% (4-12 h slack), stacking on top of stopping.</li>
+    </ul>
+    <span class="why" style="color:var(--new);">Place this as a small highlighted box near your Key Findings so reviewers see the new angle first. These are what distinguish this work from prior task-sufficient / adaptive-RAG retrieval.</span>
+  </div>
+
+  <div class="content"><h4>Introduction</h4>
+    Web-scale question-answering agents retrieve broadly and load far more of the web than a task actually needs,
+    wasting application-layer data transfer, energy, and carbon. EcoBudget reframes retrieval as a task-level
+    resource-allocation problem: it decomposes a question into the specific information requirements needed to answer
+    it, retrieves only for those requirements, and stops as soon as the gathered evidence is sufficient. The result is
+    the same task success as full retrieval while transferring far fewer bytes and joules over the 5G access path.</div>
+
+  <div class="content"><h4>Research Gap &amp; Questions (Objectives)</h4>
+    <b>Research gap.</b> Retrieval research optimizes relevance ranking - <i>what</i> to load - but not task-sufficiency,
+    <i>how much</i> to load; and "green AI" work rarely models the 5G access path (RRC radio-state and tail energy) or
+    the time-varying carbon intensity of the electricity grid.<br>
+    <b>Research question.</b> Can an agent retrieve only the evidence a task requires, and stop when enough is enough,
+    to cut data transfer, energy, and carbon over 5G without losing task success?<br>
+    <b>Hypothesis.</b> Requirement-aware retrieval plus a learned stopping policy holds full-retrieval task success while
+    transferring substantially fewer bytes and joules.<br>
+    <b>Objectives.</b>
+    <ul>
+      <li>Decompose questions into (entity, attribute) requirements and retrieve per requirement.</li>
+      <li>Learn an adaptive STOP/RETRIEVE controller that trades task success against transfer cost.</li>
+      <li>Quantify the 5G energy and carbon impact with a measured transfer + RRC radio-state model.</li>
+      <li>Optimize the controller directly for measured 5G energy, and schedule latency-tolerant retrieval into low-carbon grid windows.</li>
+    </ul></div>
+
+  <div class="content"><h4>EcoBudget Approach</h4>
+    Retrieve only the evidence needed to complete the task, and stop when extra retrieval adds no value:
+    <ol>
+      <li>Understand the task - identify the information requirements needed to answer it.</li>
+      <li>Collect evidence - retrieve targeted to those requirements, not broadly.</li>
+      <li>Measure sufficiency - track evidence coverage and QA-confidence against the data already transferred.</li>
+      <li>Decide - STOP if the evidence is sufficient, RETRIEVE if more is worthwhile.</li>
+      <li>Balance success and cost - maximize task success while minimizing unnecessary data transfer, energy, and carbon.</li>
+    </ol></div>
+
+  <div class="content"><h4>System Architecture &amp; Methodology</h4>
+    <b>Input:</b> a user question and task type.
+    <ol>
+      <li>Decompose into (entity, attribute) information requirements - fine-tuned flan-t5-base + LoRA, constrained-decoded (snapped) to a closed 35-attribute vocabulary.</li>
+      <li>Retrieve per requirement - MiniLM bi-encoder, entity-aware two-stage: gate to the entity, then rank by attribute.</li>
+      <li>Measure evidence sufficiency - RoBERTa QA-confidence per requirement, not raw similarity.</li>
+      <li>Adaptive stopping controller - a contextual bandit (LinUCB) chooses STOP or RETRIEVE, trained on a measured-5G-energy reward; loop back to step 2 on RETRIEVE.</li>
+      <li>Answer generation - from only the gathered evidence.</li>
+      <li>Carbon-aware scheduler - defer latency-tolerant queries to low-carbon grid windows.</li>
+    </ol>
+    <b>Output:</b> an answer, plus the measured bytes, energy, and carbon it cost.</div>
+
+  <div class="content"><h4>5G Relevance</h4>
+    5G enables high-throughput, data-intensive applications; at scale, their unnecessary application-layer transfer
+    becomes an efficiency problem. EcoBudget acts on the first link in that chain - the bytes an application requests -
+    which lowers the network traffic and the RRC radio-active time a task generates, yielding energy and carbon
+    benefits. Beyond cutting bytes, EcoBudget adds a temporal lever for edge/5G deployments: scheduling flexible
+    retrieval into low-carbon grid windows reduces per-query CO2e by 14-28% (4-12 h slack) with no loss of task
+    success. Application areas: Sustainable Web, 5G / Edge Networks, AI Agents &amp; Search.</div>
+
+  <div class="content"><h4>Main Results</h4>
+    <ul>
+      <li>Requirement-aware retrieval: entity-aware retrieval raises Recall@1 from 0.914 to 0.989 (Recall@5 0.983&rarr;1.000) over 175 unique requirements; the whole-question baseline is 0.589.</li>
+      <li>Task decomposition: the fine-tuned decomposer reaches 0.892 exact-match on the validation split; constrained snap-to-vocabulary lifts it from 0.496 (entity exact-match 0.946).</li>
+      <li>Adaptive stopping: on the frozen test set it holds 0.895 task success (0.859 under a stricter verdict-aware judge; yes/no answered correctly 64/64) using about 106 bytes per query versus 420 for full-page loading - about 75% fewer bytes at statistically equal success.</li>
+      <li>Energy at realistic page scale: with the measured 506 KB median page, adaptive stopping saves about 66 J per query versus full-page loading (95% CI 41-95); 5G RRC radio energy is about 4&times; lower under fast-dormancy.</li>
+      <li>Live web pages: end-to-end on live pages, task-sufficient loading cut transferred bytes by 92.8% and 97.8%.</li>
+      <li>Energy-aware controller (new): a stopping policy trained on measured 5G energy holds the same 0.895 success at about 26 J radio per query - 4.1&times; below full retrieval.</li>
+      <li>Carbon-aware scheduling (new): shifting latency-tolerant retrieval into greener grid hours cuts operational CO2e by 14-28% (4-12 h slack), with a 35.5% ceiling.</li>
+    </ul></div>
+
+  <div class="content"><h4>Supporting Results</h4>
+    <ul>
+      <li>Snap-to-vocabulary ablation: constrained decoding onto the 35-attribute vocabulary raises decomposer exact-match from 0.496 to 0.892.</li>
+      <li>Policy stability: LinUCB is the deployed controller and is stable across seeds (0.913 &plusmn; 0.007); the custom SGD bandit is seed-unstable (0.790 &plusmn; 0.283) and is kept only as an ablation.</li>
+      <li>Compute vs transfer: compute dominates by about 100&times; at snippet scale, but transfer becomes about 95% of per-query energy at realistic page scale, where 5G radio energy under fast-dormancy is about 4&times; lower for adaptive stopping than full loading.</li>
+      <li>Reward-shaping ablation (new): a 5G-energy reward (per-fetch RRC radio-wake cost, about 107 J per page) matches the byte-reward policy's success (0.895) at equal-or-lower radio energy (25.9 vs 26.0 J) - showing the stopping policy is near energy-optimal, not merely byte-optimal.</li>
+      <li>Rigor: not overfit (train 0.850 vs test 0.867); zero split leakage; QA-confidence calibrated (ECE 0.077, Brier 0.096); measured median end-to-end latency 0.61 s (p95 0.86 s) over 128 frozen-test tasks.</li>
+    </ul></div>
+
+  <div class="content"><h4>Key Findings</h4>
+    <ol>
+      <li>Requirement-Aware Retrieval: targeting individual (entity, attribute) requirements rather than the whole query improves retrieved-evidence quality, raising Recall@1 from 0.914 to 0.989 and Recall@5 to 1.000.</li>
+      <li>Task Decomposition: a fine-tuned (entity, attribute) decomposer reaches 0.892 exact-match, with constrained snap-to-vocabulary adding about 0.40 over the un-snapped model.</li>
+      <li>Adaptive Stopping: balancing evidence sufficiency against retrieval cost holds full-page task success (0.895) at about 75% fewer bytes and about 66 J per query less energy, dominating fixed-budget baselines.</li>
+      <li>Energy-Aware Stopping (new): rewarding the controller with measured 5G radio-wake joules rather than byte-count yields a policy that holds 0.895 task success at about 26 J radio energy per query - 4.1&times; below full retrieval - confirming that early stopping is the dominant energy lever.</li>
+      <li>Carbon-Aware Scheduling (new): because grid carbon intensity varies about 2.3&times; within a day, shifting latency-tolerant retrieval into greener hours cuts operational CO2e a further 14-28% (4-12 h slack), a lever that stacks on top of task-sufficient stopping.</li>
+    </ol></div>
+
+  <div class="content"><h4>Discussion</h4>
+    EcoBudget shows that web retrieval can be treated as a task-level resource-allocation problem, not only a
+    relevance-ranking problem. Requirement-aware retrieval improves the quality of retrieved evidence, because
+    targeting a specific (entity, attribute) surfaces the right fact instead of the most entity-similar text. Adaptive
+    stopping provides the mechanism to avoid retrieval that no longer changes the answer: most requirements are
+    satisfied by one or two passages, so further retrieval adds data cost without adding coverage. With a strong
+    retriever the learned controller matches a hand-tuned heuristic, and its advantage grows as retrieval uncertainty
+    rises. Reframing the reward in measured joules shows the controller is already near the energy-optimal frontier,
+    and carbon-aware scheduling adds an orthogonal temporal lever - together framing sustainability as both how much to
+    load and when to load it.</div>
+
+  <div class="content"><h4>Conclusion</h4>
+    EcoBudget treats retrieval as deciding how much to load, not just what is relevant. Requirement-aware retrieval
+    improves evidence quality, and adaptive stopping halts once evidence is sufficient, trading task success against
+    data-transfer cost. On a frozen test set it holds 0.895 success at about 75% fewer bytes than full-page loading.
+    Optimizing the controller for measured energy and scheduling retrieval for grid carbon extend it from
+    byte-efficiency to end-to-end energy- and carbon-efficiency. The contribution is a task-sufficiency framework for
+    data-efficient retrieval, a step toward sustainable 5G access. Retrieve enough; stop when enough is enough.</div>
+
+  <div class="content"><h4>Practical Implications</h4>
+    <ul>
+      <li>AI applications: retrieve according to what the task needs, not how much information is available.</li>
+      <li>Network efficiency: reducing unnecessary application-layer transfer lowers the data that retrieval-intensive apps request from the network.</li>
+      <li>Sustainable computing: selective retrieval saves about 66 J per query at the measured 506 KB page (95% CI 41-95) and about 4&times; 5G radio energy, and carbon-aware scheduling cuts a further 14-28% of per-query CO2e - measured directly, not deferred to future work.</li>
+    </ul></div>
+
+  <div class="content"><h4>References (APA 7th edition)</h4>
+    <ul style="list-style:none;padding-left:0;">
+      <li style="text-indent:-24px;padding-left:24px;margin:8px 0;">Chung, H. W., Hou, L., Longpre, S., Zoph, B., Tay, Y., Fedus, W., Li, Y., Wang, X., Dehghani, M., Brahma, S., Webson, A., Gu, S. S., Dai, Z., Suzgun, M., Chen, X., Chowdhery, A., Castro-Ros, A., Pellat, M., Robinson, K., ... Wei, J. (2022). <i>Scaling instruction-finetuned language models.</i> arXiv. https://doi.org/10.48550/arXiv.2210.11416</li>
+      <li style="text-indent:-24px;padding-left:24px;margin:8px 0;">Hu, E. J., Shen, Y., Wallis, P., Allen-Zhu, Z., Li, Y., Wang, S., Wang, L., &amp; Chen, W. (2022). LoRA: Low-rank adaptation of large language models. In <i>International Conference on Learning Representations (ICLR).</i></li>
+      <li style="text-indent:-24px;padding-left:24px;margin:8px 0;">Reimers, N., &amp; Gurevych, I. (2019). Sentence-BERT: Sentence embeddings using Siamese BERT-networks. In <i>Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing (EMNLP-IJCNLP)</i> (pp. 3982-3992). Association for Computational Linguistics. https://doi.org/10.18653/v1/D19-1410</li>
+      <li style="text-indent:-24px;padding-left:24px;margin:8px 0;">Li, L., Chu, W., Langford, J., &amp; Schapire, R. E. (2010). A contextual-bandit approach to personalized news article recommendation. In <i>Proceedings of the 19th International Conference on World Wide Web (WWW '10)</i> (pp. 661-670). Association for Computing Machinery. https://doi.org/10.1145/1772690.1772758</li>
+      <li style="text-indent:-24px;padding-left:24px;margin:8px 0;">Huang, J., Qian, F., Gerber, A., Mao, Z. M., Sen, S., &amp; Spatscheck, O. (2012). A close examination of performance and power characteristics of 4G LTE networks. In <i>Proceedings of the 10th International Conference on Mobile Systems, Applications, and Services (MobiSys '12)</i> (pp. 225-238). Association for Computing Machinery. https://doi.org/10.1145/2307636.2307658</li>
+      <li style="text-indent:-24px;padding-left:24px;margin:8px 0;">Electricity Maps. (2024). <i>Electricity Maps: Live 24/7 CO2 electricity data</i> [Data set]. https://www.electricitymaps.com</li>
+    </ul>
+    <div class="why">Note: entries [1]-[4] are your existing/added citations; [5] backs the 5G RRC radio-energy model and [6] the
+    carbon-intensity trace used by the new scheduling result. Verify each DOI/URL against your library before printing.</div></div>
 
   <!-- ===================== PART D: LATENCY FACT ===================== -->
   <h2 id="confirm">D &nbsp;-&nbsp; Latency (ground-truth measured)</h2>
