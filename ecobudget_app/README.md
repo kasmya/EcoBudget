@@ -1,7 +1,7 @@
 # EcoBudget - personal carbon budget tracker
 
 A small but complete, real prototype. You log everyday activities (driving,
-electricity, food, waste, purchases); the app converts each one to kilograms of
+electricity, food, waste); the app converts each one to kilograms of
 CO2-equivalent using **published emission factors**, aggregates them by category,
 and compares your footprint against a **science-based monthly carbon budget**. A
 dashboard shows totals vs budget, category and daily breakdowns, your logged
@@ -19,17 +19,24 @@ data-available scope for the name, and every piece is backed by a public dataset
 
 ## Data sources (all real, freely licensed, fetched by `scripts/fetch_data.py`)
 
-| Data | Source | Licence | Used for |
-| --- | --- | --- | --- |
-| Country CO2 per capita | Our World in Data - CO2 and Greenhouse Gas Emissions (`github.com/owid/co2-data`) | CC-BY 4.0 | The "How you compare" panel and budget context |
-| Food emission factors | Poore & Nemecek (2018), *Science*, via OWID "Food: emissions across the supply chain" | CC-BY 4.0 | kg CO2e per kg for 24 foods (Food category) |
-| Transport / energy / waste / goods factors | DEFRA/BEIS UK Government GHG Conversion Factors 2023 | Open Government Licence v3.0 | kg CO2e per km / kWh / kg / item |
-| Budget target | IPCC 1.5C pathways (~2 tonnes CO2e per person per year) | - | Monthly budget = 2,000 kg / 12 = 166.7 kg |
+| Data | Source | Licence | Used for | How obtained |
+| --- | --- | --- | --- | --- |
+| Country CO2 per capita | Our World in Data - CO2 and Greenhouse Gas Emissions | CC-BY 4.0 | "How you compare" panel + budget context | downloaded |
+| Food emission factors | Poore & Nemecek (2018), *Science*, via OWID "Food: emissions across the supply chain" | CC-BY 4.0 | kg CO2e per kg for 24 foods | downloaded + summed over supply-chain stages |
+| Grid electricity intensity | OWID "Carbon intensity of electricity generation" | CC-BY 4.0 | Electricity factor (World grid, latest year) | downloaded |
+| Transport / gas / oil / waste factors | DEFRA/BEIS UK Government GHG Conversion Factors 2023 | Open Government Licence v3.0 | kg CO2e per km / kWh / kg | published reference values, cited per row |
+| Budget target | IPCC 1.5C pathways (~2 tonnes CO2e per person per year) | - | Monthly budget = 2,000 kg / 12 = 166.7 kg | cited |
 
-The OWID CO2 and OWID food files are **downloaded live** by the fetch script (the
-raw files land in `data/raw/`). The DEFRA transport/energy/waste factors and the
-two example goods LCAs are stored in `scripts/emission_factors.py`, each row
-carrying its own `source` string; these are published constants, not invented.
+Provenance and no-hallucination note: the OWID CO2, OWID food, and OWID
+electricity-intensity files are **downloaded live** by the fetch script (raw
+files land in `data/raw/`, processed files in `data/*.json`). The remaining
+transport, natural-gas, heating-oil, LPG, biomass and waste factors are the
+**published DEFRA/BEIS 2023 conversion factors** (the standard UK reference set),
+stored in `scripts/emission_factors.py` with a `source` string on every row.
+These are real published constants, not invented. An earlier draft included a
+"Goods" category with recalled per-item life-cycle numbers; those were **removed**
+because they could not be traced to a single downloaded source. Every factor now
+in the database is either downloaded or a cited DEFRA reference value.
 
 ## Assumptions
 
@@ -42,24 +49,24 @@ carrying its own `source` string; these are published constants, not invented.
   Your logs are a personal subset, so this is a partial-footprint estimate and is
   labelled as such; it is not directly comparable to a country's full territorial
   per-capita figure, which is why the comparison panel is framed as context.
-- **Goods** factors are per-item manufacturing footprints from maker LCAs and are
-  the least standardised numbers in the set (flagged in their `source`).
-- Grid electricity uses the DEFRA UK 2023 factor (0.207 kg/kWh); swap it for your
-  country's grid factor if you want local accuracy.
+- Grid electricity uses OWID's downloaded World grid carbon intensity (latest
+  year). data/electricity.json also contains UK/US/EU values; change
+  `default_region` in the electricity JSON (or re-point seed_db.py) for local
+  accuracy.
 
 ## Architecture
 
 ```
 ecobudget_app/
   scripts/
-    fetch_data.py         downloads OWID CO2 + OWID food data -> data/*.json
-    emission_factors.py   DEFRA/maker factors (transport, energy, waste, goods)
+    fetch_data.py         downloads OWID CO2 + food + electricity data -> data/*.json
+    emission_factors.py   DEFRA factors (transport, gas/oil, waste)
     seed_db.py            builds & seeds data/ecobudget.db from the fetched data
   data/
     raw/                  downloaded source CSVs (OWID)
     benchmarks.json       processed OWID per-capita CO2
     food_factors.json     processed OWID food factors
-    ecobudget.db          the seeded SQLite database (52 factors, 12 countries, 15 sample entries)
+    ecobudget.db          the seeded SQLite database (48 factors, 12 countries, 15 sample entries)
   main.py                 FastAPI backend (reads/writes the DB, computes summaries)
   static/                 the dashboard (index.html + styles.css + app.js, Chart.js)
   requirements.txt
@@ -112,5 +119,5 @@ see it run you can skip steps 1 and 2 and go straight to `uvicorn`.
 
 The database is seeded with 15 realistic sample entries across a week (commutes,
 electricity, meals, a short-haul flight, a train trip, waste, a bus ride),
-totalling ~218 kg CO2e for the month against the 166.7 kg budget, so the
+totalling ~222 kg CO2e for the month against the 166.7 kg budget, so the
 dashboard opens in a meaningful "over budget" state you can immediately explore.

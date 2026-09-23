@@ -82,6 +82,17 @@ def build():
             (cat, act, unit, kg, src, 2023),
         )
 
+    # 1b) grid electricity factor (downloaded from OWID electricity carbon intensity)
+    elec = json.loads((ROOT / "data" / "electricity.json").read_text())
+    default_region = elec["default_region"]
+    er = next(r for r in elec["regions"] if r["region"] == default_region)
+    cur.execute(
+        "INSERT INTO emission_factors (category, activity, unit, kg_co2e_per_unit, source, year)"
+        " VALUES (?,?,?,?,?,?)",
+        ("Home energy", "Electricity (grid)", "kWh", er["kg_co2e_per_kwh"],
+         f"{elec['source']} [{default_region} grid, {er['gco2_per_kwh']} gCO2/kWh]", er["year"]),
+    )
+
     # 2) food factors (downloaded from OWID / Poore & Nemecek 2018)
     food = json.loads((ROOT / "data" / "food_factors.json").read_text())
     for f in food["factors"]:

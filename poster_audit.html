@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>EcoBudget poster - exact drop-in changes</title>
+<style>
+  :root{--bg:#f7f8f4;--panel:#fff;--ink:#161915;--muted:#6b6f64;--border:#e6e8df;
+        --accent:#5f9e12;--bad:#d9542b;--bad-soft:#fbe9e2;--good:#2e8b57;--good-soft:#e5f3ea;--warn:#b8860b;--warn-soft:#fbf3dc;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.55;}
+  .wrap{max-width:960px;margin:0 auto;padding:40px 22px 80px;}
+  h1{font-size:30px;letter-spacing:-.02em;margin:0 0 6px;}
+  .sub{color:var(--muted);margin:0 0 8px;font-size:15px;}
+  .verdict{display:inline-block;background:var(--good-soft);border:1px solid #c9e6d5;color:var(--good);
+           font-weight:700;border-radius:999px;padding:6px 14px;font-size:13px;margin:10px 0 26px;}
+  h2{font-size:15px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:34px 0 12px;border-top:1px solid var(--border);padding-top:22px;}
+  .item{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:14px;box-shadow:0 6px 18px rgba(20,25,15,.05);}
+  .loc{font-weight:700;font-size:15px;margin-bottom:10px;}
+  .loc .sev{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;border-radius:999px;padding:3px 9px;margin-left:8px;vertical-align:2px;}
+  .sev.fix{background:var(--bad-soft);color:var(--bad);}
+  .sev.confirm{background:var(--warn-soft);color:var(--warn);}
+  .sev.add{background:var(--good-soft);color:var(--good);}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0;}
+  @media(max-width:680px){.row{grid-template-columns:1fr;}}
+  .box{border-radius:10px;padding:11px 13px;font-size:14px;}
+  .cur{background:var(--bad-soft);border:1px solid #f3d3c6;}
+  .new{background:var(--good-soft);border:1px solid #c9e6d5;}
+  .box .lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;}
+  .cur .lbl{color:var(--bad);} .new .lbl{color:var(--good);}
+  .why{font-size:13px;color:var(--muted);margin-top:8px;}
+  code{background:#eef0e8;border-radius:5px;padding:1px 5px;font-size:13px;}
+  .foot{color:var(--muted);font-size:12.5px;margin-top:30px;border-top:1px solid var(--border);padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>EcoBudget poster - exact drop-in changes</h1>
+  <p class="sub">Slide: <b>kasu.pptx</b>. Every "replace with" below is verified against the current
+  measured results (frozen test set, reproduced from scratch). This lists <b>what to change</b> - it is
+  not a rebuilt deck.</p>
+  <div class="verdict">Narrative verdict: DIRECTIONALLY CORRECT. Framing and method are sound; 3 numbers are stale/overstated and must be swapped.</div>
+
+  <h2>Must fix - incorrect / stale numbers</h2>
+
+  <div class="item">
+    <div class="loc">Key Findings #1 - Requirement-Aware Retrieval <span class="sev fix">fix</span></div>
+    <div class="row">
+      <div class="box cur"><div class="lbl">Currently on poster</div>"...improving Recall@1 from <b>49.7% &rarr; 92.6%</b> with reranking."</div>
+      <div class="box new"><div class="lbl">Replace with</div>"...improving Recall@1 from <b>0.914 &rarr; 0.989</b> (and Recall@5 to a perfect <b>1.000</b>) with entity-aware gating; whole-question baseline is <b>0.589</b>."</div>
+    </div>
+    <div class="why">Why: 49.7% / 92.6% do not match any current result. Measured on 175 unique requirements: whole-question 0.589, per-requirement 0.914, entity-aware 0.989 (Recall@1). Also drop "reranking" - the method is entity-gate then attribute-rank, not a cross-encoder re-rank.</div>
+  </div>
+
+  <div class="item">
+    <div class="loc">Key Findings #2 - Task Decomposition <span class="sev fix">fix</span></div>
+    <div class="row">
+      <div class="box cur"><div class="lbl">Currently on poster</div>"...Exact Match increasing from <b>38.9% &rarr; 69.4%</b> after fine-tuning."</div>
+      <div class="box new"><div class="lbl">Replace with</div>"...Exact Match <b>0.496 &rarr; 0.892</b> with constrained decoding (snap-to-vocab) on the LoRA fine-tuned decomposer."</div>
+    </div>
+    <div class="why">Why: 38.9 / 69.4 are the old Phase-2 numbers. Current model (re-measured on the 240-task val set): 0.496 without snap &rarr; 0.892 with snap-to-vocab; entity exact-match 0.946.</div>
+  </div>
+
+  <div class="item">
+    <div class="loc">Key Findings #3 - Adaptive Retrieval <span class="sev fix">fix</span></div>
+    <div class="row">
+      <div class="box cur"><div class="lbl">Currently on poster</div>"...achieving <b>100% task success</b> with lower data transfer than full retrieval..."</div>
+      <div class="box new"><div class="lbl">Replace with</div>"...achieving <b>0.86 verdict-aware task success</b> (yes/no answered correctly <b>64/64</b>) at <b>~75% fewer bytes</b> than full-page loading, at statistically equal success."</div>
+    </div>
+    <div class="why">Why: 100% is not supported. Frozen-test success is 0.895 by required-fact coverage; under a stricter verdict-aware judge (correct yes/no and which-is-bigger) it is <b>0.859</b> overall, with yes/no at 1.000 and comparison-verdict weak on a tiny numeric subset. Use 0.86 (verdict-aware) or 0.895 (fact coverage) - label whichever you use; do not claim 100%.</div>
+  </div>
+
+  <h2>Should add - you measured energy/5G; the poster still calls it "future work"</h2>
+
+  <div class="item">
+    <div class="loc">Main Results / 5G Relevance - add measured energy <span class="sev add">add</span></div>
+    <div class="row">
+      <div class="box cur"><div class="lbl">Currently on poster (Practical Implications)</div>"...energy and carbon benefits <b>requiring direct measurement in future work</b>."</div>
+      <div class="box new"><div class="lbl">Replace with</div>"...energy and carbon benefits <b>measured</b>: <b>~66 J/query</b> saved vs full-page loading at the measured 506 KB median page (95% CI [41, 95]); <b>5G RRC radio energy ~4&times; lower</b> under fast-dormancy; live web tasks transfer <b>92-99% fewer bytes</b>."</div>
+    </div>
+    <div class="why">Why: the energy model, radio-state model, and a live Tavily demo were all measured - the poster under-claims by deferring this to future work. This is your strongest 5G-specific result; put a number in Main Results / 5G Relevance.</div>
+  </div>
+
+  <div class="item">
+    <div class="loc">Add a rigor line (optional, strengthens credibility) <span class="sev add">add</span></div>
+    <div class="row">
+      <div class="box cur"><div class="lbl">Currently on poster</div>(none)</div>
+      <div class="box new"><div class="lbl">Add, e.g. under Supporting Results</div>"Not overfit (train 0.850 vs test 0.867); 0 split leakage; QA-confidence calibrated (ECE 0.077); sub-second median latency (0.41 s). Deployed stopping policy: <b>LinUCB</b> (0.913 &plusmn; 0.007), stable across seeds."</div>
+    </div>
+    <div class="why">Why: these are measured and directly answer reviewer doubts about overfitting and metric validity.</div>
+  </div>
+
+  <h2>Confirm - not a number, but check before printing</h2>
+
+  <div class="item">
+    <div class="loc">Author name <span class="sev confirm">confirm</span></div>
+    <div class="row">
+      <div class="box cur"><div class="lbl">Currently on poster</div>"Kasmya Bhatia, <b>Ashwarya Pradhan</b>, Amisha Singh"</div>
+      <div class="box new"><div class="lbl">You told me</div>"Kasmya Bhatia, Amisha Singh, <b>Ashwarya Singh</b>"</div>
+    </div>
+    <div class="why">Why: surname mismatch (Pradhan vs Singh) and author order differs. Confirm the correct name and order, then set consistently.</div>
+  </div>
+
+  <div class="item">
+    <div class="loc">References - consider adding two <span class="sev add">add</span></div>
+    <div class="row">
+      <div class="box cur"><div class="lbl">Currently on poster</div>[1] Chung et al. (FLAN), [2] Hu et al. (LoRA), [3] Reimers &amp; Gurevych (SBERT)</div>
+      <div class="box new"><div class="lbl">Consider adding</div>[4] Li et al., <i>A Contextual-Bandit Approach...</i>, WWW 2010 (LinUCB, your deployed policy). [5] a 5G radio-energy reference (e.g. Huang et al., MobiSys 2012) for the RRC energy model.</div>
+    </div>
+    <div class="why">Why: LinUCB is your deployed controller and the 5G energy story rests on radio-state literature - both deserve a citation. Keep the existing three.</div>
+  </div>
+
+  <div class="foot">
+    Numbers verified from a clean rebuild of the repo (frozen test set, n=124 headline / 128 all types).
+    Sources: <code>docs/verdict_eval.md</code>, <code>docs/diagnostics_report.md</code>, <code>docs/phase_g_consolidation.md</code>.
+    Nothing here is invented; where a metric is a stricter re-scoring it is labelled as such.
+  </div>
+</div>
+</body>
+</html>

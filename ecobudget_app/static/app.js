@@ -1,8 +1,9 @@
 const $ = (id) => document.getElementById(id);
 const CAT_COLORS = {
-  "Transport": "#60a5fa", "Food": "#f87171", "Home energy": "#fbbf24",
-  "Waste": "#34d399", "Goods": "#a78bfa",
+  "Transport": "#2563eb", "Food": "#e11d48", "Home energy": "#d97706",
+  "Waste": "#059669", "Goods": "#7c3aed",
 };
+const AXIS = "#5f6f67", GRID = "#e5eae7";
 let FACTORS = {};            // category -> [factor rows]
 let catChart, dayChart;
 const state = { month: new Date().toISOString().slice(0, 7) };
@@ -99,9 +100,9 @@ function drawCategory(rows) {
     data: {
       labels: rows.map(r => r.category),
       datasets: [{ data: rows.map(r => r.kg), backgroundColor: rows.map(r => CAT_COLORS[r.category] || "#888"),
-        borderColor: "#161d19", borderWidth: 3 }],
+        borderColor: "#ffffff", borderWidth: 3 }],
     },
-    options: { plugins: { legend: { position: "right", labels: { color: "#cfe0d7", boxWidth: 12, padding: 12 } } },
+    options: { plugins: { legend: { position: "right", labels: { color: "#334b41", boxWidth: 12, padding: 12 } } },
       cutout: "62%", responsive: true, maintainAspectRatio: false },
   });
 }
@@ -113,12 +114,12 @@ function drawDay(rows) {
     data: {
       labels: rows.map(r => r.day.slice(5)),
       datasets: [{ label: "kg CO₂e", data: rows.map(r => r.kg),
-        backgroundColor: "rgba(74,222,128,.65)", borderRadius: 6, maxBarThickness: 42 }],
+        backgroundColor: "rgba(34,197,94,.75)", borderRadius: 6, maxBarThickness: 42 }],
     },
     options: {
       plugins: { legend: { display: false } },
-      scales: { x: { grid: { display: false }, ticks: { color: "#9db3a8" } },
-        y: { grid: { color: "#26332c" }, ticks: { color: "#9db3a8" }, beginAtZero: true } },
+      scales: { x: { grid: { display: false }, ticks: { color: AXIS } },
+        y: { grid: { color: GRID }, ticks: { color: AXIS }, beginAtZero: true } },
       responsive: true, maintainAspectRatio: false,
     },
   });
@@ -127,7 +128,7 @@ function drawCatTable(rows, total) {
   $("catTable").innerHTML = rows.map(r => {
     const pct = total ? (100 * r.kg / total) : 0;
     return `<tr>
-      <td><span class="cat-${r.category.replace(/ /g, ' ')}">●</span> ${r.category}</td>
+      <td><span style="color:${CAT_COLORS[r.category] || '#888'}">●</span> ${r.category}</td>
       <td class="num bar-cell"><div class="b" style="width:${pct}%"></div><span>${fmt(r.kg, 1)}</span></td>
       <td class="num">${pct.toFixed(0)}%</td><td class="num">${r.n}</td></tr>`;
   }).join("") || `<tr><td colspan="4" class="empty">No entries yet</td></tr>`;

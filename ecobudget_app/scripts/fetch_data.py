@@ -31,6 +31,11 @@ OWID_URLS = [
 # OWID "Food: greenhouse gas emissions across the supply chain" (Poore & Nemecek
 # 2018, Science; CC-BY). Per-kg CO2e broken into supply-chain stages.
 FOOD_URL = "https://ourworldindata.org/grapher/food-emissions-supply-chain.csv"
+# OWID "Carbon intensity of electricity generation" (gCO2/kWh), CC-BY. Used to
+# ground the electricity emission factor in downloaded data rather than a
+# recalled constant.
+ELEC_URL = "https://ourworldindata.org/grapher/carbon-intensity-electricity.csv"
+ELEC_REGIONS = ["World", "United Kingdom", "United States", "European Union (27)"]
 
 # Human-friendly logging labels + serving-size hints for common foods.
 FOOD_LABELS = {
@@ -155,6 +160,40 @@ def main():
     print(f"Wrote data/food_factors.json with {len(foods)} foods. Sample:")
     for f in foods[:6]:
         print(f"  {f['activity']:<20} {f['kg_co2e_per_unit']:>7.2f} kg CO2e/kg")
+
+    # ---- Electricity carbon intensity (downloaded, OWID) ----
+    print(f"\nDownloading OWID electricity carbon intensity from {ELEC_URL} ...")
+    eraw = download(ELEC_URL)
+    (RAW / "carbon-intensity-electricity.csv").write_bytes(eraw)
+    ereader = csv.DictReader(io.StringIO(eraw.decode("utf-8")))
+    icol = "Carbon intensity"
+    elat = {}  # region -> (year, gco2_per_kwh)
+    for row in ereader:
+        e = row.get("Entity")
+        if e not in ELEC_REGIONS or not row.get(icol):
+            continue
+        try:
+            y = int(row["Year"]); v = float(row[icol])
+        except (ValueError, KeyError):
+            continue
+        if e not in elat or y > elat[e][0]:
+            elat[e] = (y, v)
+    elec_out = {
+        "source": "Our World in Data - Carbon intensity of electricity generation "
+                  "(CC-BY 4.0), https://ourworldindata.org/grapher/carbon-intensity-electricity",
+        "metric": "gCO2 per kWh; kg_co2e_per_kwh = value / 1000",
+        "default_region": "World",
+        "regions": [
+            {"region": r, "year": elat[r][0],
+             "gco2_per_kwh": round(elat[r][1], 1),
+             "kg_co2e_per_kwh": round(elat[r][1] / 1000, 4)}
+            for r in ELEC_REGIONS if r in elat
+        ],
+    }
+    (ROOT / "data" / "electricity.json").write_text(json.dumps(elec_out, indent=2))
+    print("Wrote data/electricity.json (grid carbon intensity):")
+    for r in elec_out["regions"]:
+        print(f"  {r['region']:<22} {r['kg_co2e_per_kwh']:.4f} kg/kWh ({r['year']})")
 
 
 if __name__ == "__main__":

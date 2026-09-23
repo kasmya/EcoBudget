@@ -1,15 +1,15 @@
 :root{
-  --bg:#0f1512; --panel:#161d19; --panel-2:#1c2621; --line:#26332c;
-  --fg:#eaf3ee; --muted:#9db3a8; --faint:#6f857b;
-  --accent:#4ade80; --accent-2:#22c55e; --accent-ink:#06231a;
-  --warn:#fbbf24; --danger:#f87171; --blue:#60a5fa;
-  --shadow:0 10px 30px rgba(0,0,0,.35);
+  --bg:#ffffff; --panel:#ffffff; --panel-2:#f4f7f5; --line:#e5eae7;
+  --fg:#14211b; --muted:#5f6f67; --faint:#97a69e;
+  --accent:#16a34a; --accent-2:#22c55e; --accent-ink:#ffffff;
+  --warn:#f59e0b; --danger:#e11d48; --blue:#2563eb;
+  --shadow:0 1px 2px rgba(16,32,25,.04), 0 8px 24px rgba(16,32,25,.06);
   --r:16px;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
-  margin:0;background:radial-gradient(1200px 700px at 80% -10%, #16261d 0%, var(--bg) 55%);
+  margin:0;background:var(--bg);
   color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
   line-height:1.45;min-height:100vh;
 }
@@ -18,7 +18,7 @@ a{color:var(--accent);text-decoration:none}
 
 /* Topbar */
 .topbar{position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);
-  background:rgba(15,21,18,.82);border-bottom:1px solid var(--line);}
+  background:rgba(255,255,255,.9);border-bottom:1px solid var(--line);}
 .topbar-inner{max-width:1200px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;letter-spacing:-.01em}
 .brand .leaf{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
@@ -28,16 +28,17 @@ a{color:var(--accent);text-decoration:none}
 .control{display:flex;align-items:center;gap:8px}
 .control label{font-size:12px;color:var(--muted)}
 input,select,button{font:inherit}
-input[type=month],input[type=date],input[type=number],select{
-  background:var(--panel-2);border:1px solid var(--line);color:var(--fg);
+input[type=month],input[type=date],input[type=number],select,input[type=text]{
+  background:#fff;border:1px solid var(--line);color:var(--fg);
   border-radius:10px;padding:9px 11px;outline:none}
-input:focus,select:focus{border-color:var(--accent-2)}
+input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,197,94,.12)}
 button{cursor:pointer;border:none;border-radius:10px;padding:10px 16px;font-weight:600;color:var(--accent-ink);
-  background:linear-gradient(135deg,var(--accent),var(--accent-2));transition:transform .12s ease,opacity .12s ease}
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));transition:transform .12s ease,opacity .12s ease;
+  box-shadow:0 2px 8px rgba(22,163,74,.25)}
 button:hover{transform:translateY(-1px)}
-button.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
-button.tiny{padding:5px 9px;font-size:12px;background:transparent;color:var(--danger);border:1px solid var(--line)}
-button.tiny:hover{background:rgba(248,113,113,.12)}
+button.ghost{background:#fff;color:var(--fg);border:1px solid var(--line);box-shadow:none}
+button.tiny{padding:5px 9px;font-size:12px;background:#fff;color:var(--danger);border:1px solid var(--line);box-shadow:none}
+button.tiny:hover{background:rgba(225,29,72,.07)}
 
 /* Layout */
 .grid{display:grid;gap:18px;margin-top:22px}
@@ -46,7 +47,7 @@ button.tiny:hover{background:rgba(248,113,113,.12)}
 .cols-2b{grid-template-columns:1fr 1fr}
 @media(max-width:920px){.cols-4{grid-template-columns:repeat(2,1fr)}.cols-2,.cols-2b{grid-template-columns:1fr}}
 
-.card{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);
+.card{background:var(--panel);border:1px solid var(--line);
   border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
 .card h2{margin:0 0 4px;font-size:15px;letter-spacing:.01em}
 .card .sub{color:var(--muted);font-size:12.5px;margin:0 0 16px}
@@ -59,8 +60,8 @@ button.tiny:hover{background:rgba(248,113,113,.12)}
 .stat .unit{font-size:14px;color:var(--muted);font-weight:500}
 .stat .foot{font-size:12px;color:var(--faint);margin-top:6px}
 .pill{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700}
-.pill.ok{background:rgba(74,222,128,.15);color:var(--accent)}
-.pill.over{background:rgba(248,113,113,.15);color:var(--danger)}
+.pill.ok{background:rgba(22,163,74,.12);color:var(--accent)}
+.pill.over{background:rgba(225,29,72,.10);color:var(--danger)}
 
 /* Budget progress */
 .progress{height:16px;border-radius:999px;background:var(--panel-2);overflow:hidden;border:1px solid var(--line)}
@@ -82,14 +83,14 @@ button.tiny:hover{background:rgba(248,113,113,.12)}
 table{width:100%;border-collapse:collapse;font-size:13.5px}
 th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}
 th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
-tbody tr:hover{background:rgba(255,255,255,.02)}
+tbody tr:hover{background:var(--panel-2)}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 .tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;
   background:var(--panel-2);border:1px solid var(--line);color:var(--muted)}
-.cat-Transport{color:#93c5fd} .cat-Food{color:#fca5a5} .cat-Home\ energy{color:#fcd34d}
-.cat-Waste{color:#a7f3d0} .cat-Goods{color:#c4b5fd}
+.cat-Transport{color:#2563eb} .cat-Food{color:#e11d48} .cat-Home\ energy{color:#d97706}
+.cat-Waste{color:#059669} .cat-Goods{color:#7c3aed}
 .bar-cell{position:relative}
-.bar-cell .b{position:absolute;left:0;top:0;bottom:0;background:rgba(74,222,128,.10);border-radius:6px}
+.bar-cell .b{position:absolute;left:0;top:0;bottom:0;background:rgba(22,163,74,.10);border-radius:6px}
 .bar-cell span{position:relative}
 
 /* Benchmarks */
@@ -102,6 +103,6 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 .empty{color:var(--faint);text-align:center;padding:26px;font-size:13px}
 footer{margin-top:34px;color:var(--faint);font-size:12px;line-height:1.7;border-top:1px solid var(--line);padding-top:18px}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;
-  background:var(--panel-2);border:1px solid var(--accent-2);color:var(--fg);padding:11px 18px;border-radius:12px;
+  background:var(--fg);border:1px solid var(--fg);color:#fff;padding:11px 18px;border-radius:12px;
   box-shadow:var(--shadow);transition:all .25s ease;z-index:50;font-size:13.5px}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}

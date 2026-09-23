@@ -5,11 +5,11 @@ source, recorded with its `source` string:
   - DEFRA / BEIS: UK Government Greenhouse Gas Conversion Factors 2023
     (Open Government Licence v3.0). The standard reference set used for carbon
     reporting. Values in kg CO2e per unit.
-  - Manufacturer life-cycle assessments (Apple/Dell product carbon reports) for
-    the two example goods, which publish per-device manufacturing footprints.
 
-Food factors are downloaded separately by fetch_data.py from Our World in Data
-(Poore & Nemecek 2018) and merged in by seed_db.py.
+Two factors are NOT hardcoded here and are grounded in downloaded data instead:
+  - Food factors: downloaded from Our World in Data (Poore & Nemecek 2018).
+  - Grid electricity: downloaded from OWID electricity carbon intensity.
+Both are merged in by seed_db.py.
 
 Units are kept explicit so the app multiplies quantity x factor with matching
 units (km, kWh, kg, item, night).
@@ -38,7 +38,8 @@ NON_FOOD_FACTORS = [
     ("Transport", "Walking", "km", 0.0, "Active travel, zero direct emissions"),
 
     # --- Home energy (per kWh) ---
-    ("Home energy", "Electricity (grid)", "kWh", 0.207, DEFRA),
+    # NOTE: "Electricity (grid)" is NOT listed here. It is grounded in downloaded
+    # data (OWID electricity carbon intensity) and inserted by seed_db.py.
     ("Home energy", "Natural gas", "kWh", 0.183, DEFRA),
     ("Home energy", "Heating oil", "kWh", 0.246, DEFRA),
     ("Home energy", "LPG", "kWh", 0.214, DEFRA),
@@ -48,14 +49,4 @@ NON_FOOD_FACTORS = [
     ("Waste", "General waste to landfill", "kg", 0.446, DEFRA),
     ("Waste", "Mixed recycling", "kg", 0.021, DEFRA),
     ("Waste", "Food/green waste composted", "kg", 0.009, DEFRA),
-
-    # --- Goods (per item; manufacturing footprint from maker LCAs) ---
-    ("Goods", "Smartphone (new)", "item", 70.0,
-     "Manufacturer product carbon report (e.g. Apple iPhone LCA, ~70 kg CO2e mfg)"),
-    ("Goods", "Laptop (new)", "item", 300.0,
-     "Manufacturer product carbon report (e.g. Dell/Apple laptop LCA, ~300 kg CO2e mfg)"),
-    ("Goods", "Pair of jeans", "item", 25.0,
-     "Apparel life-cycle assessment (widely cited ~25 kg CO2e per pair)"),
-    ("Goods", "Cotton t-shirt", "item", 7.0,
-     "Apparel life-cycle assessment (widely cited ~7 kg CO2e per shirt)"),
 ]

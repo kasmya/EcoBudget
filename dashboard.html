@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>EcoBudget - Live demo: task-sufficient vs normal loading</title>
+<style>
+  :root{
+    --bg:#f7f8f4;--panel:#fff;--ink:#161915;--muted:#6b6f64;--border:#e6e8df;
+    --accent:#5f9e12;--accent-soft:#eef4dd;
+    --normal:#d9542b;--normal-soft:#fbe9e2;--eco:#2e8b57;--eco-soft:#e5f3ea;
+    --shadow:0 10px 30px rgba(20,25,15,.07);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px;}
+  header{position:sticky;top:0;z-index:20;background:rgba(247,248,244,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;max-width:1080px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:17px;}
+  .logo .dot{width:20px;height:20px;border-radius:50%;background:var(--accent);}
+  .nav-links{display:flex;gap:6px;flex-wrap:wrap;}
+  .nav-links a{padding:7px 14px;border-radius:999px;font-size:14px;color:var(--muted);font-weight:600;}
+  .nav-links a:hover{background:var(--accent-soft);color:var(--ink);}
+  .nav-links a.active{background:var(--accent);color:#fff;}
+  h1{font-size:32px;letter-spacing:-.02em;margin:34px 0 6px;}
+  .lede{color:var(--muted);max-width:660px;margin:0 0 22px;font-size:15px;}
+  .session{display:flex;gap:18px;flex-wrap:wrap;align-items:center;background:var(--accent-soft);border:1px solid #dbe8bf;
+           border-radius:14px;padding:12px 18px;margin-bottom:22px;font-size:14px;}
+  .session b{color:var(--accent);font-size:18px;}
+  .session .reset{margin-left:auto;font-size:12px;color:var(--muted);cursor:pointer;border:1px solid var(--border);background:#fff;border-radius:999px;padding:5px 11px;}
+  .searchbar{display:flex;gap:10px;flex-wrap:wrap;}
+  .searchbar input{flex:1;min-width:260px;padding:14px 16px;border:1px solid var(--border);border-radius:12px;font-size:15px;background:var(--panel);color:var(--ink);}
+  .searchbar input:focus{outline:2px solid var(--accent);}
+  .btn{padding:14px 22px;border:none;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;background:var(--accent);color:#fff;transition:transform .12s,opacity .12s;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+  .examples{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 12px;}
+  .chip{padding:7px 13px;border:1px solid var(--border);border-radius:999px;background:var(--panel);font-size:13px;color:var(--muted);cursor:pointer;font-weight:600;}
+  .chip:hover{border-color:var(--accent);color:var(--ink);}
+  .status{color:var(--muted);font-size:14px;margin:8px 0 18px;min-height:20px;}
+  .pipeline{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px;}
+  .pstep{flex:1;min-width:150px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 14px;opacity:.4;transition:opacity .4s,border-color .4s;}
+  .pstep.on{opacity:1;border-color:var(--accent);}
+  .pstep .pn{font-size:11px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.04em;}
+  .pstep .pt{font-size:13px;margin-top:3px;}
+  .answer{background:var(--accent-soft);border:1px solid #dbe8bf;border-radius:16px;padding:18px 20px;margin-bottom:20px;}
+  .answer .k{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);font-weight:700;}
+  .answer .v{font-size:17px;margin-top:6px;font-weight:600;}
+  .scaletoggle{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 16px;}
+  .scaletoggle .sl{font-size:13px;color:var(--muted);margin-right:4px;}
+  .scaletoggle button{padding:8px 14px;border:1px solid var(--border);background:var(--panel);border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);}
+  .scaletoggle button.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+  @media(max-width:760px){.cards{grid-template-columns:1fr;}}
+  .card{border-radius:18px;padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);background:var(--panel);}
+  .card.normal{background:var(--normal-soft);border-color:#f3d3c6;}
+  .card.eco{background:var(--eco-soft);border-color:#c9e6d5;}
+  .card h3{margin:0 0 2px;font-size:16px;}
+  .card .tag{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;}
+  .card.normal .tag{color:var(--normal);} .card.eco .tag{color:var(--eco);}
+  .metric{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-top:1px solid rgba(0,0,0,.06);}
+  .metric:first-of-type{border-top:none;margin-top:8px;}
+  .metric .m-label{font-size:13px;color:var(--muted);}
+  .metric .m-val{font-size:18px;font-weight:700;letter-spacing:-.01em;}
+  .savings{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:26px;}
+  @media(max-width:760px){.savings{grid-template-columns:repeat(2,1fr);}}
+  .save{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;}
+  .save .n{font-size:24px;font-weight:800;color:var(--eco);letter-spacing:-.02em;}
+  .save .l{font-size:12px;color:var(--muted);margin-top:3px;}
+  .section-title{font-size:20px;margin:30px 0 4px;letter-spacing:-.01em;}
+  .section-sub{color:var(--muted);font-size:14px;margin:0 0 14px;max-width:700px;}
+  .bars{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow);}
+  .bar-row{margin:12px 0;}
+  .bar-row .bl{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;}
+  .bar-track{height:20px;background:#eef0e8;border-radius:8px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:8px;transition:width .7s cubic-bezier(.2,.8,.2,1);}
+  .bar-fill.normal{background:var(--normal);} .bar-fill.eco{background:var(--eco);}
+  .sources{margin:14px 0 60px;}
+  .sources h4{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
+  .src{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;}
+  .src a{color:var(--accent);word-break:break-all;}
+  .note{color:var(--muted);font-size:12.5px;font-style:italic;margin-top:8px;}
+  .hidden{display:none;}
+  .spinner{display:inline-block;width:15px;height:15px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:6px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+<header>
+  <div class="nav">
+    <a class="logo" href="index.html"><span class="dot"></span>EcoBudget</a>
+    <nav class="nav-links">
+      <a href="index.html">Overview</a>
+      <a href="dashboard.html" class="active">Live demo</a>
+      <a href="index.html#architecture">Architecture</a>
+      <a href="index.html#results">Results</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1>Live demo: EcoBudget vs normal loading</h1>
+  <p class="lede">Ask anything. We fetch real web results (Tavily), then compare a <strong>normal</strong> load
+    (every full page) against <strong>EcoBudget</strong> task-sufficient loading (only the snippet that answers).
+    Toggle the page-size assumption to see the compute-vs-transfer crossover, and watch your cumulative savings grow.</p>
+
+  <div class="session">
+    <span>This session:&nbsp; <b id="ssQ">0</b> queries</span>
+    <span><b id="ssBytes">0 KB</b> not transferred</span>
+    <span><b id="ssEnergy">0 J</b> saved</span>
+    <span><b id="ssCo2">0 mg</b> CO2e avoided</span>
+    <span class="reset" id="reset">reset</span>
+  </div>
+
+  <div class="searchbar">
+    <input id="q" type="text" placeholder="Ask a question..." value="What is the display refresh rate of the iPhone 16?"/>
+    <button class="btn" id="go">Compare</button>
+  </div>
+  <div class="examples" id="examples"></div>
+  <div class="status" id="status"></div>
+
+  <div id="results" class="hidden">
+    <div class="pipeline" id="pipeline">
+      <div class="pstep" data-s="0"><div class="pn">1 · Understand</div><div class="pt">Identify what the task needs</div></div>
+      <div class="pstep" data-s="1"><div class="pn">2 · Retrieve</div><div class="pt">Fetch targeted evidence</div></div>
+      <div class="pstep" data-s="2"><div class="pn">3 · Decide</div><div class="pt">Evidence sufficient &rarr; STOP</div></div>
+      <div class="pstep" data-s="3"><div class="pn">4 · Answer</div><div class="pt">From only what was loaded</div></div>
+    </div>
+
+    <div class="answer"><div class="k">Task-sufficient answer</div><div class="v" id="answer"></div></div>
+
+    <div class="scaletoggle">
+      <span class="sl">Page-size assumption:</span>
+      <button data-sc="text">Real fetched text</button>
+      <button data-sc="html_page" class="on">Real page (506 KB)</button>
+      <button data-sc="full_page">Full page + assets (2 MB)</button>
+    </div>
+
+    <div class="cards">
+      <div class="card normal">
+        <span class="tag">Normal loading</span><h3>Transfer every full page</h3>
+        <div class="metric"><span class="m-label">Bytes transferred</span><span class="m-val" id="n_bytes"></span></div>
+        <div class="metric"><span class="m-label">Pages fetched</span><span class="m-val" id="n_fetch"></span></div>
+        <div class="metric"><span class="m-label">Transfer energy</span><span class="m-val" id="n_tj"></span></div>
+        <div class="metric"><span class="m-label">5G radio energy (fast dormancy)</span><span class="m-val" id="n_rj"></span></div>
+        <div class="metric"><span class="m-label">Radio active time</span><span class="m-val" id="n_rt"></span></div>
+        <div class="metric"><span class="m-label">CO2e</span><span class="m-val" id="n_co2"></span></div>
+      </div>
+      <div class="card eco">
+        <span class="tag">EcoBudget</span><h3>Load only what the task needs</h3>
+        <div class="metric"><span class="m-label">Bytes transferred</span><span class="m-val" id="e_bytes"></span></div>
+        <div class="metric"><span class="m-label">Fetches</span><span class="m-val" id="e_fetch"></span></div>
+        <div class="metric"><span class="m-label">Transfer energy</span><span class="m-val" id="e_tj"></span></div>
+        <div class="metric"><span class="m-label">5G radio energy (fast dormancy)</span><span class="m-val" id="e_rj"></span></div>
+        <div class="metric"><span class="m-label">Radio active time</span><span class="m-val" id="e_rt"></span></div>
+        <div class="metric"><span class="m-label">CO2e</span><span class="m-val" id="e_co2"></span></div>
+      </div>
+    </div>
+
+    <div class="savings">
+      <div class="save"><div class="n" id="s_bytes"></div><div class="l">fewer bytes</div></div>
+      <div class="save"><div class="n" id="s_tj"></div><div class="l">transfer energy saved</div></div>
+      <div class="save"><div class="n" id="s_rj"></div><div class="l">5G radio energy saved</div></div>
+      <div class="save"><div class="n" id="s_co2"></div><div class="l">CO2e avoided</div></div>
+    </div>
+
+    <div class="section-title">The 5G angle: radio-state energy</div>
+    <p class="section-sub">5G energy is dominated by holding the modem in RRC_CONNECTED. Every full page keeps the
+      radio awake and pays its own promotion + tail under fast-dormancy release; loading one snippet avoids that.</p>
+    <div class="bars">
+      <div class="bar-row"><div class="bl"><span>Normal - radio energy</span><span id="b_n"></span></div><div class="bar-track"><div class="bar-fill normal" id="bar_n" style="width:0"></div></div></div>
+      <div class="bar-row"><div class="bl"><span>EcoBudget - radio energy</span><span id="b_e"></span></div><div class="bar-track"><div class="bar-fill eco" id="bar_e" style="width:0"></div></div></div>
+    </div>
+
+    <div class="sources">
+      <h4>Real sources fetched</h4>
+      <div id="srclist"></div>
+      <div class="note" id="note"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+  var API="";
+  var EXAMPLES=[
+    "What is the display refresh rate of the iPhone 16?",
+    "How tall is the Burj Khalifa?",
+    "What is the weight of the Hoka Clifton 9?",
+    "What is the range of the Hyundai Ioniq 6?",
+    "What is the best time to visit Kyoto?",
+    "When was the Empire State Building completed?"
+  ];
+  var LAST=null, SCALE="html_page";
+  var elx=document.getElementById('examples');
+  EXAMPLES.forEach(function(e){var c=document.createElement('span');c.className='chip';c.textContent=e;c.onclick=function(){document.getElementById('q').value=e;run();};elx.appendChild(c);});
+
+  // ---- cumulative session savings (localStorage) ----
+  function ss(){ try{return JSON.parse(localStorage.getItem('eco_ss')||'{}');}catch(e){return {};} }
+  function renderSS(){var s=ss();document.getElementById('ssQ').textContent=s.q||0;
+    document.getElementById('ssBytes').textContent=fmtBytes(s.bytes||0);
+    document.getElementById('ssEnergy').textContent=(s.energy||0).toFixed(1)+' J';
+    document.getElementById('ssCo2').textContent=(s.co2||0).toFixed(1)+' mg';}
+  function addSS(bytes,energy,co2){var s=ss();s.q=(s.q||0)+1;s.bytes=(s.bytes||0)+bytes;s.energy=(s.energy||0)+energy;s.co2=(s.co2||0)+co2;
+    try{localStorage.setItem('eco_ss',JSON.stringify(s));}catch(e){} renderSS();}
+  document.getElementById('reset').onclick=function(){try{localStorage.removeItem('eco_ss');}catch(e){} renderSS();};
+  renderSS();
+
+  function fmtBytes(b){return b>=1e6?(b/1e6).toFixed(2)+' MB':b>=1000?(b/1000).toFixed(1)+' KB':Math.round(b)+' B';}
+  function j(x){return (x>=1?x.toFixed(1):x.toFixed(3))+' J';}
+  function animate(el,to,fmt){var from=0,t0=performance.now();function fr(t){var k=Math.min(1,(t-t0)/650);el.textContent=fmt(from+(to-from)*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(fr);}requestAnimationFrame(fr);}
+
+  function render(){
+    if(!LAST) return;
+    var sc=LAST.scenarios[SCALE], N=sc.normal, E=sc.ecobudget, S=sc.savings;
+    document.getElementById('n_bytes').textContent=fmtBytes(N.bytes);
+    document.getElementById('n_fetch').textContent=N.fetches;
+    document.getElementById('n_tj').textContent=j(N.transfer_j);
+    document.getElementById('n_rj').textContent=j(N.radio_j_fastdormancy);
+    document.getElementById('n_rt').textContent=N.radio_active_s+' s';
+    document.getElementById('n_co2').textContent=N.co2e_mg.toFixed(2)+' mg';
+    document.getElementById('e_bytes').textContent=fmtBytes(E.bytes);
+    document.getElementById('e_fetch').textContent=E.fetches;
+    document.getElementById('e_tj').textContent=j(E.transfer_j);
+    document.getElementById('e_rj').textContent=j(E.radio_j_fastdormancy);
+    document.getElementById('e_rt').textContent=E.radio_active_s+' s';
+    document.getElementById('e_co2').textContent=E.co2e_mg.toFixed(2)+' mg';
+    animate(document.getElementById('s_bytes'),S.bytes_pct,function(v){return v.toFixed(1)+'%';});
+    animate(document.getElementById('s_tj'),S.transfer_j,function(v){return j(v);});
+    animate(document.getElementById('s_rj'),S.radio_j_fastdormancy,function(v){return j(v);});
+    animate(document.getElementById('s_co2'),S.co2e_mg,function(v){return v.toFixed(2)+' mg';});
+    var mx=Math.max(N.radio_j_fastdormancy,E.radio_j_fastdormancy)||1;
+    document.getElementById('bar_n').style.width=(100*N.radio_j_fastdormancy/mx)+'%';
+    document.getElementById('bar_e').style.width=(100*E.radio_j_fastdormancy/mx)+'%';
+    document.getElementById('b_n').textContent=j(N.radio_j_fastdormancy);
+    document.getElementById('b_e').textContent=j(E.radio_j_fastdormancy);
+  }
+  document.querySelectorAll('.scaletoggle button').forEach(function(b){
+    b.onclick=function(){SCALE=b.getAttribute('data-sc');
+      document.querySelectorAll('.scaletoggle button').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on'); render();};
+  });
+
+  function lightPipeline(){document.querySelectorAll('.pstep').forEach(function(p,i){setTimeout(function(){p.classList.add('on');},i*220);});}
+
+  function run(){
+    var q=document.getElementById('q').value.trim(); if(!q) return;
+    var btn=document.getElementById('go'); btn.disabled=true;
+    var st=document.getElementById('status'); st.innerHTML='<span class="spinner"></span>Fetching real results and computing 5G energy...';
+    document.getElementById('results').classList.add('hidden');
+    document.querySelectorAll('.pstep').forEach(function(p){p.classList.remove('on');});
+    fetch(API+'/api/compare?q='+encodeURIComponent(q)).then(function(r){return r.json();}).then(function(d){
+      btn.disabled=false;
+      if(d.error){st.textContent='Error: '+d.error+'  (is the server running with TAVILY_API_KEY set?)';return;}
+      st.textContent='';
+      LAST=d;
+      document.getElementById('answer').textContent=d.answer||'(no direct answer returned)';
+      document.getElementById('results').classList.remove('hidden');
+      lightPipeline();
+      render();
+      // accumulate session savings at the realistic (html_page) scale
+      var s=d.scenarios.html_page.savings;
+      addSS(s.bytes, s.transfer_j + s.radio_j_fastdormancy, s.co2e_mg);
+      var sl=document.getElementById('srclist'); sl.innerHTML='';
+      (d.sources||[]).forEach(function(x){var row=document.createElement('div');row.className='src';
+        row.innerHTML='<a href="'+x.url+'" target="_blank" rel="noopener">'+x.url+'</a><span>'+fmtBytes(x.raw_bytes)+' full / '+fmtBytes(x.snippet_bytes)+' snippet</span>';sl.appendChild(row);});
+      document.getElementById('note').textContent=d.note||'';
+    }).catch(function(err){btn.disabled=false;st.textContent='Request failed: '+err+'. Start the server: python backend/demo_server.py';});
+  }
+  document.getElementById('go').onclick=run;
+  document.getElementById('q').addEventListener('keydown',function(e){if(e.key==='Enter')run();});
+</script>
+</body>
+</html>

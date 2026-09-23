@@ -1,0 +1,31 @@
+{
+  "source": "Our World in Data - Carbon intensity of electricity generation (CC-BY 4.0), https://ourworldindata.org/grapher/carbon-intensity-electricity",
+  "metric": "gCO2 per kWh; kg_co2e_per_kwh = value / 1000",
+  "default_region": "World",
+  "regions": [
+    {
+      "region": "World",
+      "year": 2025,
+      "gco2_per_kwh": 458.3,
+      "kg_co2e_per_kwh": 0.4583
+    },
+    {
+      "region": "United Kingdom",
+      "year": 2025,
+      "gco2_per_kwh": 217.4,
+      "kg_co2e_per_kwh": 0.2174
+    },
+    {
+      "region": "United States",
+      "year": 2025,
+      "gco2_per_kwh": 384.4,
+      "kg_co2e_per_kwh": 0.3844
+    },
+    {
+      "region": "European Union (27)",
+      "year": 2025,
+      "gco2_per_kwh": 209.9,
+      "kg_co2e_per_kwh": 0.2099
+    }
+  ]
+}
