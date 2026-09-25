@@ -65,6 +65,24 @@ def compute_reward(success: bool, total_bytes: int, max_bytes: int, lam: float) 
     return (1.0 if success else 0.0) - penalty
 
 
+def compute_energy_reward(success: bool, energy_j: float, ref_energy_j: float,
+                          mu: float) -> float:
+    """Idea 1 (energy-aware stopping): episode reward that penalizes the actual
+    5G ENERGY a query spends, not its snippet byte-count.
+
+    reward = success - mu * (energy_j / ref_energy_j)
+
+    `energy_j` is the query's 5G transfer + RRC radio energy (including the
+    once-per-fetch promotion and the inactivity tail) at a realistic page scale,
+    from ml_retriever.energy. Unlike `compute_reward`, whose byte penalty on the
+    tiny extracted snippets (~10^2 B) is nearly free, this makes every RETRIEVE
+    pay its true radio-wake cost -- so the policy learns to stop for JOULES, not
+    just bytes. `ref_energy_j` normalizes the penalty to O(1) reward units (we
+    use the energy of a single page fetch), and `mu` is its weight."""
+    penalty = mu * (energy_j / max(ref_energy_j, 1e-9))
+    return (1.0 if success else 0.0) - penalty
+
+
 class FeatureNormalizer:
     """z-score normalization with statistics fit on the training contexts
     (plan.md: raw byte-count features would otherwise dominate by variance)."""

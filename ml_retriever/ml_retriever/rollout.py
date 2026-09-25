@@ -19,10 +19,25 @@ from typing import Callable, Optional
 
 import numpy as np
 
-from .bandit import RETRIEVE, STOP, compute_reward, featurize
+from .bandit import RETRIEVE, STOP, compute_energy_reward, compute_reward, featurize
+from .energy import FiveGTransferModel, PayloadModel, RadioStateModel
 from .evidence import EvidenceCoverageTracker
 from .judge import judge_task
 from .types import Passage, Requirement
+
+# Idea 1 (energy-aware stopping): the true 5G energy cost of ONE page fetch, used
+# to shape the reward in reward_mode="energy". A fetch wakes the radio, so its
+# cost is dominated by RRC promotion + active + tail, not by the snippet bytes.
+# Taken under the fast-dormancy regime (each fetch its own radio session), the
+# honest "every retrieval pays a radio wake" cost. Computed once from the
+# measured energy model so the reward is grounded, not a free hyperparameter.
+_PAYLOAD = PayloadModel()
+_TRANSFER = FiveGTransferModel()
+_RADIO_FD = RadioStateModel(demote_between_fetches=True)
+PER_FETCH_J: float = (
+    _RADIO_FD.account(_PAYLOAD.html_page_bytes, 1)["radio_j"]
+    + _TRANSFER.energy_joules(_PAYLOAD.html_page_bytes)
+)
 
 # A decider maps (context_vector, state) -> action (STOP / RETRIEVE).
 Decider = Callable[[np.ndarray, "EpisodeState"], int]
@@ -140,6 +155,7 @@ def run_episode(
     threshold: float = 0.3,
     max_steps: int = 30,
     reward_mode: str = "terminal",
+    mu: float = 0.5,
 ) -> EpisodeResult:
     """reward_mode:
       - "terminal": every step is credited the episode objective
@@ -148,6 +164,12 @@ def run_episode(
         it adds minus its own byte cost (redundant retrievals go negative), and
         STOP earns the realized judge success. This lets the policy tell a
         premature STOP or a wasteful RETRIEVE apart, which terminal credit cannot.
+      - "energy" (Idea 1, energy-aware stopping): like "per_step", but a RETRIEVE
+        is charged its true 5G ENERGY cost -- a fixed per-fetch radio-wake cost
+        `mu * PER_FETCH_J/PER_FETCH_J = mu` per fetch -- instead of a byte
+        penalty. Because a fetch's joules are dominated by the radio wake (not
+        the ~10^2 snippet bytes), this teaches the policy to stop to save JOULES,
+        which the byte penalty barely registers. `mu` is the per-fetch weight.
     """
     requirements = [Requirement(entity=r["entity"], attribute=r["attribute"])
                     for r in task["decomposed_requirements"]]
@@ -188,7 +210,12 @@ def run_episode(
     answer_result = answer_gen.generate(task["question"], _gathered_passages(state))
     answer_text = answer_result.answer or ""
     success, score = judge_task(answer_text, task)
-    objective = compute_reward(success, state.bytes_used, max_bytes, lam)
+    if reward_mode == "energy":
+        # report the energy objective: success minus mu-weighted radio-wake cost
+        objective = compute_energy_reward(
+            success, n_retrieves * PER_FETCH_J, PER_FETCH_J, mu)
+    else:
+        objective = compute_reward(success, state.bytes_used, max_bytes, lam)
 
     trajectory: list[tuple[np.ndarray, int, float]] = []
     for ctx, action, delta_cov, inc_bytes in steps:
@@ -197,6 +224,14 @@ def run_episode(
                 step_reward = 1.0 if success else 0.0
             else:
                 step_reward = delta_cov - lam * (inc_bytes / max_bytes)
+        elif reward_mode == "energy":
+            # Idea 1: charge each RETRIEVE its true 5G radio-wake energy
+            # (PER_FETCH_J), normalized by that same cost -> a flat mu per fetch.
+            if action == STOP:
+                step_reward = 1.0 if success else 0.0
+            else:
+                fetch_penalty = mu * (PER_FETCH_J / PER_FETCH_J)  # = mu (radio wake)
+                step_reward = delta_cov - fetch_penalty
         else:  # terminal
             step_reward = objective
         trajectory.append((ctx, action, step_reward))

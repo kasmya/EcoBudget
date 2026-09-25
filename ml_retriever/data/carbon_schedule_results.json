@@ -1,0 +1,48 @@
+{
+  "policy": "linucb_energy",
+  "energy_j_per_query": 141.75624145833334,
+  "carbon_mean_g_per_kwh": 465.0,
+  "carbon_min_g_per_kwh": 300,
+  "carbon_max_g_per_kwh": 690,
+  "carbon_spread_x": 2.3,
+  "greenest_hour": 13,
+  "dirtiest_hour": 19,
+  "windows": [
+    {
+      "window_h": 2,
+      "gco2e_baseline_mg": 439.44434852083333,
+      "gco2e_scheduled_mg": 416.99961028993056,
+      "gco2e_saved_mg": 22.44473823090276,
+      "pct_saved": 5.1075268817204265
+    },
+    {
+      "window_h": 4,
+      "gco2e_baseline_mg": 439.44434852083333,
+      "gco2e_scheduled_mg": 378.0166438888889,
+      "gco2e_saved_mg": 61.427704631944415,
+      "pct_saved": 13.978494623655909
+    },
+    {
+      "window_h": 6,
+      "gco2e_baseline_mg": 439.44434852083333,
+      "gco2e_scheduled_mg": 350.846697609375,
+      "gco2e_saved_mg": 88.59765091145833,
+      "pct_saved": 20.161290322580644
+    },
+    {
+      "window_h": 12,
+      "gco2e_baseline_mg": 439.44434852083333,
+      "gco2e_scheduled_mg": 315.99828825086803,
+      "gco2e_saved_mg": 123.4460602699653,
+      "pct_saved": 28.09139784946237
+    },
+    {
+      "window_h": 24,
+      "gco2e_baseline_mg": 439.44434852083333,
+      "gco2e_scheduled_mg": 283.5124829166666,
+      "gco2e_saved_mg": 155.93186560416666,
+      "pct_saved": 35.483870967741936
+    }
+  ],
+  "ceiling_pct_saved": 35.483870967741936
+}

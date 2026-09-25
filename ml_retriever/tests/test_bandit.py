@@ -12,6 +12,7 @@ from ml_retriever.bandit import (
     STOP,
     BanditPolicy,
     FeatureNormalizer,
+    compute_energy_reward,
     compute_reward,
     featurize,
 )
@@ -38,6 +39,23 @@ class TestReward:
 
     def test_more_bytes_lowers_reward(self):
         assert compute_reward(True, 20, 100, 0.5) > compute_reward(True, 80, 100, 0.5)
+
+
+class TestEnergyReward:
+    def test_success_minus_energy_penalty(self):
+        # success=1, energy = ref, mu=0.5 -> 1 - 0.5*1 = 0.5
+        assert compute_energy_reward(True, 10.0, 10.0, mu=0.5) == pytest.approx(0.5)
+
+    def test_more_energy_lowers_reward(self):
+        assert compute_energy_reward(True, 5.0, 10.0, 0.5) > \
+               compute_energy_reward(True, 9.0, 10.0, 0.5)
+
+    def test_failure_is_negative(self):
+        assert compute_energy_reward(False, 10.0, 10.0, mu=0.5) == pytest.approx(-0.5)
+
+    def test_zero_ref_does_not_crash(self):
+        # guarded division; should not raise
+        assert compute_energy_reward(True, 1.0, 0.0, mu=0.1) < 0
 
 
 class TestNormalizer:

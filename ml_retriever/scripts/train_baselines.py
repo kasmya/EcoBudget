@@ -49,7 +49,8 @@ def reqs_of(t):
     return [Requirement(entity=r["entity"], attribute=r["attribute"]) for r in t["decomposed_requirements"]]
 
 
-def train_one(policy, train_tasks, candidates, normalizer, scorer, ag, lam, epochs, seed, name):
+def train_one(policy, train_tasks, candidates, normalizer, scorer, ag, lam, epochs,
+              seed, name, reward_mode="per_step", mu=0.5):
     rng = random.Random(seed)
     for epoch in range(epochs):
         order = list(train_tasks); rng.shuffle(order)
@@ -58,7 +59,7 @@ def train_one(policy, train_tasks, candidates, normalizer, scorer, ag, lam, epoc
             def decider(ctx, state):
                 return policy.select_action(normalizer.transform(ctx), explore=True)
             res = run_episode(t, candidates[t["id"]], scorer, ag, decider,
-                              lam=lam, threshold=0.3, reward_mode="per_step")
+                              lam=lam, threshold=0.3, reward_mode=reward_mode, mu=mu)
             for ctx, action, step_reward in res.trajectory:
                 policy.update(normalizer.transform(ctx), action, step_reward)
             ep_reward += res.reward; ep_success += res.success; ep_bytes += res.total_bytes
@@ -77,6 +78,9 @@ def main():
     ap.add_argument("--v", type=float, default=0.25, help="LinTS posterior scale")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--suffix", default="", help="filename suffix, e.g. _seed3 for multi-seed")
+    ap.add_argument("--reward", choices=["per_step", "energy"], default="per_step",
+                    help="reward shaping: byte-based per_step (default) or Idea-1 energy-aware")
+    ap.add_argument("--mu", type=float, default=0.5, help="per-fetch energy weight (reward=energy)")
     args = ap.parse_args()
 
     MODELS.mkdir(exist_ok=True)
@@ -103,11 +107,14 @@ def main():
             ctxs.extend(c for c, *_ in res.trajectory)
         normalizer = FeatureNormalizer().fit(ctxs)
 
-    print(f"Training LinUCB + LinTS on {len(train_tasks)} tasks (seed={args.seed})")
+    print(f"Training LinUCB + LinTS on {len(train_tasks)} tasks "
+          f"(seed={args.seed}, reward={args.reward}, mu={args.mu})")
     linucb = train_one(LinUCBPolicy(alpha=args.alpha, seed=args.seed), train_tasks,
-                       candidates, normalizer, scorer, ag, args.lam, args.epochs, args.seed, "linucb")
+                       candidates, normalizer, scorer, ag, args.lam, args.epochs, args.seed,
+                       "linucb", reward_mode=args.reward, mu=args.mu)
     lints = train_one(LinTSPolicy(v=args.v, seed=args.seed), train_tasks,
-                      candidates, normalizer, scorer, ag, args.lam, args.epochs, args.seed, "lints")
+                      candidates, normalizer, scorer, ag, args.lam, args.epochs, args.seed,
+                      "lints", reward_mode=args.reward, mu=args.mu)
 
     linucb.save(MODELS / f"linucb_policy{args.suffix}.joblib")
     lints.save(MODELS / f"lints_policy{args.suffix}.joblib")

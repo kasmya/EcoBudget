@@ -1,1 +1,15 @@
 .DS_Store
+
+# Local secrets (Tavily etc.) - never commit
+.env
+
+# Python / build junk
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+
+# Large model artifacts (regenerate via training scripts)
+models/
+*.safetensors
+*.zip

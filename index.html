@@ -7,7 +7,7 @@
 <meta name="description" content="EcoBudget decides, per question, exactly how much web evidence it needs, stops as soon as it has enough, and moves fewer bytes and less energy over 5G, without losing answer quality." />
 <meta name="color-scheme" content="light" />
 <meta property="og:title" content="EcoBudget - Task-sufficient retrieval for greener 5G QA" />
-<meta property="og:description" content="Load only what the task needs. 75% fewer bytes and ~109 J/query saved at real page scale, at equal answer success." />
+<meta property="og:description" content="Load only what the task needs. 75% fewer bytes and ~66 J/query saved at real page scale, at equal answer success." />
 <style>
   :root{
     --bg:#fbfbf7; --bg-mint:#f1f7e7; --bg-cream:#fbf6ea; --bg-sky:#eef4fd; --panel:#ffffff;
@@ -423,14 +423,14 @@
     <a href="#overview" class="logo"><span class="logo-mark"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1c2b06" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5-3 8-7 8-12V5l-8-3-8 3v5c0 5 3 9 8 12Z"/><path d="M9 12l2 2 4-4"/></svg></span>EcoBudget</a>
     <nav class="links">
       <a href="#overview">Overview</a>
-      <a href="#try">Demo</a>
+      <a href="dashboard.html">Live demo</a>
       <a href="#architecture">Architecture</a>
       <a href="#roadmap">Roadmap</a>
       <a href="#results">Results</a>
     </nav>
     <div class="header-right">
       <a href="#results" class="btn btn-outline" style="padding:9px 16px;">Results</a>
-      <a href="#try" class="btn btn-accent" style="padding:9px 18px;">Try the demo</a>
+      <a href="dashboard.html" class="btn btn-accent" style="padding:9px 18px;">Live demo</a>
     </div>
     <button class="menu-btn" id="menuBtn" aria-label="Open menu"><span></span><span></span></button>
   </div>
@@ -488,7 +488,7 @@
     <div class="card-swap-stage" id="cardSwap">
       <div class="cs-card c1"><div class="cs-tag">Retrieval</div><div><div class="cs-num">0.989</div><div class="cs-desc">recall@1 for entity-aware retrieval, up from 0.914; recall@5 reaches a perfect 1.000.</div></div><div class="cs-foot">175 unique requirements</div></div>
       <div class="cs-card c2"><div class="cs-tag">Data transfer</div><div><div class="cs-num">&#8722;75%</div><div class="cs-desc">fewer bytes than full-page loading at statistically equal answer success on the frozen test set.</div></div><div class="cs-foot">106 B vs 420 B per query</div></div>
-      <div class="cs-card c3"><div class="cs-tag">Energy</div><div><div class="cs-num">&#8722;109 J</div><div class="cs-desc">per query versus full-page loading at the measured 506 KB page scale; transfer is 95% of energy.</div></div><div class="cs-foot">95% CI [75, 148]</div></div>
+      <div class="cs-card c3"><div class="cs-tag">Energy</div><div><div class="cs-num">&#8722;66 J</div><div class="cs-desc">per query versus full-page loading at the measured 506 KB page scale; transfer is 95% of energy.</div></div><div class="cs-foot">frozen test, 95% CI [41, 95]</div></div>
       <div class="cs-card c4"><div class="cs-tag">Real pages</div><div><div class="cs-num">92-98%</div><div class="cs-desc">fewer bytes measured end to end on live web pages, roughly 14x less transfer energy.</div></div><div class="cs-foot">live gsmarena.com</div></div>
     </div>
   </div>
