@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>EcoBudget - Task-sufficient retrieval for greener 5G QA</title>
 <meta name="description" content="EcoBudget decides, per question, exactly how much web evidence it needs, stops as soon as it has enough, and moves fewer bytes and less energy over 5G, without losing answer quality." />
-<meta name="color-scheme" content="light" />
+<meta name="color-scheme" content="light dark" />
 <meta property="og:title" content="EcoBudget - Task-sufficient retrieval for greener 5G QA" />
 <meta property="og:description" content="Load only what the task needs. 75% fewer bytes and ~66 J/query saved at real page scale, at equal answer success." />
 <style>
@@ -52,20 +52,39 @@
   .btn-glass{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.32);color:#f6f8ef;backdrop-filter:blur(10px);}
   .btn-glass:hover{background:rgba(255,255,255,.24);}
 
-  /* Header */
-  header{position:sticky;top:12px;z-index:60;max-width:1080px;margin:12px auto 0;
-    background:rgba(255,255,255,.78);backdrop-filter:saturate(180%) blur(16px);
-    border:1px solid var(--border);border-radius:22px;box-shadow:0 8px 28px rgba(30,34,18,.08);}
-  .header-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;}
-  .logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:17px;}
-  .logo-mark{width:26px;height:26px;border-radius:9px;background:linear-gradient(140deg,var(--green-2),var(--teal));
+  /* Header - transparent, embedded over the hero video; solidifies on scroll */
+  header{position:fixed;top:0;left:0;right:0;z-index:60;background:transparent;
+    transition:background .35s ease,box-shadow .35s ease,border-color .35s ease;border-bottom:1px solid transparent;}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 26px;max-width:1180px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:9px;font-weight:750;font-size:18px;color:#f6f8ef;text-shadow:0 1px 12px rgba(0,0,0,.35);transition:color .35s;}
+  .logo-mark{width:28px;height:28px;border-radius:9px;background:linear-gradient(140deg,var(--green-2),var(--teal));
     display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(110,170,40,.4);}
   nav.links{display:flex;gap:2px;}
-  nav.links a{padding:8px 14px;border-radius:999px;font-size:14px;color:var(--muted);font-weight:550;transition:.15s;}
-  nav.links a:hover{background:var(--green-soft);color:var(--green-ink);}
-  .header-right{display:flex;align-items:center;gap:12px;}
-  .menu-btn{display:none;background:none;border:none;cursor:pointer;padding:8px;}
-  .menu-btn span{display:block;width:22px;height:2px;background:var(--ink);margin:5px 0;border-radius:2px;}
+  nav.links a{padding:8px 14px;border-radius:999px;font-size:14px;color:rgba(246,248,239,.88);font-weight:560;transition:.18s;text-shadow:0 1px 10px rgba(0,0,0,.3);}
+  nav.links a:hover{background:rgba(255,255,255,.16);color:#fff;}
+  .header-right{display:flex;align-items:center;gap:10px;}
+  .header-right .btn-outline{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.34);color:#f6f8ef;backdrop-filter:blur(8px);}
+  .header-right .btn-outline:hover{background:rgba(255,255,255,.22);}
+  .menu-btn{display:none;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:11px;cursor:pointer;padding:9px 10px;backdrop-filter:blur(8px);}
+  .menu-btn span{display:block;width:20px;height:2px;background:#fff;margin:4px 0;border-radius:2px;transition:.25s;}
+  /* scrolled state: white glass, dark text */
+  header.scrolled{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(16px);
+    border-bottom:1px solid var(--border);box-shadow:0 6px 24px rgba(30,34,18,.07);}
+  header.scrolled .logo{color:var(--ink);text-shadow:none;}
+  header.scrolled nav.links a{color:var(--muted);text-shadow:none;}
+  header.scrolled nav.links a:hover{background:var(--green-soft);color:var(--green-ink);}
+  header.scrolled .header-right .btn-outline{background:#fff;border:1px solid var(--border-2);color:var(--ink);}
+  header.scrolled .menu-btn{background:#f1f2ea;border-color:var(--border-2);}
+  header.scrolled .menu-btn span{background:var(--ink);}
+  /* mobile dropdown */
+  .mobile-nav{position:fixed;top:66px;left:12px;right:12px;z-index:59;background:rgba(255,255,255,.98);
+    backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow-lg);padding:10px;
+    opacity:0;transform:translateY(-10px);visibility:hidden;pointer-events:none;transition:opacity .25s ease,transform .25s ease,visibility .25s;}
+  .mobile-nav.open{opacity:1;transform:none;visibility:visible;pointer-events:auto;}
+  @media (min-width:861px){.mobile-nav{display:none;}}
+  .mobile-nav a{display:block;padding:13px 16px;border-radius:12px;font-size:15px;font-weight:600;color:var(--ink);}
+  .mobile-nav a:hover,.mobile-nav a:active{background:var(--green-soft);color:var(--green-ink);}
+  .mobile-nav a.cta{background:linear-gradient(180deg,var(--green-2),var(--green));color:#1c2b06;margin-top:4px;text-align:center;}
   @media (max-width:860px){nav.links,.header-right{display:none;}.menu-btn{display:block;}}
 
   /* Hero - full-bleed video with headline over it */
@@ -89,11 +108,11 @@
   h1.hero-title em{font-style:italic;font-family:Georgia,"Times New Roman",serif;color:#c7ef73;}
   .hero p.sub{font-size:18px;color:rgba(246,248,239,.9);max-width:640px;margin:0 auto 32px;text-shadow:0 1px 16px rgba(0,0,0,.35);}
   .hero .btnrow{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
-  .hero-logos{position:relative;z-index:2;margin-top:auto;padding-top:48px;width:100%;}
-  .hero-logos .ll{text-align:center;font-size:11.5px;text-transform:uppercase;letter-spacing:.09em;color:rgba(246,248,239,.62);margin-bottom:15px;}
-  .hero-logos ul{display:flex;gap:34px;list-style:none;padding:0;margin:0;justify-content:center;flex-wrap:wrap;
-    opacity:.9;font-weight:650;font-size:13.5px;color:#eef3df;}
-  @media (max-width:860px){h1.hero-title{font-size:40px;}.hero{padding-top:100px;}.hero-logos ul{gap:16px;font-size:12px;}}
+  .hero-scrollcue{position:relative;z-index:2;margin-top:auto;padding-top:46px;display:inline-flex;flex-direction:column;
+    align-items:center;gap:9px;color:rgba(246,248,239,.82);font-size:11.5px;font-weight:650;letter-spacing:.09em;text-transform:uppercase;}
+  .hero-scrollcue svg{animation:bob 1.9s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(7px);}}
+  @media (max-width:860px){h1.hero-title{font-size:38px;}.hero{padding-top:96px;}.hero p.sub{font-size:16px;}}
 
   /* Section scaffolding */
   section{position:relative;}
@@ -113,10 +132,22 @@
   .steps4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:44px;}
   @media (max-width:860px){.steps4{grid-template-columns:1fr 1fr;}}
   @media (max-width:520px){.steps4{grid-template-columns:1fr;}}
-  .step4{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--shadow);}
-  .step4 .s4ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
-  .step4 h4{margin:0 0 6px;font-size:16px;}
-  .step4 p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.55;}
+  .step4{position:relative;background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:24px 22px 22px;
+    box-shadow:var(--shadow);overflow:hidden;transition:transform .2s ease,box-shadow .2s ease;}
+  .step4:hover{transform:translateY(-4px);box-shadow:0 26px 54px rgba(30,34,18,.13);}
+  .step4::after{content:"";position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;
+    background:var(--s4glow,rgba(140,203,53,.16));filter:blur(6px);opacity:.7;pointer-events:none;}
+  .step4.g1{--s4glow:rgba(140,203,53,.20);} .step4.g2{--s4glow:rgba(14,148,136,.16);}
+  .step4.g3{--s4glow:rgba(221,155,22,.18);} .step4.g4{--s4glow:rgba(47,111,237,.16);}
+  .step4 .s4top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;position:relative;z-index:1;}
+  .step4 .s4ico{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;}
+  .step4 .s4n{font-size:13px;font-weight:850;color:var(--faint);font-variant-numeric:tabular-nums;
+    width:26px;height:26px;border-radius:8px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
+  .step4 h4{margin:0 0 8px;font-size:16.5px;position:relative;z-index:1;}
+  .step4 p{margin:0;color:var(--muted);font-size:13px;line-height:1.6;position:relative;z-index:1;}
+  .step4 .s4why{margin-top:12px;padding-top:11px;border-top:1px dashed var(--border-2);font-size:12px;line-height:1.5;
+    color:var(--green-ink);font-weight:600;display:flex;gap:7px;position:relative;z-index:1;}
+  .step4 .s4why svg{flex:none;margin-top:1px;color:var(--green);}
 
   /* Highlights + CardSwap */
   .highlights{padding:110px 24px;overflow:hidden;background:linear-gradient(180deg,#fff,var(--bg-cream));}
@@ -269,6 +300,13 @@
   .sv-fill{height:100%;width:0;border-radius:5px;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
   .sv-fill.full{background:linear-gradient(90deg,#f2896c,var(--coral));}
   .sv-fill.task{background:linear-gradient(90deg,var(--green-2),var(--green));}
+  .sv-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin:12px 0 2px;}
+  .sv-m{background:#f6f8ef;border:1px solid #e3ebcf;border-radius:10px;padding:8px 6px;text-align:center;}
+  .sv-m .mv{font-size:14.5px;font-weight:850;color:var(--green-ink);font-variant-numeric:tabular-nums;line-height:1;}
+  .sv-m .ml{font-size:8px;color:#7c8069;margin-top:4px;text-transform:uppercase;letter-spacing:.03em;line-height:1.2;}
+  .session-tally{margin-top:9px;font-size:10px;color:#7c8069;text-align:center;background:rgba(255,255,255,.7);
+    border:1px solid var(--border);border-radius:9px;padding:7px;}
+  .session-tally b{color:var(--green-ink);font-variant-numeric:tabular-nums;}
 
   .phone-home{position:absolute;bottom:9px;left:50%;transform:translateX(-50%);width:112px;height:5px;border-radius:3px;background:#0c0d10;opacity:.85;z-index:20;}
 
@@ -277,15 +315,15 @@
   .bento-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
   @media (max-width:900px){.bento-grid{grid-template-columns:1fr 1fr;}}
   @media (max-width:560px){.bento-grid{grid-template-columns:1fr;}}
-  .card{position:relative;border-radius:20px;padding:22px 20px;background:var(--panel);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;transition:transform .2s ease,box-shadow .2s ease;}
-  .card:hover{transform:translateY(-3px);box-shadow:0 24px 50px rgba(30,34,18,.12);}
-  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--acc,var(--green-2));}
-  .card.a-green{--acc:linear-gradient(90deg,var(--green-2),var(--green));}
-  .card.a-teal{--acc:linear-gradient(90deg,#3fc0b4,var(--teal));}
-  .card.a-blue{--acc:linear-gradient(90deg,#5b93f5,var(--blue));}
-  .card.a-amber{--acc:linear-gradient(90deg,#f0bf4d,var(--amber));}
-  .card.a-lilac{--acc:linear-gradient(90deg,#9a8df6,var(--lilac));}
-  .card.a-coral{--acc:linear-gradient(90deg,#f4886b,var(--coral));}
+  .card{position:relative;border-radius:20px;padding:24px 20px;background:var(--panel);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;}
+  .card:hover{transform:translateY(-4px);box-shadow:0 26px 56px rgba(30,34,18,.14);border-color:var(--border-2);}
+  .card::before{content:"";position:absolute;top:-34px;right:-34px;width:104px;height:104px;border-radius:50%;
+    background:var(--acc,rgba(140,203,53,.16));filter:blur(5px);opacity:.65;pointer-events:none;transition:opacity .22s;}
+  .card:hover::before{opacity:1;}
+  .card.a-green{--acc:rgba(140,203,53,.22);} .card.a-teal{--acc:rgba(14,148,136,.18);}
+  .card.a-blue{--acc:rgba(47,111,237,.16);} .card.a-amber{--acc:rgba(221,155,22,.20);}
+  .card.a-lilac{--acc:rgba(122,107,240,.18);} .card.a-coral{--acc:rgba(236,106,75,.18);}
+  .card h3,.card p,.card .file,.card .c-ico{position:relative;z-index:1;}
   .card .file{display:inline-block;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;color:#5c6b2e;
     background:#f2f5ea;border:1px solid #e6ecd6;border-radius:6px;padding:2px 7px;margin-top:12px;}
   .card .c-ico{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
@@ -298,22 +336,31 @@
   .tint-coral{background:var(--coral-soft);color:var(--coral-ink);}
   .tint-lilac{background:var(--lilac-soft);color:var(--lilac-ink);}
 
-  /* Flow diagram (pipeline + evaluation) */
-  .flow{margin-top:64px;background:var(--panel);border:1px solid var(--border);border-radius:24px;padding:30px 26px;box-shadow:var(--shadow);overflow-x:auto;}
+  /* Flow diagram (pipeline + evaluation) - wraps to fit, no horizontal scroll */
+  .flow{margin-top:64px;background:linear-gradient(180deg,#fff,#fbfcf7);border:1px solid var(--border);border-radius:24px;padding:30px 26px;box-shadow:var(--shadow);}
   .flow-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 22px;text-align:center;}
-  .flow-row{display:flex;align-items:stretch;gap:0;min-width:max-content;justify-content:center;}
-  .fn{position:relative;width:132px;border-radius:16px;padding:14px 12px;text-align:center;border:1px solid var(--border);background:#fff;flex:none;}
+  .flow-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 4px;justify-content:center;}
+  .fn{position:relative;width:130px;border-radius:16px;padding:14px 12px;text-align:center;border:1px solid var(--border);
+    background:#fff;flex:none;box-shadow:0 3px 10px rgba(30,34,18,.05);transition:transform .18s ease,box-shadow .18s ease;}
+  .fn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(30,34,18,.10);}
   .fn .fn-ico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 9px;}
   .fn .fn-t{font-size:12px;font-weight:800;color:#15150f;line-height:1.2;}
   .fn .fn-s{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.35;}
   .fn.diamond{width:104px;background:var(--amber-soft);border-color:#ecd79a;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-  .farrow{display:flex;align-items:center;color:#b7bba8;flex:none;padding:0 4px;}
-  .flow-loop{margin-top:16px;text-align:center;font-size:12px;color:var(--muted);}
+  .farrow{display:flex;align-items:center;color:#c4c8b6;flex:none;padding:0 2px;}
+  .flow-loop{margin-top:18px;text-align:center;font-size:12.5px;color:var(--muted);background:var(--green-soft);
+    border:1px solid #d8ecb4;border-radius:12px;padding:10px 14px;}
   .flow-loop b{color:var(--green-ink);}
-  .eval-row{display:flex;align-items:stretch;gap:0;min-width:max-content;flex-wrap:nowrap;}
+  .eval-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 4px;justify-content:center;}
   .eval-head{background:linear-gradient(140deg,#1f2a12,#2f3d1a);color:#eaf3d6;border-radius:16px;padding:16px 18px;font-weight:800;
-    display:flex;align-items:center;font-size:14px;flex:none;width:150px;text-align:left;}
-  .en{width:180px;}
+    display:flex;align-items:center;justify-content:center;font-size:13.5px;flex:none;width:100%;max-width:340px;text-align:center;margin-bottom:4px;}
+  .en{width:186px;}
+  @media (max-width:560px){
+    .flow-row,.eval-row{flex-direction:column;flex-wrap:nowrap;}
+    .fn,.en,.fn.diamond{width:100%!important;max-width:none;}
+    .farrow svg{transform:rotate(90deg);}
+    .eval-head{max-width:none;}
+  }
 
   /* Roadmap */
   .roadmap{padding:110px 24px;background:linear-gradient(180deg,#fff,var(--bg-cream));}
@@ -323,33 +370,56 @@
   .hiw-grid .lead{color:var(--muted);font-size:17px;max-width:340px;}
   .step{display:flex;gap:18px;padding-bottom:34px;position:relative;}
   .step:last-child{padding-bottom:0;}
-  .step::before{content:"";position:absolute;left:21px;top:46px;bottom:0;width:2px;background:var(--border-2);}
+  .step::before{content:"";position:absolute;left:21px;top:48px;bottom:2px;width:2.5px;border-radius:2px;
+    background:linear-gradient(180deg,var(--green-2),var(--green));transform:scaleY(0);transform-origin:top;transition:transform .7s cubic-bezier(.16,1,.3,1);}
+  .step.pend::before{background:repeating-linear-gradient(180deg,var(--border-2) 0 5px,transparent 5px 10px);}
+  .stag.in-view .step::before{transform:scaleY(1);}
+  .stag.in-view .step:nth-child(2)::before{transition-delay:.10s;}
+  .stag.in-view .step:nth-child(3)::before{transition-delay:.18s;}
+  .stag.in-view .step:nth-child(4)::before{transition-delay:.26s;}
+  .stag.in-view .step:nth-child(5)::before{transition-delay:.34s;}
+  .stag.in-view .step:nth-child(6)::before{transition-delay:.42s;}
+  .stag.in-view .step:nth-child(7)::before{transition-delay:.50s;}
   .step:last-child::before{display:none;}
-  .step-icon{width:44px;height:44px;border-radius:13px;background:linear-gradient(140deg,var(--green-2),var(--green));flex:none;
-    display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#1c2b06;z-index:1;box-shadow:0 4px 12px rgba(120,180,40,.3);}
+  .step-icon{position:relative;width:44px;height:44px;border-radius:14px;background:linear-gradient(140deg,var(--green-2),var(--green));flex:none;
+    display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#1c2b06;z-index:1;box-shadow:0 6px 16px rgba(120,180,40,.34);}
+  .step-icon .chk{position:absolute;right:-4px;bottom:-4px;width:18px;height:18px;border-radius:50%;background:var(--green);
+    border:2.5px solid var(--bg-cream);display:flex;align-items:center;justify-content:center;color:#fff;}
   .step-icon.pending{background:#eceadd;color:var(--faint);box-shadow:none;}
+  .step-icon.pending::after{content:"";position:absolute;inset:-4px;border-radius:16px;border:2px solid var(--amber);opacity:.5;animation:ring 1.8s ease-out infinite;}
+  @keyframes ring{0%{transform:scale(.9);opacity:.6;}100%{transform:scale(1.35);opacity:0;}}
   .step h3{margin:0 0 5px;font-size:17px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-  .step .tag{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:999px;background:var(--green-soft);color:var(--green-ink);}
-  .step .tag.pending{background:#eceadd;color:var(--faint);}
+  .step .tag{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:999px;background:var(--green-soft);color:var(--green-ink);display:inline-flex;align-items:center;gap:5px;}
+  .step .tag::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);}
+  .step .tag.pending{background:var(--amber-soft);color:var(--amber-ink);}
+  .step .tag.pending::before{background:var(--amber);animation:pulse 1.2s infinite;}
   .step p{margin:0;color:var(--muted);font-size:13.5px;max-width:520px;line-height:1.6;}
 
   /* Results */
   .results{padding:110px 24px;background:var(--bg-mint);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
   .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:48px;}
   @media (max-width:860px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
-  .stat{background:var(--panel);border-radius:16px;padding:20px;border:1px solid var(--border);box-shadow:var(--shadow);}
-  .stat .num{font-size:28px;font-weight:820;letter-spacing:-.02em;color:var(--green);font-variant-numeric:tabular-nums;}
+  .stat{position:relative;background:var(--panel);border-radius:18px;padding:22px;border:1px solid var(--border);box-shadow:var(--shadow);
+    overflow:hidden;transition:transform .2s ease,box-shadow .2s ease;}
+  .stat:hover{transform:translateY(-4px);box-shadow:0 24px 50px rgba(30,34,18,.13);}
+  .stat::before{content:"";position:absolute;top:-30px;right:-30px;width:90px;height:90px;border-radius:50%;background:rgba(140,203,53,.18);filter:blur(4px);}
+  .stat.blue::before{background:rgba(47,111,237,.16);} .stat.teal::before{background:rgba(14,148,136,.16);} .stat.coral::before{background:rgba(236,106,75,.16);}
+  .stat .num{font-size:34px;font-weight:850;letter-spacing:-.03em;color:var(--green);font-variant-numeric:tabular-nums;position:relative;z-index:1;}
   .stat.blue .num{color:var(--blue);}.stat.teal .num{color:var(--teal);}.stat.coral .num{color:var(--coral);}
-  .stat .label{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.4;}
+  .stat .label{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.4;position:relative;z-index:1;}
   .results-block{margin-bottom:44px;}
   .results-block:last-child{margin-bottom:0;}
   .results-block h3{font-size:19px;margin:0 0 6px;}
   .results-block .desc{color:var(--muted);font-size:14px;margin:0 0 18px;max-width:660px;}
   .fig-gallery{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
   @media (max-width:760px){.fig-gallery{grid-template-columns:1fr;}}
-  .figc{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:14px;box-shadow:var(--shadow);}
-  .figc img{border-radius:12px;background:#fff;}
-  .figc .cap{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.5;}
+  .figc{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:14px;box-shadow:var(--shadow);
+    transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;}
+  .figc:hover{transform:translateY(-4px);box-shadow:0 26px 54px rgba(30,34,18,.14);border-color:var(--border-2);}
+  .figc .fig-imgwrap{border-radius:12px;overflow:hidden;background:#fff;border:1px solid var(--border);}
+  .figc img{border-radius:0;background:#fff;transition:transform .5s cubic-bezier(.16,1,.3,1);display:block;}
+  .figc:hover img{transform:scale(1.04);}
+  .figc .cap{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.5;}
   .figc .cap b{color:var(--ink);}
 
   /* FAQ */
@@ -394,29 +464,125 @@
   html.lenis,html.lenis body{height:auto;}
   .lenis.lenis-smooth{scroll-behavior:auto !important;}
 
-  /* ScrollExpand */
-  .scroll-expand{position:relative;width:100%;}
-  .scroll-expand__track{position:relative;width:100%;}
-  .scroll-expand__stage{position:sticky;top:0;width:100%;height:100vh;overflow:hidden;--se-title-size:4rem;
-    background:linear-gradient(160deg,#0f1608,#132010);display:flex;align-items:center;justify-content:center;}
-  .scroll-expand__frame{position:absolute;inset:0;clip-path:inset(22% 30% 22% 30% round 24px);will-change:clip-path;
-    background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.4);}
-  .scroll-expand__media{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;
-    will-change:transform;transform-origin:center;user-select:none;-webkit-user-drag:none;padding:3%;}
-  .scroll-expand__scrim{position:absolute;inset:0;pointer-events:none;opacity:0;
-    background:linear-gradient(to top,rgba(10,14,6,.82),rgba(10,14,6,.1) 46%,rgba(10,14,6,.4));}
-  .scroll-expand__overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-    text-align:center;padding:0 6% 8%;opacity:0;will-change:opacity,transform;color:#f6f8ef;}
-  .scroll-expand__overlay h2{font-size:32px;margin:0 0 12px;text-shadow:0 2px 24px rgba(0,0,0,.6);}
-  .scroll-expand__overlay p{max-width:560px;color:rgba(246,248,239,.94);text-shadow:0 1px 14px rgba(0,0,0,.6);font-size:15px;}
-  .scroll-expand__title{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;margin:0;padding:0 6%;
-    text-align:center;font-size:var(--se-title-size);font-weight:800;letter-spacing:-.03em;line-height:1;color:#eef7dc;
-    text-shadow:0 4px 30px rgba(0,0,0,.5);pointer-events:none;will-change:opacity,transform;}
-  .scroll-expand__hint{position:absolute;left:0;right:0;bottom:1.5rem;text-align:center;font-size:.8rem;letter-spacing:.03em;
-    color:rgba(255,255,255,.72);pointer-events:none;}
+  /* ===== Mobile polish: majority of visitors are on phones ===== */
+  @media (max-width:640px){
+    .wrap{padding:0 18px;}
+    .statement,.highlights,.demo,.arch,.roadmap,.results,.faq{padding:74px 18px;}
+    .section-head{margin-bottom:38px;}
+    .section-head h2,.cardswap-copy h2,.demo-copy h2,.hiw-grid h2,.cta-banner h2{font-size:27px;}
+    .section-head p{font-size:15px;}
+    .statement p.big{font-size:21px;line-height:1.4;}
+    h1.hero-title{font-size:33px;}
+    .hero p.sub{font-size:15px;}
+    .stat-grid{grid-template-columns:1fr 1fr;gap:12px;}
+    .stat .num{font-size:27px;}
+    .highlights-grid{gap:40px;}
+    .card-swap-stage{height:360px;}
+    .cs-card{width:min(84vw,290px);height:330px;}
+    .cta-banner{margin:60px 12px 0;padding:42px 22px;border-radius:24px;}
+    .cta-banner h2{font-size:25px;}
+    .demo-readout{gap:18px;}
+    .flow{padding:22px 16px;}
+    footer{border-radius:26px 26px 0 0;padding:44px 20px 26px;}
+    .footer-top{gap:28px;}.footer-nav{gap:32px;}
+  }
+  @media (max-width:400px){ .iphone{transform:scale(.92);transform-origin:top center;} }
+
+  /* ===== Premium pass: restrained clay-inspired soft depth (selective) ===== */
+  :root{
+    --shadow-clay:0 1px 0 rgba(255,255,255,.85) inset, 0 2px 5px rgba(30,34,18,.05), 0 16px 38px rgba(30,34,18,.10);
+    --shadow-clay-hi:0 1px 0 rgba(255,255,255,.9) inset, 0 6px 14px rgba(30,34,18,.08), 0 34px 72px rgba(30,34,18,.17);
+  }
+  .step4,.stat,.figc,.card,.cs-card,.q-list,.pa-savings,.faq-item{box-shadow:var(--shadow-clay);}
+  .step4:hover,.stat:hover,.figc:hover,.card:hover{box-shadow:var(--shadow-clay-hi);}
+  /* tactile, puffed icon tiles (the clay signature, used sparingly) */
+  .s4ico,.c-ico,.q-ico,.fn-ico,.step-icon{box-shadow:inset 0 1px 0 rgba(255,255,255,.75), 0 4px 10px rgba(30,34,18,.12);}
+  .step-icon{box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 8px 18px rgba(120,180,40,.36);}
+  /* buttons: soft top highlight + physical press */
+  .btn{box-shadow:0 1px 0 rgba(255,255,255,.35) inset, 0 8px 20px rgba(30,34,18,.12);}
+  .btn-accent{box-shadow:0 1px 0 rgba(255,255,255,.45) inset, 0 10px 24px rgba(120,180,40,.4);}
+  .btn:active{transform:translateY(1px);}
+  .demo-chip:active,.q-row:active{transform:scale(.98);}
+  /* the phone gets a deeper, softer float */
+  .iphone{box-shadow:0 2px 6px rgba(30,34,18,.10),0 40px 90px rgba(25,30,12,.28),inset 0 0 0 2px rgba(255,255,255,.35);}
+  /* subtle scroll progress bar (premium touch) */
+  .scrollbar-top{position:fixed;top:0;left:0;height:3px;width:0;z-index:70;
+    background:linear-gradient(90deg,var(--green-2),var(--teal));box-shadow:0 0 10px rgba(140,203,53,.55);transition:width .08s linear;}
+  /* gentle grain for depth on the tinted sections */
+  .statement::after,.results::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;z-index:0;
+    background-image:radial-gradient(rgba(30,34,18,.03) 1px,transparent 1px);background-size:4px 4px;}
+  .statement>*,.results>*{position:relative;z-index:1;}
+
+  /* ===== Section number tags ===== */
+  .eyebrow .sn{color:var(--green);font-weight:800;letter-spacing:.06em;}
+  .eyebrow .sn::after{content:" / ";color:var(--faint);font-weight:600;}
+
+  /* ===== Kinetic gradient headings ===== */
+  .section-head h2,.cardswap-copy h2,.demo-copy h2,.hiw-grid h2{
+    background:linear-gradient(112deg,var(--ink) 42%, #5f9e12);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+    padding-bottom:.04em;}
+
+  /* ===== Asymmetric bento: one wide, editorial card ===== */
+  .bento-grid .card.wide{grid-column:span 2;display:flex;gap:20px;align-items:flex-start;padding:24px;}
+  .bento-grid .card.wide .c-ico{margin-bottom:0;width:48px;height:48px;}
+  .bento-grid .card.wide .cw-body{flex:1;min-width:0;}
+  .bento-grid .card.wide .cw-metrics{display:flex;gap:22px;flex-wrap:wrap;margin-top:14px;}
+  .bento-grid .card.wide .cw-metrics .m .mv{font-size:19px;font-weight:820;color:var(--coral);letter-spacing:-.02em;}
+  .bento-grid .card.wide .cw-metrics .m .ml{font-size:11px;color:var(--muted);margin-top:2px;}
+  @media (max-width:900px){.bento-grid .card.wide{grid-column:span 2;}}
+  @media (max-width:560px){.bento-grid .card.wide{grid-column:span 1;flex-direction:column;gap:12px;}}
+
+  /* ===== Hero cursor-follow glow (hover-capable devices only) ===== */
+  .hero-glow{position:absolute;top:0;left:0;width:420px;height:420px;border-radius:50%;z-index:1;pointer-events:none;
+    background:radial-gradient(circle,rgba(150,210,70,.22),rgba(150,210,70,0) 68%);transform:translate(-50%,-50%);opacity:0;transition:opacity .35s ease;}
+  @media (hover:none){.hero-glow{display:none;}}
+  .hero .btn{will-change:transform;}
+
+  /* ===== Reduced motion ===== */
+  @media (prefers-reduced-motion: reduce){
+    .hero-scrollcue svg,.step-icon.pending::after,.run-net.live::before,.sk{animation:none !important;}
+    .hero-glow{display:none;}
+    .figc:hover img,.card:hover,.step4:hover,.stat:hover,.figc:hover{transform:none;}
+    html{scroll-behavior:auto;}
+  }
+
+  /* ===== Dark mode (graceful) ===== */
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0e120a;--bg-mint:#121810;--bg-cream:#141710;--bg-sky:#101511;--panel:#161b10;
+      --ink:#eef2e2;--muted:#a7b096;--faint:#808a70;--border:#28301d;--border-2:#343d27;
+      --green:#8ccb35;--green-2:#a6e04a;--green-ink:#d6ee9f;--green-soft:#1e2a12;
+      --teal:#3fc0b4;--teal-soft:#123029;--teal-ink:#9fe6dd;
+      --blue:#6ea3ff;--blue-soft:#16233f;--blue-ink:#bcd3ff;
+      --coral:#f4886b;--coral-soft:#331a12;--coral-ink:#f6c2b0;
+      --amber:#e6b13a;--amber-soft:#2c2410;--amber-ink:#f0d99a;
+      --lilac:#9a8df6;--lilac-soft:#1f1b3a;--lilac-ink:#cec6fb;
+      --shadow:0 18px 44px rgba(0,0,0,.55),0 3px 10px rgba(0,0,0,.4);
+      --shadow-lg:0 40px 90px rgba(0,0,0,.6);
+      --shadow-clay:0 1px 0 rgba(255,255,255,.05) inset,0 2px 5px rgba(0,0,0,.45),0 16px 38px rgba(0,0,0,.55);
+      --shadow-clay-hi:0 1px 0 rgba(255,255,255,.06) inset,0 6px 14px rgba(0,0,0,.5),0 34px 72px rgba(0,0,0,.62);
+    }
+    .statement{background:linear-gradient(180deg,#0f140b,var(--bg-mint));}
+    .highlights{background:linear-gradient(180deg,#0f140b,var(--bg-cream));}
+    .demo{background:linear-gradient(180deg,var(--bg-sky),#0f140b);}
+    .arch{background:linear-gradient(180deg,#0f140b,#111020);}
+    .roadmap{background:linear-gradient(180deg,#0f140b,var(--bg-cream));}
+    .faq{background:linear-gradient(180deg,#0f140b,var(--bg-sky));}
+    .flow{background:linear-gradient(180deg,var(--panel),#121710);}
+    .fn{background:#12160d;}
+    .demo-chip{background:var(--panel);}
+    code{background:#1a2110;color:#bfe08a;border-color:var(--border);}
+    header.scrolled{background:rgba(14,18,10,.82);}
+    .mobile-nav{background:rgba(18,23,13,.98);}
+    .cta-banner{background:linear-gradient(140deg,#1b2910,#132318 55%,#101a2a);border-color:#27331a;}
+    .cta-banner h2{color:var(--ink);} .cta-banner p{color:var(--muted);}
+    .statement::after,.results::after{background-image:radial-gradient(rgba(255,255,255,.03) 1px,transparent 1px);}
+  }
 </style>
 </head>
 <body>
+<div class="scrollbar-top" id="scrollBar"></div>
 
 <header>
   <div class="header-inner">
@@ -432,9 +598,17 @@
       <a href="#results" class="btn btn-outline" style="padding:9px 16px;">Results</a>
       <a href="dashboard.html" class="btn btn-accent" style="padding:9px 18px;">Live demo</a>
     </div>
-    <button class="menu-btn" id="menuBtn" aria-label="Open menu"><span></span><span></span></button>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu"><span></span><span></span><span></span></button>
   </div>
 </header>
+<nav class="mobile-nav" id="mobileNav">
+  <a href="#overview">Overview</a>
+  <a href="#try">Demo</a>
+  <a href="#architecture">Architecture</a>
+  <a href="#roadmap">Roadmap</a>
+  <a href="#results">Results</a>
+  <a href="dashboard.html" class="cta">Open live dashboard &#8594;</a>
+</nav>
 
 <section class="hero" id="overview">
   <div class="hero-bg" aria-hidden="true">
@@ -448,6 +622,7 @@
     </div>
     <div class="hero-scrim"></div>
   </div>
+  <div class="hero-glow" id="heroGlow"></div>
   <div class="hero-content">
     <h1 class="hero-title">Task-sufficient retrieval<br/>for <em>greener</em> 5G QA</h1>
     <p class="sub">A question answering system that decides, per question, exactly how much web evidence it needs, stops as soon as it has enough, and moves fewer bytes and less energy over a 5G link, without losing answer quality. Built entirely on local models, no hosted LLM API anywhere in the pipeline.</p>
@@ -456,13 +631,10 @@
       <a href="#results" class="btn btn-glass">Read the results</a>
     </div>
   </div>
-  <div class="hero-logos">
-    <div class="ll">Built on local, open models</div>
-    <ul>
-      <li>flan-t5-base + LoRA</li><li>MiniLM bi-encoder</li><li>RoBERTa QA</li>
-      <li>LinUCB</li><li>Thompson sampling</li><li>SGD bandit</li>
-    </ul>
-  </div>
+  <a class="hero-scrollcue" href="#try" aria-label="Scroll to demo">
+    <span>See it in action</span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m0 0-6-6m6 6 6-6"/></svg>
+  </a>
 </section>
 
 <section class="statement">
@@ -470,10 +642,30 @@
     <div class="lede">The idea, in plain terms</div>
     <p class="big">Most retrieval systems either load a fixed amount of context or load everything they can. Both waste data. EcoBudget asks a sharper question: not "can it answer," but <b>what is the smallest amount of loading that still answers correctly</b>, and whether the energy saved by loading less beats the energy spent running the models.</p>
     <div class="steps4 stag">
-      <div class="step4"><div class="s4ico tint-green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16M4 12h10M4 19h7"/></svg></div><h4>1. Decompose</h4><p>Break the question into small (entity, attribute) requirements, for example (iPhone 16, price).</p></div>
-      <div class="step4"><div class="s4ico tint-teal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div><h4>2. Retrieve</h4><p>For each requirement, gate candidates to the right entity, then rank by the attribute.</p></div>
-      <div class="step4"><div class="s4ico tint-amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/></svg></div><h4>3. Decide</h4><p>A learned controller decides after each step: is the evidence enough (STOP) or pull one more (RETRIEVE)?</p></div>
-      <div class="step4"><div class="s4ico tint-blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><h4>4. Answer + measure</h4><p>Answer from only the evidence gathered, then log the bytes and 5G energy that implies.</p></div>
+      <div class="step4 g1">
+        <div class="s4top"><div class="s4ico tint-green"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16M4 12h10M4 19h7"/></svg></div><span class="s4n">01</span></div>
+        <h4>Decompose</h4>
+        <p>The question is parsed into small, explicit <b>(entity, attribute)</b> requirements, e.g. <code>(iPhone 16, price)</code>, snapped to a closed 35-attribute vocabulary. The system only ever seeks evidence for these exact facts.</p>
+        <div class="s4why"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>It never loads a whole page for a single fact.</div>
+      </div>
+      <div class="step4 g2">
+        <div class="s4top"><div class="s4ico tint-teal"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div><span class="s4n">02</span></div>
+        <h4>Retrieve</h4>
+        <p>For each requirement it gates candidates to the matching <b>entity first</b>, then ranks them by the attribute. This two-stage, entity-aware step surfaces the right passage without dragging in neighbours.</p>
+        <div class="s4why"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Lifts recall@1 from 0.914 to 0.989.</div>
+      </div>
+      <div class="step4 g3">
+        <div class="s4top"><div class="s4ico tint-amber"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/></svg></div><span class="s4n">03</span></div>
+        <h4>Decide</h4>
+        <p>After every retrieval a learned <b>LinUCB controller</b> weighs coverage and confidence against the byte cost of one more fetch, and chooses <b>STOP</b> or <b>RETRIEVE</b>, halting the instant the evidence is sufficient.</p>
+        <div class="s4why"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Most questions stop after 1-2 passages.</div>
+      </div>
+      <div class="step4 g4">
+        <div class="s4top"><div class="s4ico tint-blue"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><span class="s4n">04</span></div>
+        <h4>Answer + measure</h4>
+        <p>It answers from <b>only</b> the passages gathered, then logs the exact bytes moved and the <b>5G transfer + RRC radio energy</b> that implies, so every saving is measured on real coefficients, never estimated.</p>
+        <div class="s4why"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>~75% fewer bytes at equal answer success.</div>
+      </div>
     </div>
   </div>
 </section>
@@ -481,9 +673,9 @@
 <section class="highlights">
   <div class="highlights-grid">
     <div class="cardswap-copy reveal">
-      <div class="eyebrow">By the numbers</div>
+      <div class="eyebrow"><span class="sn">01</span>By the numbers</div>
       <h2>Fewer bytes, same answers</h2>
-      <p>The headline results our team measured, on a frozen test set and on real web pages. The cards cycle on their own, hover to hold one still, or tap a card to flip to the next.</p>
+      <p>The headline results our team measured, on a frozen test set and on real web pages.</p>
     </div>
     <div class="card-swap-stage" id="cardSwap">
       <div class="cs-card c1"><div class="cs-tag">Retrieval</div><div><div class="cs-num">0.989</div><div class="cs-desc">recall@1 for entity-aware retrieval, up from 0.914; recall@5 reaches a perfect 1.000.</div></div><div class="cs-foot">175 unique requirements</div></div>
@@ -497,7 +689,7 @@
 <section class="demo" id="try">
   <div class="demo-grid">
     <div class="demo-copy reveal">
-      <div class="eyebrow">See it work</div>
+      <div class="eyebrow"><span class="sn">02</span>See it work</div>
       <h2>The whole idea, in your hand</h2>
       <p>Tap a question in the app. EcoBudget breaks it into the exact facts it needs, retrieves only those, decides it has enough, and answers, while a normal browser would haul the entire page. Every step is explained as it runs.</p>
       <div class="demo-readout">
@@ -550,7 +742,7 @@
 <section class="arch" id="architecture">
   <div class="wrap">
     <div class="section-head">
-      <div class="eyebrow">System</div>
+      <div class="eyebrow"><span class="sn">03</span>System</div>
       <h2>What the pipeline is made of</h2>
       <p>A chain of small, independent, dependency-injected components, each unit tested without downloading a model.</p>
     </div>
@@ -561,8 +753,7 @@
       <div class="card a-amber"><div class="c-ico tint-amber"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2Z"/><path d="M9 21h6"/></svg></div><h3>Stopping policy</h3><p>Contextual bandits, LinUCB by default, trading evidence coverage against byte cost.</p><span class="file">bandit.py</span></div>
       <div class="card a-lilac"><div class="c-ico tint-lilac"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10h8M8 14h5"/><path d="M21 12a9 9 0 1 1-4-7.5L21 3v6h-6"/></svg></div><h3>Answer generator</h3><p>Fine-tuned flan-t5-base + LoRA, called once per requirement, with an abstain path.</p><span class="file">answer.py</span></div>
       <div class="card a-green"><div class="c-ico tint-green"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></div><h3>Judge</h3><p>Answer-type-aware checker with a symmetric normalizer, reporting success and fact-F1 separately.</p><span class="file">judge.py</span></div>
-      <div class="card a-coral"><div class="c-ico tint-coral"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg></div><h3>Energy model</h3><p>Model FLOPs, a 5G per-bit transfer model, measured payloads, and an RRC radio-state and tail-energy model.</p><span class="file">energy.py</span></div>
-      <div class="card a-teal"><div class="c-ico tint-teal"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg></div><h3>Orchestrator</h3><p>The end-to-end deployed path that wires every component above together.</p><span class="file">system.py</span></div>
+      <div class="card a-coral wide"><div class="c-ico tint-coral"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg></div><div class="cw-body"><h3>Energy model &amp; orchestration</h3><p>The <code>system.py</code> orchestrator wires every component into one deployed path, and <code>energy.py</code> turns each query into joules: model-FLOP compute, a 5G per-bit transfer model over measured real page payloads (median 506 KB), and an RRC radio-state and tail-energy model. Every coefficient is cited, so the savings are grounded, not guessed.</p><div class="cw-metrics"><div class="m"><div class="mv">&#8722;66 J</div><div class="ml">per query vs full-page load</div></div><div class="m"><div class="mv">95%</div><div class="ml">of energy is transfer at page scale</div></div><div class="m"><div class="mv">3 terms</div><div class="ml">compute + transfer + radio</div></div></div><span class="file">energy.py &middot; system.py</span></div></div>
     </div>
 
     <!-- Pipeline flow diagram (verified: loop returns through Evidence Check) -->
@@ -591,19 +782,19 @@
 <section class="roadmap" id="roadmap">
   <div class="wrap hiw-grid">
     <div class="reveal">
-      <div class="eyebrow">Progress</div>
+      <div class="eyebrow"><span class="sn">04</span>Progress</div>
       <h2>Roadmap, phase by phase</h2>
       <p class="lead">Planned as phases A through H. Here is the honest status of each, including the parts that did not go as first expected.</p>
     </div>
     <div class="stag">
-      <div class="step"><div class="step-icon">A</div><div><h3>Compute vs transfer accounting <span class="tag">done</span></h3><p>At snippet scale compute dominates transfer ~100x, so saving bytes alone saves little; the policy still wins via fewer evidence-scoring inferences.</p></div></div>
-      <div class="step"><div class="step-icon">B</div><div><h3>A defensible 5G energy model <span class="tag">done</span></h3><p>A 5G per-bit model split into radio access, transport, and device receive. At realistic page scale transfer dominates and loading fewer pages is the lever.</p></div></div>
-      <div class="step"><div class="step-icon">C</div><div><h3>Dataset scale-up <span class="tag">done</span></h3><p>186 passages, 344 hand-authored seed tasks, 1,376 total tasks, frozen train/val/test splits grouped by seed with a coverage invariant enforced in code.</p></div></div>
-      <div class="step"><div class="step-icon">D</div><div><h3>Entity-aware retriever <span class="tag">done</span></h3><p>Two-stage retrieval, gate to the entity then rank by attribute. recall@1 rose from 0.914 to 0.989, recall@5 reached a perfect 1.000.</p></div></div>
-      <div class="step"><div class="step-icon">E</div><div><h3>External baselines &amp; test run <span class="tag">done</span></h3><p>Added LinUCB, Thompson sampling, and an Adaptive-RAG analog. All adaptive methods converge; the SGD bandit is seed-unstable, so LinUCB is the default.</p></div></div>
-      <div class="step"><div class="step-icon">F</div><div><h3>Radio-state &amp; tail energy <span class="tag">done</span></h3><p>An RRC radio-state model: fewer, earlier fetches shorten radio active time and tail energy. The finding holds across every cited coefficient range.</p></div></div>
-      <div class="step"><div class="step-icon">G</div><div><h3>Rigor &amp; reproducibility <span class="tag">done</span></h3><p>Consolidated ablations, multi-seed variance, a single frozen test-split run, and a reproducibility appendix with every command and checkpoint config.</p></div></div>
-      <div class="step"><div class="step-icon pending">H</div><div><h3>Paper writeup <span class="tag pending">in progress</span></h3><p>Related work, the figures, and the limitations section.</p></div></div>
+      <div class="step"><div class="step-icon">A<span class="chk"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div><div><h3>Compute vs transfer accounting <span class="tag">done</span></h3><p>At snippet scale compute dominates transfer ~100x, so saving bytes alone saves little; the policy still wins via fewer evidence-scoring inferences.</p></div></div>
+      <div class="step"><div class="step-icon">B<span class="chk"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div><div><h3>A defensible 5G energy model <span class="tag">done</span></h3><p>A 5G per-bit model split into radio access, transport, and device receive. At realistic page scale transfer dominates and loading fewer pages is the lever.</p></div></div>
+      <div class="step"><div class="step-icon">C<span class="chk"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div><div><h3>Dataset scale-up <span class="tag">done</span></h3><p>186 passages, 344 hand-authored seed tasks, 1,376 total tasks, frozen train/val/test splits grouped by seed with a coverage invariant enforced in code.</p></div></div>
+      <div class="step"><div class="step-icon">D<span class="chk"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div><div><h3>Entity-aware retriever <span class="tag">done</span></h3><p>Two-stage retrieval, gate to the entity then rank by attribute. recall@1 rose from 0.914 to 0.989, recall@5 reached a perfect 1.000.</p></div></div>
+      <div class="step"><div class="step-icon">E<span class="chk"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div><div><h3>External baselines &amp; test run <span class="tag">done</span></h3><p>Added LinUCB, Thompson sampling, and an Adaptive-RAG analog. All adaptive methods converge; the SGD bandit is seed-unstable, so LinUCB is the default.</p></div></div>
+      <div class="step"><div class="step-icon">F<span class="chk"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div><div><h3>Radio-state &amp; tail energy <span class="tag">done</span></h3><p>An RRC radio-state model: fewer, earlier fetches shorten radio active time and tail energy. The finding holds across every cited coefficient range.</p></div></div>
+      <div class="step"><div class="step-icon">G<span class="chk"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></div><div><h3>Rigor &amp; reproducibility <span class="tag">done</span></h3><p>Consolidated ablations, multi-seed variance, a single frozen test-split run, and a reproducibility appendix with every command and checkpoint config.</p></div></div>
+      <div class="step pend"><div class="step-icon pending">H</div><div><h3>Paper writeup <span class="tag pending">in progress</span></h3><p>Related work, the figures, and the limitations section. The engineering and results are complete; this is the write-up stage.</p></div></div>
     </div>
   </div>
 </section>
@@ -611,15 +802,15 @@
 <section class="results" id="results">
   <div class="wrap">
     <div class="section-head">
-      <div class="eyebrow">Results</div>
+      <div class="eyebrow"><span class="sn">05</span>Results</div>
       <h2>Measured, and reproducible</h2>
       <p>Every number here was produced on our own machine and is reproducible from the commands in the repository.</p>
     </div>
     <div class="stat-grid stag">
-      <div class="stat"><div class="num">0.989</div><div class="label">retriever recall@1 (from 0.914)</div></div>
-      <div class="stat blue"><div class="num">0.895</div><div class="label">frozen-test answer success</div></div>
-      <div class="stat teal"><div class="num">73/17/9</div><div class="label">train / val / test split (1008 / 240 / 128)</div></div>
-      <div class="stat coral"><div class="num">172</div><div class="label">tests passing, no hosted LLM API</div></div>
+      <div class="stat"><div class="num" data-count="0.989" data-dec="3">0.989</div><div class="label">retriever recall@1 (from 0.914)</div></div>
+      <div class="stat blue"><div class="num" data-count="0.895" data-dec="3">0.895</div><div class="label">frozen-test answer success</div></div>
+      <div class="stat teal"><div class="num" data-count="75" data-dec="0" data-suf="%">75%</div><div class="label">fewer bytes vs full-page load</div></div>
+      <div class="stat coral"><div class="num" data-count="172" data-dec="0">172</div><div class="label">tests passing, no hosted LLM API</div></div>
     </div>
 
     <div class="results-block reveal">
@@ -658,10 +849,10 @@
       <h3>The figures</h3>
       <p class="desc">Generated from the frozen test results and the measured payload and real-page data.</p>
       <div class="fig-gallery stag">
-        <div class="figc"><img src="public/figures/fig1_pareto.png" alt="Pareto plot of success versus energy" loading="lazy"/><div class="cap"><b>Pareto frontier.</b> Adaptive methods cluster at the low-energy, high-success corner while fixed budgets and full load spread out to the right.</div></div>
-        <div class="figc"><img src="public/figures/fig2_crossover.png" alt="Compute versus transfer energy across payload scales" loading="lazy"/><div class="cap"><b>Compute vs transfer.</b> Transfer overtakes compute at realistic page scale, so loading fewer pages becomes the primary energy lever.</div></div>
-        <div class="figc"><img src="public/figures/fig3_radio_tail.png" alt="5G RRC radio and tail energy by condition" loading="lazy"/><div class="cap"><b>Radio and tail energy.</b> Fewer fetches sharply cut 5G radio energy, with the gap widening under aggressive fast-dormancy release.</div></div>
-        <div class="figc"><img src="public/figures/fig4_realpage_savings.png" alt="Measured byte savings on real web pages" loading="lazy"/><div class="cap"><b>Real-page savings.</b> Task-sufficient loading transfers 90%+ fewer bytes on live web content, measured end to end.</div></div>
+        <div class="figc figc-chart"><div class="fig-imgwrap" style="background:linear-gradient(180deg,var(--panel),var(--bg));padding:14px 14px 8px;height:266px;position:relative;"><canvas id="seChart" aria-label="Chart of answer success versus energy per query"></canvas></div><div class="cap"><b>Success vs energy.</b> Adaptive methods sit at the low-energy, high-success corner; fixed budgets and full-page loading spend more energy for the same answers. Live chart, hover a point for its values.</div></div>
+        <div class="figc"><div class="fig-imgwrap"><img src="public/figures/fig2_crossover.png" alt="Compute versus transfer energy across payload scales" loading="lazy"/></div><div class="cap"><b>Compute vs transfer.</b> Transfer overtakes compute at realistic page scale, so loading fewer pages becomes the primary energy lever.</div></div>
+        <div class="figc"><div class="fig-imgwrap"><img src="public/figures/fig3_radio_tail.png" alt="5G RRC radio and tail energy by condition" loading="lazy"/></div><div class="cap"><b>Radio and tail energy.</b> Fewer fetches sharply cut 5G radio energy, with the gap widening under aggressive fast-dormancy release.</div></div>
+        <div class="figc"><div class="fig-imgwrap"><img src="public/figures/fig4_realpage_savings.png" alt="Measured byte savings on real web pages" loading="lazy"/></div><div class="cap"><b>Real-page savings.</b> Task-sufficient loading transfers 90%+ fewer bytes on live web content, measured end to end.</div></div>
       </div>
     </div>
 
@@ -685,28 +876,10 @@
   </div>
 </section>
 
-<!-- ScrollExpand reveal of the money plot -->
-<div class="scroll-expand" id="paretoExpand">
-  <div class="scroll-expand__track">
-    <div class="scroll-expand__stage">
-      <div class="scroll-expand__frame">
-        <img class="scroll-expand__media" src="public/figures/fig1_pareto.png" alt="Pareto plot of success versus energy" draggable="false" />
-        <div class="scroll-expand__scrim"></div>
-        <div class="scroll-expand__overlay">
-          <h2>Pareto-optimal, at a glance</h2>
-          <p>Task-sufficient stopping sits at the efficient corner: the best success for the least energy. Fixed budgets and full-page loading spend far more for the same answers.</p>
-        </div>
-      </div>
-      <div class="scroll-expand__title">Success vs energy</div>
-      <div class="scroll-expand__hint">Scroll</div>
-    </div>
-  </div>
-</div>
-
 <section class="faq">
   <div class="faq-inner">
   <div class="section-head">
-    <div class="eyebrow">Honesty, by design</div>
+    <div class="eyebrow"><span class="sn">06</span>Honesty, by design</div>
     <h2>What we report plainly, not just the wins</h2>
     <p>The point is a defensible energy story, not a flattering one.</p>
   </div>
@@ -734,11 +907,11 @@
 </section>
 
 <div class="cta-banner">
-  <h2>Reproduce it, or read the details</h2>
-  <p>Every number above was produced on one machine and is reproducible with the commands in the repository. 172 tests pass and the no-hosted-LLM-API guard is green.</p>
+  <h2>See it live on the open web</h2>
+  <p>The live dashboard runs a real query through both a normal full-page load and EcoBudget's task-sufficient loading, then shows the measured bytes, 5G transfer and radio energy, and carbon saved, side by side.</p>
   <div class="btnrow">
-    <a href="#results" class="btn btn-accent">View the results &#8594;</a>
-    <a href="#try" class="btn btn-outline">Try the demo</a>
+    <a href="dashboard.html" class="btn btn-accent">Open the live dashboard &#8594;</a>
+    <a href="#results" class="btn btn-outline">View the results</a>
   </div>
 </div>
 
@@ -748,7 +921,7 @@
     <nav class="footer-nav">
       <div><h4>Docs</h4><ul><li><a href="#">roadmap_5g_green.md</a></li><li><a href="#">energy_model.md</a></li><li><a href="#">eval_notes.md</a></li></ul></div>
       <div><h4>Project</h4><ul><li><a href="#">Repository</a></li><li><a href="#">Tests (172 passing)</a></li><li><a href="#">Reproducibility</a></li></ul></div>
-      <div><h4>Explore</h4><ul><li><a href="#try">Demo</a></li><li><a href="#architecture">Architecture</a></li><li><a href="#results">Results</a></li></ul></div>
+      <div><h4>Explore</h4><ul><li><a href="dashboard.html">Live dashboard</a></li><li><a href="#try">Demo</a></li><li><a href="#architecture">Architecture</a></li><li><a href="#results">Results</a></li></ul></div>
     </nav>
   </div>
   <div class="footer-bottom">&#169; 2026 EcoBudget. Research project - results reproducible from the commands in the repo.</div>
@@ -756,6 +929,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
   /* ===== Lenis smooth scroll ===== */
   var lenis = null;
@@ -834,11 +1008,21 @@
       { q:"How tall is the Shanghai Tower?", type:"Single fact", tint:"tint-lilac",
         full:"What is the height of the Shanghai Tower?", reqs:[["Shanghai Tower","height"]],
         passages:["The Shanghai Tower has an architectural height of <b>632 meters</b>."],
-        answer:"632 meters", fullKB:88.0, taskKB:0.6, reduction:99.3, jFull:16.1, jTask:0.11 }
+        answer:"632 meters", fullKB:88.0, taskKB:0.6, reduction:99.3, jFull:16.1, jTask:0.11 },
+      { q:"Tesla Model 3 range?", type:"Single fact", tint:"tint-coral",
+        full:"What is the driving range of the Tesla Model 3 Long Range?", reqs:[["Tesla Model 3 Long Range","range"]],
+        passages:["The Tesla Model 3 Long Range has an EPA-estimated range of about <b>358 miles</b>."],
+        answer:"358 miles", fullKB:71.0, taskKB:0.5, reduction:99.3, jFull:13.0, jTask:0.09 },
+      { q:"iPhone 16 vs Pixel 9 price?", type:"Comparison", tint:"tint-blue",
+        full:"Compare the iPhone 16 and Google Pixel 9 on price.",
+        reqs:[["iPhone 16","price"],["Google Pixel 9","price"]],
+        passages:["The iPhone 16 starts at <b>$799</b>.","The Google Pixel 9 starts at <b>$799</b>."],
+        answer:"$799 vs $799", fullKB:96.0, taskKB:0.3, reduction:99.7, jFull:17.6, jTask:0.05 }
     ];
     var $ = function(id){ return document.getElementById(id); };
     var sleep = function(ms){ return new Promise(function(r){ setTimeout(r, ms); }); };
     var token = 0;
+    var sess = { n:0, kb:0, j:0 };   // cumulative session savings across questions
     var CHECK='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
     var SEARCH='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>';
     var CHEV='<svg class="q-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>';
@@ -904,19 +1088,29 @@
       ans.innerHTML='<div class="albl">Answer</div><div class="aval">'+d.answer+'</div>'; scroll.appendChild(ans);
       requestAnimationFrame(function(){ans.classList.add('show');}); scroll.scrollTop=scroll.scrollHeight;
       await sleep(680); if(t!==token) return;
-      // savings
+      // savings + metric grid + cumulative session tally
+      var jSaved=d.jFull-d.jTask, kbSaved=d.fullKB-d.taskKB;
+      sess.n++; sess.kb+=kbSaved; sess.j+=jSaved;
       var sv=document.createElement('div'); sv.className='pa-savings';
       sv.innerHTML='<div class="sv-big" id="svBig">0%</div><div class="sv-cap">fewer bytes than loading the whole page</div>'
+        +'<div class="sv-metrics">'
+        +'<div class="sv-m"><div class="mv" id="svmB">0%</div><div class="ml">Bytes saved</div></div>'
+        +'<div class="sv-m"><div class="mv" id="svmJ">0 J</div><div class="ml">Transfer energy</div></div>'
+        +'<div class="sv-m"><div class="mv">'+d.passages.length+'</div><div class="ml">Pages loaded</div></div>'
+        +'</div>'
         +'<div class="sv-rows">'
         +'<div class="sv-bar"><div class="sv-bl"><span>Full page</span><b>'+d.fullKB.toFixed(0)+' KB</b></div><div class="sv-track"><div class="sv-fill full" id="svFull"></div></div></div>'
         +'<div class="sv-bar"><div class="sv-bl"><span>EcoBudget</span><b>'+d.taskKB+' KB</b></div><div class="sv-track"><div class="sv-fill task" id="svTask"></div></div></div>'
-        +'</div>';
+        +'</div>'
+        +'<div class="session-tally">This session: <b>'+sess.n+'</b> question'+(sess.n>1?'s':'')+' &middot; <b>'+sess.kb.toFixed(0)+' KB</b> and <b>'+sess.j.toFixed(1)+' J</b> of 5G transfer avoided</div>';
       scroll.appendChild(sv); requestAnimationFrame(function(){sv.classList.add('show');}); scroll.scrollTop=scroll.scrollHeight;
       await sleep(140); if(t!==token) return;
       countTo($('svBig'),0,d.reduction,1100,function(v){return '−'+v.toFixed(1)+'%';},t);
+      countTo($('svmB'),0,d.reduction,1100,function(v){return '−'+v.toFixed(0)+'%';},t);
+      countTo($('svmJ'),0,jSaved,1100,function(v){return v.toFixed(1)+' J';},t);
       $('svFull').style.width='100%'; $('svTask').style.width=Math.max(d.taskKB/d.fullKB*100,2)+'%';
       countTo($('roBytes'),0,d.reduction,1100,function(v){return '−'+v.toFixed(1)+'%';},t);
-      countTo($('roEnergy'),0,d.jFull-d.jTask,1100,function(v){return v.toFixed(1)+' J';},t);
+      countTo($('roEnergy'),0,jSaved,1100,function(v){return v.toFixed(1)+' J';},t);
       $('roFetch').textContent=d.passages.length+(d.passages.length>1?' passages':' passage');
       $('runNet').className='run-net'; $('runNet').textContent='done';
     }
@@ -960,40 +1154,88 @@
     stage.addEventListener('mouseleave',function(){ restart(); });
   })();
 
-  /* ===== ScrollExpand (vanilla port) ===== */
+  /* ===== Header scroll state + mobile menu ===== */
   (function(){
-    var root=document.getElementById('paretoExpand'); if(!root) return;
-    var track=root.querySelector('.scroll-expand__track');
-    var stage=root.querySelector('.scroll-expand__stage');
-    var frame=root.querySelector('.scroll-expand__frame');
-    var media=root.querySelector('.scroll-expand__media');
-    var scrim=root.querySelector('.scroll-expand__scrim');
-    var overlay=root.querySelector('.scroll-expand__overlay');
-    var title=root.querySelector('.scroll-expand__title');
-    var hint=root.querySelector('.scroll-expand__hint');
-    var C={startWidth:46,startHeight:60,startRadius:24,endRadius:0,mediaZoom:1.25,scrollDistance:1.1,holdDistance:0.3,overlayScrim:0.5};
-    function clamp(v,a,b){return v<a?a:v>b?b:v;}
-    function smoothstep(e0,e1,x){var t=clamp((x-e0)/((e1-e0)||1e-6),0,1);return t*t*(3-2*t);}
-    function measure(){var h=window.innerHeight;
-      track.style.height=(h*(1+C.scrollDistance+C.holdDistance))+'px';
-      stage.style.setProperty('--se-title-size', clamp(root.clientWidth*0.07,20,68)+'px');}
-    function progress(){var span=window.innerHeight*Math.max(0.01,C.scrollDistance);
-      var top=track.getBoundingClientRect().top; return clamp(-top/span,0,1);}
-    function apply(p){var e=smoothstep(0,1,p);
-      var w=C.startWidth+(100-C.startWidth)*e, h=C.startHeight+(100-C.startHeight)*e;
-      var ix=Math.max(0,(100-w)/2), iy=Math.max(0,(100-h)/2);
-      var r=C.startRadius+(C.endRadius-C.startRadius)*e;
-      frame.style.clipPath='inset('+iy+'% '+ix+'% '+iy+'% '+ix+'% round '+r+'px)';
-      media.style.transform='scale('+(C.mediaZoom+(1-C.mediaZoom)*e)+')';
-      if(scrim)scrim.style.opacity=(C.overlayScrim*e);
-      if(title){var out=smoothstep(0.4,0.88,p);title.style.opacity=(1-out);title.style.transform='translate3d(0,'+(-28*out)+'px,0) scale('+(1+0.06*out)+')';}
-      if(hint){var g=smoothstep(0,0.12,p);hint.style.opacity=(1-g);}
-      if(overlay){var inn=smoothstep(0.66,1,p);overlay.style.opacity=inn;overlay.style.transform='translate3d(0,'+(18*(1-inn))+'px,0)';}
+    var header=document.querySelector('header'), mnav=document.getElementById('mobileNav'), mbtn=document.getElementById('menuBtn'), bar=document.getElementById('scrollBar');
+    function onScroll(){
+      if(window.scrollY>40) header.classList.add('scrolled'); else header.classList.remove('scrolled');
+      if(bar){ var h=document.documentElement.scrollHeight-window.innerHeight; bar.style.width=(h>0?(window.scrollY/h*100):0)+'%'; }
     }
-    measure(); apply(progress());
-    window.addEventListener('scroll',function(){apply(progress());},{passive:true});
-    window.addEventListener('resize',function(){measure();apply(progress());});
-    if(lenis&&lenis.on) lenis.on('scroll',function(){apply(progress());});
+    onScroll(); window.addEventListener('scroll',onScroll,{passive:true});
+    if(mbtn&&mnav){
+      mbtn.addEventListener('click',function(){ mnav.classList.toggle('open'); });
+      mnav.querySelectorAll('a').forEach(function(a){ a.addEventListener('click',function(){ mnav.classList.remove('open'); }); });
+    }
+  })();
+
+  /* ===== Hero cursor-follow glow + magnetic CTAs (hover devices, motion allowed) ===== */
+  (function(){
+    var hero=document.querySelector('.hero'), glow=document.getElementById('heroGlow');
+    if(!hero||!matchMedia('(hover:hover)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    hero.addEventListener('pointermove',function(e){var r=hero.getBoundingClientRect();
+      if(glow){glow.style.opacity='1';glow.style.left=(e.clientX-r.left)+'px';glow.style.top=(e.clientY-r.top)+'px';}});
+    hero.addEventListener('pointerleave',function(){if(glow)glow.style.opacity='0';});
+    document.querySelectorAll('.hero .btnrow .btn').forEach(function(btn){
+      btn.addEventListener('pointermove',function(e){var r=btn.getBoundingClientRect();
+        btn.style.transform='translate('+((e.clientX-(r.left+r.width/2))*0.25)+'px,'+((e.clientY-(r.top+r.height/2))*0.35)+'px)';});
+      btn.addEventListener('pointerleave',function(){btn.style.transform='';});
+    });
+  })();
+
+  /* ===== Live success-vs-energy chart (Chart.js), replaces the static figure ===== */
+  (function(){
+    if(!window.Chart) return;
+    var cv=document.getElementById('seChart'); if(!cv) return;
+    var GREEN='#6ba81b', GREY='#9aa08a', CORAL='#ec6a4b';
+    var pts=[
+      {label:'EcoBudget (LinUCB)', x:119.5, y:0.895, c:GREEN, r:9, eco:true},
+      {label:'Heuristic',          x:130.1, y:0.895, c:GREY,  r:6},
+      {label:'One-per-req',        x:112.8, y:0.831, c:GREY,  r:6},
+      {label:'Fixed-500B',         x:146.1, y:0.927, c:GREY,  r:6},
+      {label:'Fixed-1000B',        x:177.8, y:0.871, c:GREY,  r:6},
+      {label:'Full page',          x:183.7, y:0.903, c:CORAL, r:7}
+    ];
+    var dark=matchMedia('(prefers-color-scheme: dark)').matches;
+    var axis=dark?'#a3ac96':'#8b8d7f', grid=dark?'#262c1c':'#eceadf', lab=dark?'#c7cdba':'#5f6353';
+    var labelPlugin={id:'lbl',afterDatasetsDraw:function(ch){var ctx=ch.ctx,meta=ch.getDatasetMeta(0);
+      ch.data.datasets[0].data.forEach(function(d,i){var m=meta.data[i];ctx.save();
+        ctx.font='700 10px -apple-system,Inter,sans-serif';ctx.fillStyle=pts[i].eco?GREEN:(pts[i].c===CORAL?CORAL:lab);
+        ctx.textAlign=m.x>ch.chartArea.right-70?'right':'center';ctx.fillText(pts[i].label,m.x,m.y-(pts[i].r+6));ctx.restore();});}};
+    var made=false;
+    function make(){ if(made) return; made=true;
+      new Chart(cv,{type:'scatter',
+        data:{datasets:[{data:pts.map(function(p){return {x:p.x,y:p.y};}),
+          pointBackgroundColor:pts.map(function(p){return p.c;}),
+          pointRadius:pts.map(function(p){return p.r;}),
+          pointHoverRadius:pts.map(function(p){return p.r+2;}),
+          pointBorderColor:dark?'#161a10':'#fff',pointBorderWidth:2}]},
+        options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:18,right:12}},
+          animation:matchMedia('(prefers-reduced-motion: reduce)').matches?false:{duration:900},
+          plugins:{legend:{display:false},
+            tooltip:{callbacks:{label:function(c){return pts[c.dataIndex].label+': '+c.parsed.y.toFixed(3)+' success, '+c.parsed.x.toFixed(0)+' J';}}}},
+          scales:{x:{title:{display:true,text:'Energy per query (J, real page scale)',color:lab,font:{size:11}},grid:{color:grid},ticks:{color:axis},min:100,max:200},
+            y:{title:{display:true,text:'Answer success',color:lab,font:{size:11}},min:0.80,max:0.95,grid:{color:grid},ticks:{color:axis}}}},
+        plugins:[labelPlugin]});
+    }
+    if(!('IntersectionObserver' in window)){ make(); return; }
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){make();io.disconnect();}});},{threshold:.2});
+    io.observe(cv);
+  })();
+
+  /* ===== Count-up for result stats (charm on the "Measured" section) ===== */
+  (function(){
+    var nums=Array.prototype.slice.call(document.querySelectorAll('[data-count]'));
+    if(!nums.length) return;
+    function run(el){
+      var to=parseFloat(el.getAttribute('data-count')), dec=parseInt(el.getAttribute('data-dec')||'0',10),
+          pre=el.getAttribute('data-pre')||'', suf=el.getAttribute('data-suf')||'', t0=null, dur=1400;
+      function s(ts){ if(!t0)t0=ts; var p=Math.min((ts-t0)/dur,1), v=to*(1-Math.pow(1-p,3));
+        el.textContent=pre+v.toFixed(dec)+suf; if(p<1) requestAnimationFrame(s); }
+      requestAnimationFrame(s);
+    }
+    if(!('IntersectionObserver' in window)){ nums.forEach(run); return; }
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ run(e.target); io.unobserve(e.target); } }); },{threshold:.4});
+    nums.forEach(function(el){ io.observe(el); });
   })();
 </script>
 </body>
