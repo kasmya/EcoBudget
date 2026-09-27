@@ -115,6 +115,12 @@ Bandit vs baselines, paired bootstrap 95% CI, measured 506 KB payload:
 - vs one_per_req: success +0.065 [+0.024, +0.113].
 - vs LinUCB: tied within noise.
 
+Note on the success metric: the 0.895 above is fact-coverage (the required value
+is present). For yes/no and comparison questions that is lenient, so we also score
+the actual verdict (`verdict.py`, `scripts/verdict_eval.py`): overall 0.859, with
+yes_no 64 of 64 = 1.000. See `docs/verdict_eval.md`. Report 0.859 as the headline
+success figure.
+
 ## 4. Status of Phase G deliverables
 
 - Multi-seed training and variance: done (Section 2). Answerer multi-seed was not
@@ -126,7 +132,26 @@ Bandit vs baselines, paired bootstrap 95% CI, measured 506 KB payload:
 - Frozen test run: done once (Section 3).
 - Reproducibility appendix: `docs/reproducibility.md`.
 
-## 5. Honest one-line status
+## 5. Energy-aware stopping reward (Idea 1)
+
+The deployed policy uses a byte-cost reward. Idea 1 replaces byte cost with a
+direct 5G-energy cost so the policy optimises joules, not bytes. Implementation:
+`reward_mode="energy"` in `rollout.py` and `compute_energy_reward` in `bandit.py`,
+with `PER_FETCH_J` about 107 J (one 506 KB page fetch under fast-dormancy radio
+plus transfer). The energy-penalty weight mu was tuned on validation with
+`scripts/sweep_mu_energy.py` to mu = 0.15, and an energy-aware LinUCB was trained
+(`models/linucb_policy_energy.joblib`).
+
+Result (frozen test): the energy-aware LinUCB holds success 0.895 at about 25.9 J
+of fast-dormancy radio energy, statistically the same as the deployed byte-reward
+LinUCB (26.0 J), and about 4.1 times below full retrieval (106.7 J).
+
+Honest reading: because task-sufficient stopping already retrieves very few pages,
+the deployed byte-reward policy is already near energy-optimal, so the energy-aware
+reward confirms it rather than beating it. This is reported as a validation of the
+design, not as a new win.
+
+## 6. Honest one-line status
 
 Efficiency and energy contributions are solid and reproducible: task-sufficient
 stopping matches full-page answer success at about 75% fewer bytes and lower 5G

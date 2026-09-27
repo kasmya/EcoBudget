@@ -213,11 +213,20 @@ retriever raised recall@1 from 0.914 to 0.989 and recall@5 from 0.983 to a perfe
 retrieved, which was a known failure before.
 
 **Frozen test set (124 headline tasks).** The adaptive methods reach 0.895
-success and 0.944 fact_f1 using about 106 bytes per query, against 420 bytes for
-full-page loading (about 75 percent fewer bytes) at statistically equal success.
-Adaptive stopping also beats naive one-per-requirement retrieval on success by 6.5
-points, and dominates the fixed and full baselines by about 300 bytes per query,
-all with confidence intervals that exclude zero.
+fact-coverage success and 0.944 fact_f1 using about 106 bytes per query, against
+420 bytes for full-page loading (about 75 percent fewer bytes) at statistically
+equal success. Adaptive stopping also beats naive one-per-requirement retrieval on
+success by 6.5 points, and dominates the fixed and full baselines by about 300
+bytes per query, all with confidence intervals that exclude zero.
+
+**Verdict-aware success (the honest headline).** Fact-coverage passes whenever the
+required value is present, which is lenient for yes/no and comparison questions (a
+correct value with the wrong yes/no or the wrong which-is-bigger still passes).
+`verdict.py` and `scripts/verdict_eval.py` score the actual verdict: overall 0.859,
+with yes_no genuinely 64 of 64, single_fact 1.000, multi_part 0.500, numeric-which
+comparisons 1 of 3, and procedure and narrative 0.000 for lack of training
+coverage. We report 0.859, not 0.895, as the success figure. See
+`docs/verdict_eval.md`.
 
 **Energy at realistic page scale (validation, measured 506 KB pages).** With the
 measured page weight, adaptive stopping saves about 109 joules per query versus
@@ -229,9 +238,25 @@ the conservative model the per-query radio saving versus full load is a couple o
 joules; under aggressive fast-dormancy release it grows to roughly 100 joules,
 robust across all 18 coefficient settings we swept.
 
-**Real live web pages.** Running the full pipeline end to end on live pages, we
-measured about 93 to 98 percent fewer bytes than a full-page load, and roughly 14
-times less transfer energy.
+**Real live web pages.** Running end to end against a live web search across
+domains (not just the in-domain corpus), we measured about 92 to 99 percent fewer
+bytes and about 42 joules of radio energy saved per query versus loading every
+full page. This is the basis of the live dashboard demo.
+
+**Energy-aware stopping (Idea 1).** An energy-aware reward
+(`reward_mode="energy"` in `rollout.py`, with `compute_energy_reward` in
+`bandit.py`; mu tuned to 0.15 on validation via `scripts/sweep_mu_energy.py`)
+holds frozen-test success 0.895 at about 25.9 J of fast-dormancy radio energy,
+matching the deployed byte-reward LinUCB (26.0 J) and about 4.1 times below full
+retrieval (106.7 J). The honest reading is that the deployed policy is already
+near energy-optimal, so the energy reward confirms rather than beats it.
+
+**Carbon-intensity-aware scheduling (Idea 2).** `ml_retriever/carbon.py` models a
+diurnal grid-carbon trace (mean 465 gCO2e/kWh, about 2.3 times within-day spread,
+greenest around hour 13). Shifting latency-tolerant retrieval into the greenest
+hour of a slack window cuts gCO2e by about 5.1, 14.0, 20.2, and 28.1 percent at 2,
+4, 6, and 12 hour windows (ceiling about 35.5 percent), and stacks on Idea 1. See
+`docs/carbon_schedule.md` and `scripts/carbon_schedule_eval.py`.
 
 **An honest finding we report rather than hide.** Once the entity-aware retriever
 made the first result almost always correct, our learned bandit converged to the
@@ -241,7 +266,7 @@ or minus 0.007) and the heuristic (0.917) were stable. Our contribution is the
 task-sufficiency framework and the 5G energy and radio characterisation, not a new
 bandit algorithm; among learned policies we recommend LinUCB.
 
-We currently have 172 passing tests and the no-hosted-LLM-API guard is green.
+We currently have 189 passing tests and the no-hosted-LLM-API guard is green.
 
 ## Local models only
 
@@ -274,7 +299,7 @@ First, confirm the suite is green:
 
 ```bash
 source .venv/bin/activate
-python -m pytest -q          # expect 172 passing, runs in seconds, no downloads
+python -m pytest -q          # expect 189 passing, runs in seconds, no downloads
 ```
 
 Then run the working pipeline on a few tasks. This uses the trained models in
@@ -409,7 +434,7 @@ ml_retriever/
   figures/                    the four generated paper figures
   models/                     trained checkpoints and policy artifacts (gitignored)
   scripts/                    build, train, and evaluation scripts
-  tests/                      172 tests, model-free where possible
+  tests/                      189 tests, model-free where possible
 ```
 
 ## Limitations
