@@ -37,9 +37,10 @@ reuse its fetched pages under `backend/pages/` to ground the energy model) and
 `frontend/` (the landing page).
 
 **Core claim (measured, frozen test set, n=124 headline tasks):** task-sufficient
-adaptive stopping reaches 0.895 answer success / 0.944 fact-F1 at about 106 bytes
-per query, versus 420 bytes for full-page loading (about 75 percent fewer bytes)
-at statistically equal success, and it dominates fixed-budget and full-page
+adaptive stopping reaches 0.895 fact-coverage success / 0.944 fact-F1 at about 106
+bytes per query (verdict-aware success 0.859, the honest headline; see
+`verdict_eval.md`), versus 420 bytes for full-page loading (about 75 percent fewer
+bytes) at statistically equal success, and it dominates fixed-budget and full-page
 baselines on bytes, transfer energy, and 5G radio energy (all bootstrap CIs
 exclude zero). See [Section 6](#6-evaluation-and-experiments) and
 `docs/eval_notes.md`.
@@ -100,11 +101,13 @@ flowchart TD
 | `decomposer.py` | Phase 2. `TaskDecomposer`: question to requirements; `snap_attribute` constrained decoding over the closed vocabulary. |
 | `retriever.py` | Phase 3/D. `rank_passages` (pure ranking math), `RequirementRetriever` (bi-encoder), `EntityAwareRetriever` (gate to entity then rank by attribute, `retriever.py:204`), `passage_matches_entity` (`retriever.py:188`). |
 | `evidence.py` | Phase 4. `EvidenceCoverageTracker`, `QAScorer` (RoBERTa QA confidence), `CachedScorer`. |
-| `bandit.py` | Phase 5/E. `BanditPolicy` (per-action SGD, `bandit.py:95`), `LinUCBPolicy` (`bandit.py:178`), `LinTSPolicy` (`bandit.py:229`), `compute_reward` (`bandit.py:57`), `featurize`, `FeatureNormalizer`. `STOP=0`, `RETRIEVE=1`. |
-| `rollout.py` | Phase 5 episode environment. `run_episode` (`rollout.py:133`, `reward_mode` terminal or per_step), `build_candidates`, `EpisodeState`, and every decider: `decide_full`, `decide_one_per_req`, `decide_heuristic` (`rollout.py:245`), `decide_adaptive_rag` (`rollout.py:263`), `make_fixed_budget_decider`, `make_byte_budget_decider`. |
+| `bandit.py` | Phase 5/E. `BanditPolicy` (per-action SGD, `bandit.py:95`), `LinUCBPolicy` (`bandit.py:178`), `LinTSPolicy` (`bandit.py:229`), `compute_reward` (`bandit.py:57`), `compute_energy_reward` (Idea 1), `featurize`, `FeatureNormalizer`. `STOP=0`, `RETRIEVE=1`. |
+| `rollout.py` | Phase 5 episode environment. `run_episode` (`rollout.py:133`, `reward_mode` terminal, per_step, or energy for Idea 1), `build_candidates`, `EpisodeState`, and every decider: `decide_full`, `decide_one_per_req`, `decide_heuristic` (`rollout.py:245`), `decide_adaptive_rag` (`rollout.py:263`), `make_fixed_budget_decider`, `make_byte_budget_decider`. |
 | `answer.py` | Answer generators: `GenerativeAnswerGenerator` (flan-t5 + LoRA, abstain), `EvidenceAnswerGenerator` (fast, judge-based, used in training sweeps), `ExtractiveQAAnswerGenerator`. |
 | `judge.py` | Answer-type-aware judges, symmetric `_normalize`, `judge_task` returning `(judge_success, fact_f1)`. |
+| `verdict.py` | Verdict-aware scoring: parses the actual yes/no and which-is-bigger verdict (not just value presence), stripping entity-model numbers before parsing. Basis of `scripts/verdict_eval.py` and the 0.859 headline. |
 | `energy.py` | Phase A/B/F. `ComputeModel`, `FiveGTransferModel`, `PayloadModel`, `RadioStateModel` (`energy.py:185`), `EnergyAccountant`, `query_op_counts`. |
+| `carbon.py` | Idea 2. Diurnal grid carbon-intensity trace and slack-window scheduling; basis of `scripts/carbon_schedule_eval.py` and `docs/carbon_schedule.md`. |
 | `system.py` | Phase 6. `EcoBudgetSystem`: the end-to-end deployed path wiring all components together. |
 
 Every component is dependency-injected, so its core logic is unit-tested without
@@ -335,7 +338,7 @@ loading fewer pages is the primary lever. The adaptive policy wins in both regim
 
 ```bash
 source .venv/bin/activate
-python -m pytest -q          # 172 tests, ~1 second, no downloads
+python -m pytest -q          # 189 tests, ~1 second, no downloads
 ```
 
 **Model-free convention.** Tests use dummy embeddings and stubbed encoders, so no

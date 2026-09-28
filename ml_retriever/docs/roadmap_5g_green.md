@@ -229,9 +229,34 @@ stated CI; limitations section written before results are finalized.
 
 ---
 
+## Extensions beyond the A-H plan (implemented and evaluated)
+
+Beyond the original A-H phases, three additions were built and measured:
+
+- **Verdict-aware evaluation** (`ml_retriever/verdict.py`, `scripts/verdict_eval.py`,
+  `docs/verdict_eval.md`): scores the actual yes/no and which-is-bigger verdict
+  rather than mere fact presence. Frozen-test verdict-aware success is 0.859 (yes_no
+  64/64), reported as the honest headline instead of the lenient 0.895.
+- **Idea 1, energy-aware stopping reward** (`reward_mode="energy"` in `rollout.py`,
+  `compute_energy_reward` in `bandit.py`, `scripts/sweep_mu_energy.py`): optimises
+  joules rather than bytes; holds success 0.895 at about 25.9 J radio, matching the
+  deployed byte-reward LinUCB and confirming it is already near energy-optimal. See
+  `docs/phase_g_consolidation.md`.
+- **Idea 2, carbon-intensity-aware scheduling** (`ml_retriever/carbon.py`,
+  `scripts/carbon_schedule_eval.py`, `docs/carbon_schedule.md`): shifts
+  latency-tolerant retrieval into greener grid hours for 5 to 28 percent gCO2e
+  savings depending on the slack window; stacks on Idea 1.
+
+A diagnostics suite (`scripts/diagnostics.py`, `docs/diagnostics_report.md`) checks
+overfitting, leakage, calibration, latency, and subgroups.
+
 ## The one-line honest status
-Core adaptive-stopping contribution: **solid**. Green/5G framing: **not yet
-earned** — Phases A and B (compute-vs-transfer net energy + a real 5G per-bit
-model on realistic payloads) are the gate between "efficient-QA prototype" and
-"5G-green paper." Do A and B first; if the bandit is not net-positive on energy,
-change the framing honestly rather than hide it.
+Phases A through G are complete and the green/5G framing is now earned: the
+compute-vs-transfer net energy and the 5G per-bit and RRC radio models are
+implemented on measured payloads, and task-sufficient stopping is net-positive on
+energy (about 66 J/query saved versus full-page loading at 506 KB, transfer about
+95 percent of energy, radio about 4 times lower under fast dormancy). The honest
+framing holds: the contribution is task-sufficiency plus the 5G energy
+characterisation, the deployed policy is LinUCB (the SGD bandit is a high-variance
+ablation), and the headline success is the verdict-aware 0.859. Phase H, the paper
+writeup, is the remaining work.

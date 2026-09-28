@@ -93,18 +93,25 @@ python scripts/train_baselines.py --epochs 8 --lam 0.5
 | --- | --- | --- |
 | Decomposer exact-match (val, snapped) | 0.892 | `scripts/eval_decomposer.py --model_path models/decomposer-base-lora --adapter_path models/decomposer-base-lora` |
 | Retriever recall@1 / recall@5 (entity-aware) | 0.989 / 1.000 | `scripts/eval_retriever.py --k 1` and `--k 5` |
-| Frozen-test headline success / bytes | 0.895 / 106 B | `scripts/phase7_experiment.py --n 200 --split test` |
+| Frozen-test fact-coverage success / bytes | 0.895 / 106 B | `scripts/phase7_experiment.py --n 200 --split test` |
+| Frozen-test verdict-aware success | 0.859 (yes_no 64/64) | `scripts/verdict_eval.py` |
 | Bandit vs full at measured page scale | -66.3 J/query | same test run, bandit-vs-baseline block |
 | Energy vs full at 506 KB (val) | -109 J/query | `scripts/phase7_experiment.py --n 100 --split val` |
 | Radio robustness | adaptive < full in 18/18 cells | `scripts/radio_sensitivity.py` |
 | Multi-seed policy variance | bandit 0.790 +/- 0.283; LinUCB 0.913 +/- 0.007 | `scripts/multiseed.py --seeds 0 1 2 3 4` |
-| Real-page byte reduction | 92.8% and 97.8% | `scripts/end_to_end_web.py` |
+| Energy-aware stopping (Idea 1) | success 0.895 at 25.9 J radio (mu=0.15) | `scripts/sweep_mu_energy.py` |
+| Carbon-aware scheduling (Idea 2) | gCO2e -5.1/-14.0/-20.2/-28.1% at 2/4/6/12 h | `scripts/carbon_schedule_eval.py` |
+| Diagnostics (overfit, leakage, calibration) | train 0.850 vs test 0.867; ECE 0.077 | `scripts/diagnostics.py` |
+| Real-page byte reduction | 92.8% and 97.8% (in-domain) | `scripts/end_to_end_web.py` |
 | Figures | figures/fig1..fig4.png | `scripts/make_figures.py` |
+
+Test suite: 189 tests pass (`python -m pytest -q`), including verdict and carbon.
 
 ## Notes and honest caveats
 
-- The reported learned policy is the seed-0 SGD bandit, but multi-seed shows it is
-  high-variance; we recommend LinUCB as the stable learned policy.
+- The deployed learned policy is LinUCB (`run_pipeline.py --policy linucb`, the
+  default), chosen because multi-seed shows the SGD bandit is high-variance
+  (0.790 +/- 0.283) while LinUCB is stable (0.913 +/- 0.007).
 - The frozen-test energy uses the measured 506 KB page payload (Tier A); earlier
   drafts used an assumed 60 KB and are superseded.
 - `models/answer-base-robust` is retained as an experiment, not the reported
