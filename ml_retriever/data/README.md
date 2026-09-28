@@ -1,13 +1,17 @@
-# Phase 1 data — corpus & task dataset
+# Corpus & task dataset
+
+This started as the Phase 1 seed dataset and was scaled up in Phase C; the counts
+below are current. The Phase 1 history is preserved in the notes at the bottom.
 
 ## What's here
 
 | File | Contents |
 |---|---|
-| `corpus.jsonl` | 86 real, sourced passages across **22 entities in 10 topics**, one JSON object per line matching the `Passage` schema. |
-| `tasks_seed.json` | 41 hand-written seed tasks spanning all seven answer types across the same 10 topics. |
-| `tasks.json` | Seed tasks + 123 template-generated paraphrase variants = **164 tasks total** (target range: 150–200). Every variant carries `synthetic: true` and `seed_task_id`, and is guaranteed identical `decomposed_requirements`/ground truth to its seed (enforced by `tests/test_data.py`). |
-| `splits.json` + `splits.json.FROZEN` | Re-frozen train/val/test split (104/36/24 tasks), **grouped by seed task** so paraphrases of the same seed never cross splits. Do not regenerate until Phase 7. |
+| `corpus.jsonl` | **186** sourced passages, one JSON object per line matching the `Passage` schema, each with a stable `(entity, attribute)` label and a 384-dimension MiniLM embedding. |
+| `tasks_seed.json` | **344** hand-authored seed tasks spanning all seven answer types. |
+| `tasks.json` | Seed tasks + template-generated paraphrase variants = **1,376 tasks total**. Every variant carries `synthetic: true` and `seed_task_id`, and is guaranteed identical `decomposed_requirements`/ground truth to its seed (enforced by `tests/test_data.py`). |
+| `splits.json` + `splits.json.FROZEN` | Frozen train/val/test split (**1,008 / 240 / 128 tasks**), **grouped by seed task** so paraphrases of the same seed never cross splits. Frozen; the final test run happens once. |
+| `measured_payloads.json` | Measured byte sizes of 19 real fetched pages (median rendered HTML **506,179 B**), used to ground the energy model. |
 
 ## Topic coverage (fixed 2026-09-09 — see below)
 
@@ -38,36 +42,32 @@ so the corpus can't silently narrow back to gadgets-only again.
 ## How this data was built (in order)
 
 ```bash
-python scripts/build_seed_corpus.py          # writes corpus.jsonl
-python scripts/build_seed_tasks.py            # writes tasks_seed.json
+python scripts/build_seed_corpus.py           # writes corpus.jsonl (seed)
+python scripts/build_seed_tasks.py            # writes tasks_seed.json (seed)
+python scripts/expand_dataset_phase_c.py      # Phase C scale-up of corpus + seeds
 python scripts/generate_synthetic_tasks.py    # writes tasks.json (seed + synthetic)
+python scripts/curate_gold.py                 # curated required_facts for gold
 python scripts/make_splits.py                 # writes splits.json, freezes it
+python scripts/embed_corpus.py                # writes 384-d MiniLM embeddings
+python scripts/measure_real_pages.py          # writes measured_payloads.json
 python scripts/validate_corpus_task_coverage.py  # scripted coverage check
 ```
 
-## Honest status vs. the plan.md targets
+## Status (current)
 
-- **Corpus size**: 86 passages, not yet 200–500. Every passage traces to
-  an actual sourced fact with a `source_url` (gathered via web search on
-  2026-09-09), spread across 9 distinct topics rather than concentrated in
-  one — but still a fraction of the 200–500 target. Per the plan's review
-  addendum, closing the remaining gap should draw on an existing
-  open-source passage dataset (e.g. a subset of MS MARCO or Natural
-  Questions adapted into this `Passage` schema) rather than manually
-  sourcing more by hand — and any such addition should preserve this
-  topic spread, not just add more of the existing categories.
-- **Task count**: 164 tasks, within the 150–200 target. 41 are
-  hand-written seeds (spread across 10 topics and all seven answer types);
-  123 are deterministic, template-based paraphrases capped at 3 variants per seed
-  to keep the total in range as the seed set grew (**not** LLM output —
-  see `scripts/generate_synthetic_tasks.py`'s docstring and the no-LLM-API
-  guard in `tests/test_no_llm_api.py`, which this script also passes).
-- **Embeddings**: `scripts/embed_corpus.py` is written but has not been
-  run. This sandbox can't run it right now for two separate reasons: it
-  ran out of disk space installing `sentence-transformers`, and even
-  installed, `huggingface.co` isn't on this sandbox's network allowlist
-  (only package registries are). Run it on a normal machine with
-  `pip install sentence-transformers` first.
+- **Corpus size**: 186 passages after the Phase C scale-up (from an 86-passage
+  Phase 1 seed). Original passages trace to a sourced fact with a real
+  `source_url`; the Phase C expansion passages use a synthetic provenance URL
+  because their values come from a curated specifications table. The corpus is
+  domain-narrow and electronics-skewed, which is stated as a limitation.
+- **Task count**: 1,376 tasks (344 hand-authored seeds plus deterministic,
+  template-based paraphrases; **not** LLM output, see the no-LLM-API guard in
+  `tests/test_no_llm_api.py`), 512 of which are comparisons.
+- **Embeddings**: computed. `scripts/embed_corpus.py` has been run and all 186
+  passages carry a 384-dimension MiniLM embedding.
+- **Measured payloads**: `scripts/measure_real_pages.py` measured 19 real fetched
+  pages into `measured_payloads.json` (median rendered HTML 506,179 B), grounding
+  the energy model in real page sizes rather than an assumed constant.
 - **Manual review**: the required "review 10 random tasks for clarity"
   step was actually performed twice (once before and once after the
   topic-diversity fix) and caught a real issue the first time — the

@@ -30,7 +30,8 @@ Measured results support the central hypothesis. Entity-aware retrieval raises
 Recall@1 from 0.914 to 0.989 and Recall@5 from 0.983 to 1.000. The fine-tuned
 decomposer reaches 0.892 exact-match, with constrained snapping to the attribute
 vocabulary lifting it from 0.496. On the frozen test set, adaptive stopping holds
-0.895 task success while using about 106 bytes per query versus 420 bytes for
+0.895 fact-coverage success (0.859 under stricter verdict-aware scoring) while
+using about 106 bytes per query versus 420 bytes for
 full-page loading, roughly 75 percent fewer bytes at statistically equivalent
 success. Using a measured median real page of 506 KB, adaptive stopping saves about
 66 joules per query versus full-page loading (95 percent confidence interval 40.8

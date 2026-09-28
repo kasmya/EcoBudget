@@ -143,7 +143,7 @@ on data-intensive mobile and edge applications.
 
 *(All values measured on the frozen test set / real pages unless noted.)*
 - **Retrieval accuracy:** entity-aware retrieval raised recall@1 from **0.914 to 0.989** and recall@5 from **0.983 to 1.000** on 175 unique requirements.
-- **Answer success held while bytes fell:** on the frozen test set adaptive stopping reached **0.895 success / 0.944 fact-F1** using **106 bytes/query** versus **420 bytes** for full-page loading (**~75% fewer bytes**) at statistically equal success.
+- **Answer success held while bytes fell:** on the frozen test set adaptive stopping reached **0.895 fact-coverage success / 0.944 fact-F1** (**0.859** under stricter verdict-aware scoring of the actual yes/no and which-is-bigger answer, with yes/no genuinely 64/64) using **106 bytes/query** versus **420 bytes** for full-page loading (**~75% fewer bytes**) at statistically equal success.
 - **Real live web pages:** end-to-end on live pages, task-sufficient loading cut transferred bytes by **92.8% and 97.8%** (≈14× less transfer energy).
 - **Energy at realistic page scale:** with the measured median page (**506 KB**), on the frozen test set adaptive stopping saved **≈66 J/query versus full-page loading** (95% CI [40.8, 95.1]); transfer was about **95%** of total energy at this scale.
 - **5G radio energy:** under aggressive fast-dormancy release, adaptive stopping used **≈26 J** of radio energy per query versus **≈107 J** for full-page loading (about **4× less**); the direction holds across all 18 tested coefficient settings.

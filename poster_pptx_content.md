@@ -79,7 +79,8 @@ Application areas: Sustainable Web, 5G / Edge Networks, AI Agents & Search.
 - Task decomposition: the fine-tuned decomposer reaches 0.892 exact-match on the
   validation split; constrained snapping to the attribute vocabulary lifts it from
   0.496.
-- Adaptive stopping: on the frozen test set it holds 0.895 task success while using
+- Adaptive stopping: on the frozen test set it holds 0.895 fact-coverage success
+  (0.859 verdict-aware) while using
   about 106 bytes per query versus 420 bytes for full-page loading, about 75 percent
   fewer bytes at statistically equal success.
 - Energy at realistic page scale: with the measured median page of 506 KB, adaptive
