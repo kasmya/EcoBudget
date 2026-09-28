@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="color-scheme" content="light" />
 <title>EcoBudget - Live demo: task-sufficient vs normal loading</title>
 <style>
   :root{
@@ -115,7 +116,7 @@
     .session{font-size:13px;padding:12px 14px;gap:12px;}
   }
   @media (prefers-reduced-motion: reduce){ .dh-dot,.spinner{animation:none;} .card:hover,.save:hover{transform:none;} html{scroll-behavior:auto;} }
-  @media (prefers-color-scheme: dark){
+  @media (prefers-color-scheme: dark) and (min-width:999999px){
     :root{ --bg:#0e120a;--panel:#161b10;--ink:#eef2e2;--muted:#a7b096;--border:#28301d;
       --accent:#8ccb35;--accent-soft:#1e2a12;--normal:#f4886b;--normal-soft:#331a12;--eco:#57c98a;--eco-soft:#123021;
       --shadow:0 18px 44px rgba(0,0,0,.55);

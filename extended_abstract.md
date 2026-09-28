@@ -98,7 +98,9 @@ All values below are measured on the frozen test set or on real pages unless not
 The entity-aware retriever raised recall@1 from 0.914 to 0.989 and recall@5 from
 0.983 to a perfect 1.000 on 175 unique requirements, eliminating a known
 list-retrieval failure. On the frozen test set, task-sufficient adaptive stopping
-reached 0.895 answer success and 0.944 fact-F1 using about 106 bytes per query,
+reached 0.895 fact-coverage success and 0.944 fact-F1 (0.859 under stricter
+verdict-aware scoring of the actual yes/no and which-is-bigger answer) using about
+106 bytes per query,
 versus 420 bytes for full-page loading, a reduction of roughly 75 percent at
 statistically equal success, and it also beat naive one-passage-per-requirement
 retrieval on success by 6.5 points. Against full-page loading the policy transferred

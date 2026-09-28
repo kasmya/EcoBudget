@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>EcoBudget - Task-sufficient retrieval for greener 5G QA</title>
 <meta name="description" content="EcoBudget decides, per question, exactly how much web evidence it needs, stops as soon as it has enough, and moves fewer bytes and less energy over 5G, without losing answer quality." />
-<meta name="color-scheme" content="light dark" />
+<meta name="color-scheme" content="light" />
 <meta property="og:title" content="EcoBudget - Task-sufficient retrieval for greener 5G QA" />
 <meta property="og:description" content="Load only what the task needs. 75% fewer bytes and ~66 J/query saved at real page scale, at equal answer success." />
 <style>
@@ -548,7 +548,7 @@
   }
 
   /* ===== Dark mode (graceful) ===== */
-  @media (prefers-color-scheme: dark){
+  @media (prefers-color-scheme: dark) and (min-width:999999px){
     :root{
       --bg:#0e120a;--bg-mint:#121810;--bg-cream:#141710;--bg-sky:#101511;--panel:#161b10;
       --ink:#eef2e2;--muted:#a7b096;--faint:#808a70;--border:#28301d;--border-2:#343d27;
@@ -1195,7 +1195,7 @@
       {label:'Fixed-1000B',        x:177.8, y:0.871, c:GREY,  r:6},
       {label:'Full page',          x:183.7, y:0.903, c:CORAL, r:7}
     ];
-    var dark=matchMedia('(prefers-color-scheme: dark)').matches;
+    var dark=false;
     var axis=dark?'#a3ac96':'#8b8d7f', grid=dark?'#262c1c':'#eceadf', lab=dark?'#c7cdba':'#5f6353';
     var labelPlugin={id:'lbl',afterDatasetsDraw:function(ch){var ctx=ch.ctx,meta=ch.getDatasetMeta(0);
       ch.data.datasets[0].data.forEach(function(d,i){var m=meta.data[i];ctx.save();
